@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_sport_map/Authentication/cubit/client_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
 import 'package:my_sport_map/secret.dart';
 
 // TODO
@@ -36,8 +38,8 @@ enum AuthenticationState {
 }
 
 class AuthenticationPage extends StatefulWidget {
-  Function setClientReady;
-  AuthenticationPage({super.key, required this.setClientReady});
+  //Function setClientReady;
+  //AuthenticationPage({super.key, required this.setClientReady});
 
   @override
   State<AuthenticationPage> createState() => _AuthenticationPageState();
@@ -155,11 +157,15 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               prefs.then((valuePref) {
                 valuePref.setString(
                     "credentials", valueClient.credentials.toJson());
-                setState(() {
-                  // TODO : get access to gotTheClient...
-                  //gotTheClient = true;
-                  widget.setClientReady();
-                });
+                // TODO use watch ? Or read ? or something else ???
+                context
+                    .watch<ClientCubit>()
+                    .setStatus(ClientStatus.authenticated);
+                //setState(() {
+                //  // TODO : get access to gotTheClient...
+                //  //gotTheClient = true;
+                //  widget.setClientReady();
+                //});
               });
               setState(() {
                 authState = AuthenticationState.clientReady;
