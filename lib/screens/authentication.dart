@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_sport_map/secret.dart';
 
 // TODO
 // make a cubit for all the authentication informations ?
@@ -26,18 +28,19 @@ class AuthenticationDataCubit extends Cubit<AuthenticationData> {
   }
 } */
 
-class AuthenticationPage extends StatefulWidget {
-  const AuthenticationPage({super.key});
-
-  @override
-  State<AuthenticationPage> createState() => _AuthenticationPageState();
-}
-
 enum AuthenticationState {
   notAuthenticated,
   requestAccepted,
   requestCanceled,
   clientReady,
+}
+
+class AuthenticationPage extends StatefulWidget {
+  Function setClientReady;
+  AuthenticationPage({super.key, required this.setClientReady});
+
+  @override
+  State<AuthenticationPage> createState() => _AuthenticationPageState();
 }
 
 class _AuthenticationPageState extends State<AuthenticationPage> {
@@ -46,14 +49,21 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
   late oauth2.AuthorizationCodeGrant grant;
   AuthenticationState authState = AuthenticationState.notAuthenticated;
 
-  // To connect by OAuth2
+  //Function setClientReady;
+  //_AuthenticationPageState({required this.setClientReady})
+
+  // Requesting Strava API code with oauth2
+  // from here : https://pub.dev/packages/oauth2
   final authorizationEndpoint =
       Uri.parse("https://www.strava.com/oauth/mobile/authorize");
   final tokenEndpoint = Uri.parse('https://www.strava.com/oauth/token');
-  static const String clientId = '100668';
-  static const String clientSecret = 'c043f4ba922e8f079b1189f0d6c9f02b221c1e85';
   // TODO: change the redirect url
   final redirectUrl = Uri.parse('http://localhost');
+
+  // NOTE: looks difficult to open it in strava app and then go back to my app
+  // Could be doable with deep links (for later)
+  // [Interesting blog](https://augustkimo.medium.com/simple-flutter-sharing-and-deeplinking-open-apps-from-a-url-be56613bdbe6)
+  // Or this [interesting package](https://pub.dev/packages/app_links)
 
   @override
   Widget build(BuildContext context) {
@@ -138,8 +148,19 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
           setState(() {
             client =
                 grant.handleAuthorizationResponse(responseUrl.queryParameters);
-            client.then((value) {
+            client.then((valueClient) {
               print("GOT THE CLIENT !!!");
+              // Save credentials
+              final prefs = SharedPreferences.getInstance();
+              prefs.then((valuePref) {
+                valuePref.setString(
+                    "credentials", valueClient.credentials.toJson());
+                setState(() {
+                  // TODO : get access to gotTheClient...
+                  //gotTheClient = true;
+                  widget.setClientReady();
+                });
+              });
               setState(() {
                 authState = AuthenticationState.clientReady;
               });
