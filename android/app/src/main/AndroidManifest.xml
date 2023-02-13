@@ -4,6 +4,11 @@
         android:label="my_sport_map"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+   
+        <!-- My google maps API key -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyBwcsvF4kgfALcUVkV8o0UjAM0An6YhL5Y" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
