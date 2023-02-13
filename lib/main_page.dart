@@ -1,18 +1,21 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_sport_map/authentication/cubit/client_cubit.dart';
 import 'package:my_sport_map/authentication/view/authentication_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 
-import 'Authentication/cubit/client_cubit.dart';
 import 'secret.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
 
+  // TODO check if basic auth is okay with client
+
   @override
   Widget build(BuildContext context) {
+    //context.read<ClientCubit>().onError();
     return BlocBuilder<ClientCubit, ClientState>(builder: (context, state) {
       //if (gotTheClient) {
       if (state.status == ClientStatus.ready) {
@@ -28,7 +31,8 @@ class MainPage extends StatelessWidget {
       }
       // Check the client
       //if (stravaApiClient == null) {
-      if (state.client == null) {
+      //if (state.client == null) {
+      if (state.status == ClientStatus.appStarting) {
         // TODO
         // To load my client if it exists
         final prefs = SharedPreferences.getInstance();
@@ -46,9 +50,15 @@ class MainPage extends StatelessWidget {
             // TODO : load credentials into client
             var clientCredentials =
                 oauth2.Credentials.fromJson(jsonCredentials);
-            state.client = oauth2.Client(clientCredentials,
+            var newClient = oauth2.Client(clientCredentials,
                 identifier: clientId, secret: clientSecret);
-            state.status = ClientStatus.ready;
+            context.read<ClientCubit>().setClient(
+                  newClient,
+                ); // TODO: need a specific status or always "ready" ?
+            //state.client = oauth2.Client(clientCredentials,
+            //    identifier: clientId, secret: clientSecret);
+            //state.status = ClientStatus.ready;
+
             //setState(() {
             //  stravaApiClient = oauth2.Client(clientCredentials,
             //      identifier: clientId, secret: clientSecret);
@@ -99,10 +109,10 @@ class MainPage extends StatelessWidget {
                 //onPressed: testAuthentication,
                 onPressed: () {
                   print('Change of page...');
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AuthenticationPage()));
+                  //Navigator.push(
+                  //    context,
+                  //    MaterialPageRoute(
+                  //        builder: (context) => AuthenticationPage()));
                 },
                 child: const Text("Login With Strava"),
               ),

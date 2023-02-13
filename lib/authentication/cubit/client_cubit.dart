@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 
 part 'client_state.dart';
