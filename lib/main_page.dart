@@ -1,4 +1,3 @@
-import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_sport_map/authentication/cubit/client_cubit.dart';
@@ -8,6 +7,9 @@ import 'package:oauth2/oauth2.dart' as oauth2;
 
 import 'secret.dart';
 
+// TODO where to put this ?
+const String apiEndpoint = "https://www.strava.com/api/v3/";
+
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
 
@@ -15,54 +17,49 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //context.read<ClientCubit>().onError();
     return BlocBuilder<ClientCubit, ClientState>(builder: (context, state) {
       //if (gotTheClient) {
       if (state.status == ClientStatus.ready) {
         print("WE GOT THE CLIENT");
+        // TODO : save client state after "changes" ?
+        // TODO : create button to test the api !
+        //var test = state.client?.read(Uri.parse("${apiEndpoint}athlete"));
+        //test?.then(
+        //  (value) => print(value),
+        //);
+        //print(state.client?.read(Uri.parse("${apiEndpoint}athlete")));
       }
       // Check if we need authentication
       //if (needAuthentication) {
       if (state.status == ClientStatus.notAuthenticated) {
         // Authenticate to get access to your strava data
-        return MaterialApp(
+        return const MaterialApp(
           home: AuthenticationPage(),
         );
       }
       // Check the client
-      //if (stravaApiClient == null) {
-      //if (state.client == null) {
       if (state.status == ClientStatus.appStarting) {
-        // TODO
         // To load my client if it exists
         final prefs = SharedPreferences.getInstance();
         prefs.then((value) {
           String? jsonCredentials = value.getString("credentials");
-          // TODO tempo
+          // TODO tempo to test
           //jsonCredentials = null;
           if (jsonCredentials == null) {
-            // TODO : create credentials
-            state.status = ClientStatus.notAuthenticated;
-            //setState(() {
-            //  needAuthentication = true;
-            //});
+            // Creation of credentials
+            context
+                .read<ClientCubit>()
+                .setStatus(ClientStatus.notAuthenticated);
           } else {
-            // TODO : load credentials into client
+            // Load credentials into client
             var clientCredentials =
                 oauth2.Credentials.fromJson(jsonCredentials);
             var newClient = oauth2.Client(clientCredentials,
-                identifier: clientId, secret: clientSecret);
+                identifier: clientId, secret: clientSecret, basicAuth: false);
             context.read<ClientCubit>().setClient(
                   newClient,
                 ); // TODO: need a specific status or always "ready" ?
-            //state.client = oauth2.Client(clientCredentials,
-            //    identifier: clientId, secret: clientSecret);
-            //state.status = ClientStatus.ready;
 
-            //setState(() {
-            //  stravaApiClient = oauth2.Client(clientCredentials,
-            //      identifier: clientId, secret: clientSecret);
-            //});
           }
         });
       }
@@ -70,7 +67,7 @@ class MainPage extends StatelessWidget {
           home: Scaffold(
         appBar: AppBar(
           title: const Text("Flutter Strava Plugin"),
-          actions: [
+          actions: const [
             Icon(
               //isLoggedIn
               true
@@ -79,7 +76,7 @@ class MainPage extends StatelessWidget {
               //color: isLoggedIn ? Colors.white : Colors.red,
               color: true ? Colors.white : Colors.red,
             ),
-            const SizedBox(
+            SizedBox(
               width: 8,
             )
           ],
@@ -92,8 +89,6 @@ class MainPage extends StatelessWidget {
           ),
         ),
       ));
-      // TODO tempo
-      return Container();
     });
   }
 
@@ -117,8 +112,8 @@ class MainPage extends StatelessWidget {
                 child: const Text("Login With Strava"),
               ),
               ElevatedButton(
-                child: Text("De Authorize"),
                 onPressed: testDeauth,
+                child: const Text("De Authorize"),
               )
             ],
           ),
@@ -155,10 +150,10 @@ class MainPage extends StatelessWidget {
       child: AnimatedOpacity(
         //opacity: isLoggedIn ? 1.0 : 0.4,
         opacity: true ? 1.0 : 0.4,
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: const [
             ListTile(
               title: Text("Athletes"),
               trailing: Icon(Icons.chevron_right),

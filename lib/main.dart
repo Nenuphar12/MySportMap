@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:clipboard/clipboard.dart';
 import 'package:my_sport_map/authentication/cubit/client_cubit.dart';
 import 'package:my_sport_map/main_page.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'secret.dart';
 import 'my_observer.dart';
+
+// TODO : splash screen (during loading of client ?)
 
 void main() {
   Bloc.observer = MyObserver();
@@ -88,18 +87,8 @@ class _MyAppState extends State<MyApp> {
   // TODO : tmp ?
   bool isLoggedIn = false;
 
-  // Callback to get back to the main page
-  // It is probably awfull TODO : change...
-  void setClientReady() {
-    setState(() {
-      gotTheClient = true;
-      needAuthentication = false; // TODO : ?
-    });
-  }
-
   @override
   Widget build(BuildContext parecontext) {
-    // TODO !
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('My sport map')),

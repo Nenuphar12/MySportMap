@@ -4,11 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bloc/bloc.dart';
 import 'package:my_sport_map/secret.dart';
 
 // TODO
 // make a cubit for all the authentication informations ?
+
+// TODO : Add first screen with button to log in
 
 /**
 class AuthenticationData {
@@ -38,6 +39,8 @@ enum AuthenticationState {
 }
 
 class AuthenticationPage extends StatefulWidget {
+  const AuthenticationPage({super.key});
+
   //Function setClientReady;
   //AuthenticationPage({super.key, required this.setClientReady});
 
