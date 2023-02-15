@@ -1,60 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_sport_map/authentication/cubit/client_cubit.dart';
-import 'package:my_sport_map/main_page.dart';
-import 'package:oauth2/oauth2.dart' as oauth2;
-import 'my_observer.dart';
+import 'package:my_sport_map/home/view/home_page.dart';
+import 'my_sport_map_observer.dart';
 
 // TODO : splash screen (during loading of client ?)
 
 void main() {
-  Bloc.observer = MyObserver();
-  runApp(const MyApp());
+  Bloc.observer = MySportMapObserver();
+  runApp(const MySportMapApp());
 }
 
-class MainData {
-  oauth2.Client? stravaApiClient;
-  bool needAuthentication = false;
-  bool gotTheClient = false;
+// TODO : review this doc (and structure of the class)
 
-  MainData(
-      {this.stravaApiClient = null,
-      this.needAuthentication = false,
-      this.gotTheClient = false});
-}
+/// {@template my_sport_map_app}
+/// A [StatelessWidget] which constructs a [MaterialApp] with a home to
+/// [HomePage].
+/// {endtemplate}
+class MySportMapApp extends StatelessWidget {
+  /// {@macro my_sport_map_app}
+  const MySportMapApp({super.key});
 
-class MainCubit extends Cubit<MainData> {
-  MainCubit() : super(MainData());
-
-  void setClient(oauth2.Client? client) {
-    state.stravaApiClient = client;
-    emit(state);
-  }
-
-  void setNeedAuthentication(bool need) {
-    state.needAuthentication = need;
-    emit(state);
-  }
-
-  void setGotTheClient(bool gotIt) {
-    state.gotTheClient = gotIt;
-    emit(state);
-  }
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  oauth2.Client? stravaApiClient;
-  bool needAuthentication = false;
-  bool gotTheClient = false;
-
+  /*
   late GoogleMapController mapController;
 
   final LatLng _center = const LatLng(45.521563, -122.677433);
@@ -62,9 +29,9 @@ class _MyAppState extends State<MyApp> {
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
+  */
 
-  // This widget is the root of your application.
-  /**
+  /*
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -84,17 +51,11 @@ class _MyAppState extends State<MyApp> {
   }
   */
 
-  // TODO : tmp ?
-  bool isLoggedIn = false;
-
   @override
-  Widget build(BuildContext parecontext) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('My sport map')),
-        body:
-            BlocProvider(create: (_) => ClientCubit(), child: const MainPage()),
-      ),
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'My sport map',
+      home: HomePage(),
     );
   }
 }

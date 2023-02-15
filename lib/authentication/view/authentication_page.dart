@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_sport_map/Authentication/cubit/client_cubit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,26 +9,6 @@ import 'package:my_sport_map/secret.dart';
 // make a cubit for all the authentication informations ?
 
 // TODO : Add first screen with button to log in
-
-/**
-class AuthenticationData {
-  late Uri responseUrl;
-
-  AuthenticationData(this.responseUrl);
-}
-
-class AuthenticationDataCubit extends Cubit<AuthenticationData> {
-  AuthenticationDataCubit() : super(AuthenticationData(Uri()));
-
-  void setResponseUrl(Uri responseUrl) => emit(AuthenticationData(responseUrl));
-
-  @override
-  void onChange(Change<AuthenticationData> change) {
-    // TODO: implement onChange
-    super.onChange(change);
-    print(change);
-  }
-} */
 
 enum AuthenticationState {
   notAuthenticated,
@@ -146,6 +125,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
             ),
           );
         }
+
       case AuthenticationState.requestAccepted:
         {
           //Future<oauth2.Client> newClient =
@@ -155,21 +135,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 grant.handleAuthorizationResponse(responseUrl.queryParameters);
             client.then((valueClient) {
               print("GOT THE CLIENT !!!");
-              // Save credentials
-              final prefs = SharedPreferences.getInstance();
-              prefs.then((valuePref) {
-                valuePref.setString(
-                    "credentials", valueClient.credentials.toJson());
-                // TODO use watch ? Or read ? or something else ???
-                context
-                    .watch<ClientCubit>()
-                    .setStatus(ClientStatus.authenticated);
-                //setState(() {
-                //  // TODO : get access to gotTheClient...
-                //  //gotTheClient = true;
-                //  widget.setClientReady();
-                //});
-              });
+              context.read<ClientCubit>().setClient(valueClient);
               setState(() {
                 authState = AuthenticationState.clientReady;
               });
@@ -192,6 +158,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
             ),
           );
         }
+
       case AuthenticationState.clientReady:
         {
           return Scaffold(
@@ -203,6 +170,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
             ),
           );
         }
+
       case AuthenticationState.requestCanceled:
         {
           return Scaffold(
