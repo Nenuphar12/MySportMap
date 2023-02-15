@@ -34,8 +34,14 @@ class _TestConnectionState extends State<TestConnection> {
               );
             },
             child: const Text('Test : get Athlete data')),
-        SingleChildScrollView(
-          child: Text(resultValue),
+        SizedBox(
+          height: 200,
+          child: SingleChildScrollView(
+            //child: SizedBox(
+            //height: 200,
+            child: Text(resultValue),
+            //),
+          ),
         ),
       ],
     );

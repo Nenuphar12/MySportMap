@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_sport_map/authentication/cubit/client_cubit.dart';
 import 'package:my_sport_map/home/view/home_page.dart';
 import 'my_sport_map_observer.dart';
 
 // TODO : splash screen (during loading of client ?)
 
 void main() {
-  Bloc.observer = MySportMapObserver();
+  Bloc.observer = const MySportMapObserver();
   runApp(const MySportMapApp());
 }
 

@@ -10,7 +10,7 @@ part 'client_state.dart';
 /// {@endemplate}
 class ClientCubit extends Cubit<ClientState> {
   /// {@macro client_cubit}
-  ClientCubit() : super(ClientState());
+  ClientCubit() : super(const ClientState());
 
   /// Initialize or update the [client].
   ///
@@ -20,9 +20,6 @@ class ClientCubit extends Cubit<ClientState> {
   void setClient(oauth2.Client newClient) {
     print('[call] setClient()');
     emit(ClientState(client: newClient, status: ClientStatus.ready));
-    //state.client = newClient;
-    //state.status = ClientStatus.ready;
-    //emit(state);
 
     // TODO : good place for that ?
     // Save credentials into shared preferences
@@ -36,7 +33,5 @@ class ClientCubit extends Cubit<ClientState> {
   void setStatus(ClientStatus newStatus) {
     print('[call] setStatus()');
     emit(ClientState(client: state.client, status: newStatus));
-    //state.status = newStatus;
-    //emit(state);
   }
 }

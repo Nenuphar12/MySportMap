@@ -8,7 +8,7 @@ enum ClientStatus {
 
 /// The state of the client used to access Strava's API.
 class ClientState extends Equatable {
-  ClientState({this.status = ClientStatus.appStarting, this.client});
+  const ClientState({this.status = ClientStatus.appStarting, this.client});
 
   /// The status of the [client].
   final ClientStatus status;
