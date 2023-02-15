@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_sport_map/Authentication/cubit/client_cubit.dart';
+import 'package:my_sport_map/authentication/cubit/client_cubit.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -134,7 +134,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
             client =
                 grant.handleAuthorizationResponse(responseUrl.queryParameters);
             client.then((valueClient) {
-              print("GOT THE CLIENT !!!");
+              print("GOT THE CLIENT !!! (1)");
               context.read<ClientCubit>().setClient(valueClient);
               setState(() {
                 authState = AuthenticationState.clientReady;

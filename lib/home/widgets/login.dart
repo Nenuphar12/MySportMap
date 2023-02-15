@@ -1,11 +1,21 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter/material.dart';
+import 'package:my_sport_map/authentication/cubit/client_cubit.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
 
-  void _testDeauth() {
+  void _testDeauth(BuildContext context) {
     // TODO: implement testDeauth
-    print("[call] testDeauth()");
+    print("[call] testDeauth() - start");
+    // TEST
+    print(context.read<ClientCubit>().state);
+    // Revoque the client
+    context.read<ClientCubit>().setStatus(ClientStatus.needAuthentication);
+    // TEST
+    print(context.read<ClientCubit>().state);
+    print("[call] testDeauth() - end");
   }
 
   @override
@@ -29,7 +39,7 @@ class Login extends StatelessWidget {
                 child: const Text("Login With Strava"),
               ),
               ElevatedButton(
-                onPressed: _testDeauth,
+                onPressed: () => _testDeauth(context),
                 child: const Text("De Authorize"),
               )
             ],

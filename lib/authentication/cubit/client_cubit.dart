@@ -18,9 +18,12 @@ class ClientCubit extends Cubit<ClientState> {
   /// [client.credentials] are saved into the shared preferences.
   /// The new [state] is emited.
   void setClient(oauth2.Client newClient) {
-    state.client = newClient;
-    state.status = ClientStatus.ready;
-    emit(state);
+    print('[call] setClient()');
+    emit(ClientState(client: newClient, status: ClientStatus.ready));
+    //state.client = newClient;
+    //state.status = ClientStatus.ready;
+    //emit(state);
+
     // TODO : good place for that ?
     // Save credentials into shared preferences
     final prefs = SharedPreferences.getInstance();
@@ -31,7 +34,9 @@ class ClientCubit extends Cubit<ClientState> {
 
   /// Set the [status] of the current state.
   void setStatus(ClientStatus newStatus) {
-    state.status = newStatus;
-    emit(state);
+    print('[call] setStatus()');
+    emit(ClientState(client: state.client, status: newStatus));
+    //state.status = newStatus;
+    //emit(state);
   }
 }

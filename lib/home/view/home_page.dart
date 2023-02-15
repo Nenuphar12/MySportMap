@@ -42,14 +42,8 @@ class HomeView extends StatelessWidget {
 
         // The client is ready and functional
         case ClientStatus.ready:
-          print("WE GOT THE CLIENT");
+          print('WE GOT THE CLIENT (2)');
           // TODO : save client state after "changes" ?
-          // TODO : create button to test the api !
-          //var test = state.client?.read(Uri.parse("${apiEndpoint}athlete"));
-          //test?.then(
-          //  (value) => print(value),
-          //);
-          //print(state.client?.read(Uri.parse("${apiEndpoint}athlete")));
           // TODO: Handle this case.
           break;
 
@@ -113,6 +107,7 @@ class HomeView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Login(),
+              const Center(child: TestConnection()),
               ApiGroups(
                 isLoggedIn: isLoggedIn,
               )
