@@ -61,7 +61,13 @@ extension SportTypeHelper on SportType {
         orElse: () => SportType.Undefined);
   }
 
+  // TODO : useless (?)
   String stringValue() {
     return toString().split('.').last;
   }
+
+  SportType fromJson(Map<String, dynamic> json) => getType(json['sport_type']);
+
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{'sport_type': toString().split('.').last};
 }

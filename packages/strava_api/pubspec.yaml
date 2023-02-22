@@ -1,5 +1,5 @@
 name: strava_api
-description: A new Flutter package project.
+description: A Dart API Client for the Strava API.
 version: 0.0.1
 homepage:
 
@@ -10,11 +10,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  google_maps_flutter: ^2.2.3
+  json_annotation: ^4.8.0
+  oauth2: ^2.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  build_runner: ^2.3.3
+  json_serializable: ^6.6.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

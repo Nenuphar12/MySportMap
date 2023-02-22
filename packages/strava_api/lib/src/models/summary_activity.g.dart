@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'detailed_activity.dart';
+part of 'summary_activity.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-DetailedActivity _$DetailedActivityFromJson(Map<String, dynamic> json) =>
-    DetailedActivity(
+SummaryActivity _$SummaryActivityFromJson(Map<String, dynamic> json) =>
+    SummaryActivity(
       id: json['id'] as int,
       externalId: json['external_id'] as String,
       uploadId: json['upload_id'] as String?,
@@ -23,8 +23,8 @@ DetailedActivity _$DetailedActivityFromJson(Map<String, dynamic> json) =>
       startDate: DateTime.parse(json['start_date'] as String),
       startDateLocal: DateTime.parse(json['start_date_local'] as String),
       timezone: json['timezone'] as String?,
-      startLatLng: LatLng.fromJson(json['start_lat_lng']),
-      endLatLng: LatLng.fromJson(json['end_lat_lng']),
+      startLatLng: json['start_lat_lng'],
+      endLatLng: json['end_lat_lng'],
       achievementCount: json['achievement_count'] as int,
       kudosCount: json['kudos_count'] as int,
       commentCount: json['comment_count'] as int,
@@ -41,14 +41,9 @@ DetailedActivity _$DetailedActivityFromJson(Map<String, dynamic> json) =>
       averageSpeed: (json['average_speed'] as num).toDouble(),
       maxSpeed: (json['max_speed'] as num).toDouble(),
       gearId: json['gear_id'] as String,
-      description: json['description'] as String,
-      photos: PhotosSummary.fromJson(json['photos'] as Map<String, dynamic>),
-      calories: (json['calories'] as num).toDouble(),
-      deviceName: json['device_name'] as String,
-      embedToken: json['embed_token'] as String,
     );
 
-Map<String, dynamic> _$DetailedActivityToJson(DetailedActivity instance) =>
+Map<String, dynamic> _$SummaryActivityToJson(SummaryActivity instance) =>
     <String, dynamic>{
       'id': instance.id,
       'external_id': instance.externalId,
@@ -83,11 +78,6 @@ Map<String, dynamic> _$DetailedActivityToJson(DetailedActivity instance) =>
       'average_speed': instance.averageSpeed,
       'max_speed': instance.maxSpeed,
       'gear_id': instance.gearId,
-      'description': instance.description,
-      'photos': instance.photos.toJson(),
-      'calories': instance.calories,
-      'device_name': instance.deviceName,
-      'embed_token': instance.embedToken,
     };
 
 const _$SportTypeEnumMap = {
