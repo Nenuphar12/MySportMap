@@ -7,7 +7,7 @@ part of 'small_models.dart';
 // **************************************************************************
 
 MetaAthlete _$MetaAthleteFromJson(Map<String, dynamic> json) => MetaAthlete(
-      id: json['id'] as int,
+      id: json['id'] as int?,
     );
 
 Map<String, dynamic> _$MetaAthleteToJson(MetaAthlete instance) =>
@@ -16,8 +16,8 @@ Map<String, dynamic> _$MetaAthleteToJson(MetaAthlete instance) =>
     };
 
 PolylineMap _$PolylineMapFromJson(Map<String, dynamic> json) => PolylineMap(
-      id: json['id'] as int,
-      polyline: json['polyline'] as String,
+      id: json['id'] as String?,
+      polyline: json['polyline'] as String?,
       summaryPolyline: json['summary_polyline'] as String?,
     );
 
@@ -30,24 +30,26 @@ Map<String, dynamic> _$PolylineMapToJson(PolylineMap instance) =>
 
 PhotosSummary _$PhotosSummaryFromJson(Map<String, dynamic> json) =>
     PhotosSummary(
-      count: json['count'] as int,
-      primary: PhotosSummary_primary.fromJson(
-          json['primary'] as Map<String, dynamic>),
+      count: json['count'] as int?,
+      primary: json['primary'] == null
+          ? null
+          : PhotosSummary_primary.fromJson(
+              json['primary'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$PhotosSummaryToJson(PhotosSummary instance) =>
     <String, dynamic>{
       'count': instance.count,
-      'primary': instance.primary.toJson(),
+      'primary': instance.primary?.toJson(),
     };
 
 PhotosSummary_primary _$PhotosSummary_primaryFromJson(
         Map<String, dynamic> json) =>
     PhotosSummary_primary(
-      id: json['id'] as int,
-      source: json['source'] as int,
-      uniqueId: json['unique_id'] as String,
-      urls: json['urls'] as String,
+      id: json['id'] as int?,
+      source: json['source'] as int?,
+      uniqueId: json['unique_id'] as String?,
+      urls: json['urls'] as String?,
     );
 
 Map<String, dynamic> _$PhotosSummary_primaryToJson(

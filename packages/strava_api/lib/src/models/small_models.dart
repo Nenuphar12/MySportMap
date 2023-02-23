@@ -4,9 +4,9 @@ part 'small_models.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class MetaAthlete {
-  const MetaAthlete({required this.id});
+  const MetaAthlete({this.id});
 
-  final int id;
+  final int? id;
 
   factory MetaAthlete.fromJson(Map<String, dynamic> json) =>
       _$MetaAthleteFromJson(json);
@@ -17,13 +17,13 @@ class MetaAthlete {
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class PolylineMap {
   const PolylineMap({
-    required this.id,
-    required this.polyline,
+    this.id,
+    this.polyline,
     this.summaryPolyline,
   });
 
-  final int id;
-  final String polyline;
+  final String? id;
+  final String? polyline;
   final String? summaryPolyline;
 
   factory PolylineMap.fromJson(Map<String, dynamic> json) =>
@@ -35,12 +35,12 @@ class PolylineMap {
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class PhotosSummary {
   const PhotosSummary({
-    required this.count,
-    required this.primary,
+    this.count,
+    this.primary,
   });
 
-  final int count;
-  final PhotosSummary_primary primary;
+  final int? count;
+  final PhotosSummary_primary? primary;
 
   factory PhotosSummary.fromJson(Map<String, dynamic> json) =>
       _$PhotosSummaryFromJson(json);
@@ -51,16 +51,16 @@ class PhotosSummary {
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class PhotosSummary_primary {
   const PhotosSummary_primary({
-    required this.id,
-    required this.source,
-    required this.uniqueId,
-    required this.urls,
+    this.id,
+    this.source,
+    this.uniqueId,
+    this.urls,
   });
 
-  final int id;
-  final int source;
-  final String uniqueId;
-  final String urls;
+  final int? id;
+  final int? source;
+  final String? uniqueId;
+  final String? urls;
 
   factory PhotosSummary_primary.fromJson(Map<String, dynamic> json) =>
       _$PhotosSummary_primaryFromJson(json);
