@@ -19,7 +19,7 @@ abstract class ActivitiesApi {
   ///
   /// If no `activity` with the given id exists, an [ActivityNotFoundException]
   /// error is thrown.
-  Future<void> deleteActivity(BigInt id);
+  Future<void> deleteActivity(int id);
 }
 
 /// Error thrown when an [Activity] with a given id is not found.

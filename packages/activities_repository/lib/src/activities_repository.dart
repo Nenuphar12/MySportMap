@@ -24,5 +24,5 @@ class ActivitiesRepository {
   ///
   /// If no `activity` with the given id exists, a [ActivityNotFoundException]
   /// error is thrown.
-  Future<void> deleteActivity(BigInt id) => _activitiesApi.deleteActivity(id);
+  Future<void> deleteActivity(int id) => _activitiesApi.deleteActivity(id);
 }

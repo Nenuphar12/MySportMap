@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -46,7 +47,7 @@ class Activity extends Equatable {
   //@JsonKey(defaultValue: false)
   //@JsonKey(required: true)
   //@JsonKey(ignore: true)
-  final BigInt? id;
+  final int? id;
   final MetaAthlete? athlete;
   final String? name;
   final double? distance;

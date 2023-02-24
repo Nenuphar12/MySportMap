@@ -19,9 +19,11 @@ void main() {
               "type": "Ride",
               "sport_type": "MountainBikeRide",
               "workout_type": null,
-              "id": BigInt.parse('154504250376823'),
+              "id": 154504250376823,
               "external_id": "garmin_push_12345678987654321",
-              "upload_id": BigInt.parse('987654321234567891234'),
+              "upload_id": 7654321234567891234,
+              //"upload_id": 987654321234567891234,
+              //"upload_id": BigInt.parse('987654321234567891234'),
               "start_date": "2018-05-02T12:15:09Z",
               "start_date_local": "2018-05-02T05:15:09Z",
               "timezone": "(GMT-08:00) America/Los_Angeles",
@@ -75,11 +77,11 @@ void main() {
                 .having((p0) => p0.sportType, 'sport_type',
                     SportType.MountainBikeRide)
                 .having((p0) => p0.workoutType, 'workout_type', null)
-                .having((p0) => p0.id, 'id', BigInt.parse('154504250376823'))
+                .having((p0) => p0.id, 'id', 154504250376823)
                 .having((p0) => p0.externalId, 'external_id',
                     'garmin_push_12345678987654321')
-                .having((p0) => p0.uploadId, 'upload_id',
-                    BigInt.parse('987654321234567891234'))
+                .having((p0) => p0.uploadId, 'upload_id', 7654321234567891234)
+                //BigInt.parse('987654321234567891234'))
                 .having(
                     (p0) => p0.startDate, 'start_date', '2018-05-02T12:15:09Z')
                 .having((p0) => p0.startDateLocal, 'start_date_local',

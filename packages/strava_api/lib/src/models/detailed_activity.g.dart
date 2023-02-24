@@ -8,11 +8,9 @@ part of 'detailed_activity.dart';
 
 DetailedActivity _$DetailedActivityFromJson(Map<String, dynamic> json) =>
     DetailedActivity(
-      id: json['id'] == null ? null : BigInt.parse(json['id'] as String),
+      id: json['id'] as int?,
       externalId: json['external_id'] as String?,
-      uploadId: json['upload_id'] == null
-          ? null
-          : BigInt.parse(json['upload_id'] as String),
+      uploadId: json['upload_id'] as int?,
       athlete: json['athlete'] == null
           ? null
           : MetaAthlete.fromJson(json['athlete'] as Map<String, dynamic>),
@@ -62,9 +60,9 @@ DetailedActivity _$DetailedActivityFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$DetailedActivityToJson(DetailedActivity instance) =>
     <String, dynamic>{
-      'id': instance.id?.toString(),
+      'id': instance.id,
       'external_id': instance.externalId,
-      'upload_id': instance.uploadId?.toString(),
+      'upload_id': instance.uploadId,
       'athlete': instance.athlete?.toJson(),
       'name': instance.name,
       'distance': instance.distance,

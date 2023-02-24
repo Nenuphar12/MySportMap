@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:strava_api/strava_api.dart';
 import 'package:strava_repository/strava_repository.dart';
 
-class ActivitiesRepository {
-  ActivitiesRepository(this.stravaApiClient);
+class StravaRepository {
+  StravaRepository(this.stravaApiClient);
   //: _stravaApiClient = stravaApiClient ?? StravaApiClient();
 
   final StravaApiClient stravaApiClient;
@@ -50,7 +50,7 @@ class ActivitiesRepository {
   }
 
   /// Fetch a specific [Activity].
-  Future<Activity> getActivity(BigInt id) async {
+  Future<Activity> getActivity(int id) async {
     // TODO
     final detailedActivity = await stravaApiClient.getActivityById(id);
     return Activity(

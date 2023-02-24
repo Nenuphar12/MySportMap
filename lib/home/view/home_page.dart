@@ -39,7 +39,6 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ClientCubit, ClientState>(builder: (context, state) {
       switch (state.status) {
-
         // The client is ready and functional
         case ClientStatus.ready:
           print('WE GOT THE CLIENT (2)');
@@ -76,7 +75,6 @@ class HomeView extends StatelessWidget {
               context.read<ClientCubit>().setClient(
                     newClient,
                   ); // TODO: need a specific status or always "ready" ?
-
             }
           });
           break;
@@ -108,9 +106,10 @@ class HomeView extends StatelessWidget {
             children: [
               const Login(),
               const Center(child: TestConnection()),
-              ApiGroups(
-                isLoggedIn: isLoggedIn,
-              )
+              MyMap(),
+              //ApiGroups(
+              //  isLoggedIn: isLoggedIn,
+              //)
             ],
           ),
         ),

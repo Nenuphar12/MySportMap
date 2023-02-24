@@ -59,9 +59,9 @@ class SummaryActivity {
   //@JsonKey(defaultValue: false)
   //@JsonKey(required: true)
   //@JsonKey(ignore: true)
-  final BigInt? id;
+  final int? id;
   final String? externalId;
-  final BigInt? uploadId;
+  final int? uploadId;
   final MetaAthlete? athlete;
   final String? name;
   final double? distance;

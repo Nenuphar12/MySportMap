@@ -74,7 +74,7 @@ class StravaApiClient {
 
   // TODO : implement [getActivityById]
   /// Returns a [DetailedActivity] `/v3/activities/{id}`.
-  Future<DetailedActivity> getActivityById(BigInt id,
+  Future<DetailedActivity> getActivityById(int id,
       {bool includeAllEfforts = true}) async {
     var completer = Completer<DetailedActivity>();
     Uri endPoint = Uri.parse('$_baseUrlStrava/v3/activities/$id');

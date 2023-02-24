@@ -19,7 +19,10 @@ class ClientCubit extends Cubit<ClientState> {
   /// The new [state] is emited.
   void setClient(oauth2.Client newClient) {
     print('[call] setClient()');
-    emit(ClientState(client: newClient, status: ClientStatus.ready));
+    emit(ClientState(
+      client: newClient,
+      status: ClientStatus.ready,
+    ));
 
     // TODO : good place for that ?
     // Save credentials into shared preferences

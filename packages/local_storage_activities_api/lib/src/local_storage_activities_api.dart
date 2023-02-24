@@ -63,7 +63,7 @@ class LocalStorageActivitiesApi extends ActivitiesApi {
   }
 
   @override
-  Future<void> deleteActivity(BigInt id) async {
+  Future<void> deleteActivity(int id) async {
     final activities = [..._activityStreamController.value];
     final activityIndex = activities.indexWhere((t) => t.id == id);
     if (activityIndex == -1) {
