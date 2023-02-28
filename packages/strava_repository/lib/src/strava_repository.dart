@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:strava_api/strava_api.dart';
 import 'package:strava_repository/strava_repository.dart';
 

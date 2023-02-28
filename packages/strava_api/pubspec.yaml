@@ -10,7 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_auth: ^0.5.0
   google_maps_flutter: ^2.2.3
+  http: ^0.13.5
   json_annotation: ^4.8.0
   mocktail: ^0.3.0
   oauth2: ^2.0.1

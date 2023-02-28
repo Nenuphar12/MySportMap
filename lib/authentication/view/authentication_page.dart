@@ -42,7 +42,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
       Uri.parse("https://www.strava.com/oauth/mobile/authorize");
   final tokenEndpoint = Uri.parse('https://www.strava.com/oauth/token');
   // TODO: change the redirect url
-  final redirectUrl = Uri.parse('http://localhost');
+  final redirectUrl = Uri.parse('https://localhost');
 
   // NOTE: looks difficult to open it in strava app and then go back to my app
   // Could be doable with deep links (for later)

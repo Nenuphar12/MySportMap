@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
+import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 
 import 'package:strava_api/strava_api.dart';
@@ -29,6 +31,44 @@ class StravaApiClient {
 
   // TODO : pass [apiClient] to a private variable => _apiClient
   final oauth2.Client apiClient;
+
+  final authorizationEndpoint =
+      Uri.parse("https://www.strava.com/oauth/mobile/authorize");
+  final tokenEndpoint = Uri.parse('https://www.strava.com/oauth/token');
+  // TODO: change the redirect url
+  final redirectUrl = Uri.parse('https://localhost');
+
+  /// Authenticate and grant permissions to access Strava.
+  Future<void> authenticate() async {
+    final authorizationCodeGrantUrl =
+        Uri.https("www.strava.com", "/oauth/mobile/authorize", {
+      'response_type': 'code',
+      'client_id': 'tempo',
+      'secret': 'tempo',
+      'redirect_uri': 'https://localhost',
+      'scope': 'read_all,activity:read_all,profile:read_all',
+    });
+
+    // TODO : manage errors
+
+    final result = await FlutterWebAuth.authenticate(
+        url: authorizationCodeGrantUrl.toString(),
+        callbackUrlScheme: 'https://localhost');
+
+    final code = Uri.parse(result).queryParameters['code'];
+
+    final response =
+        await http.post(Uri.parse('https://www.strava.com/oauth/token'), body: {
+      'client_id': 'tempo',
+      'redirect_uri': 'https://localhost', // TODO : needed ???
+      'grant_type': 'authorization_code',
+      'code': code,
+    });
+
+    final accessToken = jsonDecode(response.body)['access_token'] as String;
+
+    // TODO
+  }
 
   /// Returns an array of [SummaryActivity] `/v3/athlete/activities`.
   ///

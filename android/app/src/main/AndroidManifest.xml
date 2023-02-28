@@ -5,6 +5,7 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
    
+        <!-- TODO : My API key ? Remove it from prod-->
         <!-- My google maps API key -->
         <meta-data android:name="com.google.android.geo.API_KEY"
                 android:value="AIzaSyBwcsvF4kgfALcUVkV8o0UjAM0An6YhL5Y" />
@@ -35,5 +36,16 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        
+        <activity android:name="com.linusu.flutter_web_auth.CallbackActivity" android:exported="true">
+      <intent-filter android:label="flutter_web_auth">
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <!-- My callback url scheme here -->
+        <data android:scheme="https://localhost" />
+      </intent-filter>
+    </activity>
+
     </application>
 </manifest>
