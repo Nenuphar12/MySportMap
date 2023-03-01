@@ -8,6 +8,8 @@
 
 ## Strava_flutter improvements !
 
+- Add documentation
+
 ### Url callbacks
 
 Difference between callback and redirect !
@@ -15,3 +17,12 @@ Difference between callback and redirect !
 ### In manifest !
 
 New activity ! Like in Flutter_web_auth !
+
+### Random
+
+- If you do a request without token, even deAuth, an error will be thrown !
+- Same, if you try a request without token => error
+
+Add this in the doc or fix it so it does not append. Or more explicit error ?
+
+- What if I try to connect two times in a row ?

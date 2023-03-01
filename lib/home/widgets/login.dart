@@ -15,7 +15,12 @@ class Login extends StatelessWidget {
     // TEST
     print(context.read<ClientCubit>().state);
     // Revoque the client
-    context.read<ClientCubit>().setStatus(ClientStatus.needAuthentication);
+    //context.read<ClientCubit>().setStatus(ClientStatus.needAuthentication);
+    // TODO : problem when done 2 times in a row
+    // TODO : tester request after deAuthorize
+    context.read<StravaRepository>().deAuthorize().then((value) {
+      print('[_testDeauth] Deauthorization successful (?)');
+    }); // TODO : catch error ?
     // TEST
     print(context.read<ClientCubit>().state);
     print("[call] testDeauth() - end");

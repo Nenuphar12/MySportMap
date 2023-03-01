@@ -91,4 +91,8 @@ class StravaRepository {
     );
     print('[strava_repository] Authenticated ! (?)');
   }
+
+  Future<void> deAuthorize() async {
+    await stravaClient.authentication.deAuthorize();
+  }
 }

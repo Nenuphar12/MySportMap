@@ -807,10 +807,9 @@ packages:
   strava_client:
     dependency: transitive
     description:
-      name: strava_client
-      sha256: d27c8b2f1df3e59021e2b6daf078252624dd1582bc01272937c4e435a99febff
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/strava_flutter"
+      relative: true
+    source: path
     version: "2.0.2"
   strava_repository:
     dependency: "direct main"

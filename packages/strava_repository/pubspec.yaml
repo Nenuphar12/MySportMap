@@ -15,7 +15,9 @@ dependencies:
   latlng: ^0.2.0
   strava_api:
     path: ../strava_api
-  strava_client: ^2.0.2
+  #strava_client: ^2.0.2
+  strava_client:
+    path: ../strava_flutter
 
 dev_dependencies:
   #flutter_test:

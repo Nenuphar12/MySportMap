@@ -38,6 +38,8 @@ class _TestConnectionState extends State<TestConnection> {
                   .then((value) {
                 print(value);
                 print(value[0]);
+                print(value[2].map);
+                print(value[2].map?.summaryPolyline);
                 setState(() {
                   resultValue = value[0].toString();
                 });
