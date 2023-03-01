@@ -47,5 +47,26 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- For Strava Flutter -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<!--<string>stravaflutter</string>-->
+			<string>com.example.mysportmap</string>
+			<!--<string>my_sport_map</string>-->
+			<!--<string>mysportmap</string>-->
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<!--<string>stravaflutter</string>-->
+				<string>com.example.mysportmap</string>
+				<!--<string>my_sport_map</string>-->
+				<!--<string>mysportmap</string>-->
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

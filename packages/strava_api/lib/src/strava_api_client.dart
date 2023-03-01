@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:flutter_web_auth/flutter_web_auth.dart';
+//import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 
 import 'package:strava_api/strava_api.dart';
@@ -51,9 +51,12 @@ class StravaApiClient {
 
     // TODO : manage errors
 
+    /*
     final result = await FlutterWebAuth.authenticate(
         url: authorizationCodeGrantUrl.toString(),
         callbackUrlScheme: 'https://localhost');
+    */
+    const result = 'hop';
 
     final code = Uri.parse(result).queryParameters['code'];
 

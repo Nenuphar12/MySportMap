@@ -32,6 +32,17 @@ class _TestConnectionState extends State<TestConnection> {
               // Get some activities of the athlete
               //var test = client?.read(
               //    Uri.parse("${apiEndpoint}athlete/activities?per_page=5"));
+              var test = context
+                  .read<StravaRepository>()
+                  .listActivities()
+                  .then((value) {
+                print(value);
+                print(value[0]);
+                setState(() {
+                  resultValue = value[0].toString();
+                });
+              });
+              /*
               var test = client
                   ?.read(Uri.parse("${apiEndpoint}activities/8375526289"));
               test?.then(
@@ -59,6 +70,7 @@ class _TestConnectionState extends State<TestConnection> {
                   });
                 },
               );
+                */
             },
             child: const Text('Test : get Athlete data')),
         SizedBox(

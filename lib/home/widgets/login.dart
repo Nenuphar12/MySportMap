@@ -1,7 +1,10 @@
+//import 'dart:js';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter/material.dart';
 import 'package:my_sport_map/authentication/cubit/client_cubit.dart';
+import 'package:strava_repository/strava_repository.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -28,14 +31,16 @@ class Login extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
-                //onPressed: testAuthentication,
-                onPressed: () {
-                  print('Change of page...');
-                  //Navigator.push(
-                  //    context,
-                  //    MaterialPageRoute(
-                  //        builder: (context) => AuthenticationPage()));
-                },
+                onPressed: () => context
+                    .read<StravaRepository>()
+                    .authenticate(), //testAuthentication(context),
+                //onPressed: () {
+                //  print('Change of page...');
+                //Navigator.push(
+                //    context,
+                //    MaterialPageRoute(
+                //        builder: (context) => AuthenticationPage()));
+                //},
                 child: const Text("Login With Strava"),
               ),
               ElevatedButton(
@@ -68,5 +73,11 @@ class Login extends StatelessWidget {
         ],
       );
     });
+  }
+
+  void testAuthentication(BuildContext context) {
+    // TODO which one ?
+    //context.read<StravaRepository>();
+    RepositoryProvider.of<StravaRepository>(context).authenticate();
   }
 }

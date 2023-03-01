@@ -31,9 +31,7 @@ Activity _$ActivityFromJson(Map<String, dynamic> json) => Activity(
       achievementCount: json['achievement_count'] as int?,
       photoCount: json['photo_count'] as int?,
       totalPhotoCount: json['total_photo_count'] as int?,
-      map: json['map'] == null
-          ? null
-          : PolylineMap.fromJson(json['map'] as Map<String, dynamic>),
+      map: json['map'] == null ? null : PolyLineMap.fromJson(json['map']),
       workoutType: json['workout_type'] as int?,
       averageSpeed: (json['average_speed'] as num?)?.toDouble(),
       maxSpeed: (json['max_speed'] as num?)?.toDouble(),
