@@ -57,23 +57,23 @@ class Login extends StatelessWidget {
           const SizedBox(
             height: 8,
           ),
-          TextField(
-            minLines: 1,
-            maxLines: 3,
-            //controller: _textEditingController,
-            decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                label: const Text("Access Token"),
-                suffixIcon: TextButton(
-                  child: const Text("Copy"),
-                  onPressed: () {
-                    // TODO ?
-                    //FlutterClipboard.copy(_textEditingController.text).then(
-                    //    ((value) => ScaffoldMessenger.of(context).showSnackBar(
-                    //        const SnackBar(content: Text("Copied !")))));
-                  },
-                )),
-          ),
+          // TextField(
+          //   minLines: 1,
+          //   maxLines: 3,
+          //   //controller: _textEditingController,
+          //   decoration: InputDecoration(
+          //       border: const OutlineInputBorder(),
+          //       label: const Text("Access Token"),
+          //       suffixIcon: TextButton(
+          //         child: const Text("Copy"),
+          //         onPressed: () {
+          //           // TODO ?
+          //           //FlutterClipboard.copy(_textEditingController.text).then(
+          //           //    ((value) => ScaffoldMessenger.of(context).showSnackBar(
+          //           //        const SnackBar(content: Text("Copied !")))));
+          //         },
+          //       )),
+          // ),
           const Divider()
         ],
       );

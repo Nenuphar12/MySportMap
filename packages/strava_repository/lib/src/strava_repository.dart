@@ -2,6 +2,9 @@
 import 'package:strava_client/domain/model/model_authentication_scopes.dart';
 import 'package:strava_repository/strava_repository.dart';
 import 'package:strava_client/strava_client.dart';
+// TODO : improve strava_flutter to not have to do that ?
+import 'package:strava_client/common/local_storage.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class StravaRepository {
   StravaRepository({required secret, required clientId}) {
@@ -19,12 +22,34 @@ class StravaRepository {
     var page = 1;
     var notDone = true;
     while (notDone) {
-      var someActivities = await listActivities(page: page, perPage: 50);
+      var someActivities = await listActivities(page: page, perPage: 100);
       allActivities += someActivities;
       page++;
       if (someActivities.isEmpty) notDone = false;
     }
     return allActivities;
+  }
+
+  // TODO : summary polylines or just polylines ? => apparently the polylines are empty !
+  // TODO : implementation can be improved
+  /// Returns a set of [Polyline] from the summaryPolylines.
+  Future<Set<Polyline>> getAllPolylines() async {
+    var allActivities = await listAllActivities();
+    var allMaps = allActivities.map((a) => a.map).toList();
+    Set<Polyline> allPolylines = allMaps
+        .map((m) {
+          // TODO : manage only when id and summaryPolyline not null ?
+          if (m?.id != null || m?.summaryPolyline != null) {
+            return Polyline(
+              polylineId: PolylineId(m?.id ?? 'no_id'),
+              points: decodeEncodedPolyline(m?.summaryPolyline ?? ''),
+              width: 2,
+            );
+          }
+        })
+        .whereType<Polyline>()
+        .toSet();
+    return allPolylines;
   }
 
   /// List [Activity] of the user.
@@ -63,6 +88,15 @@ class StravaRepository {
         name: detailedActivity.name,
         distance: detailedActivity.distance,
         map: detailedActivity.map);
+  }
+
+  // TODO : improve this implementation and maybe integrate it in the package
+  // (This should directly load the token in the client (idealy))
+  Future<bool> isAuthenticated() async {
+    var token =
+        await LocalStorageManager.getToken(applicationName: 'mysportmap');
+    // return true if a token is stored
+    return (token != null);
   }
 
   Future<void> authenticate() async {

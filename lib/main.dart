@@ -7,7 +7,9 @@ import 'my_sport_map_observer.dart';
 
 // TODO : splash screen (during loading of client ?)
 
-// TODO : token type bearer ??? (ok with strava api ?)
+// TODO : token type bearer ??? (ok with strava api ?) looks good
+
+// TODO : catch errors !!!
 
 void main() {
   Bloc.observer = const MySportMapObserver();

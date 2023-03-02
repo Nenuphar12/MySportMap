@@ -76,7 +76,7 @@ class _TestConnectionState extends State<TestConnection> {
             },
             child: const Text('Test : get Athlete data')),
         SizedBox(
-          height: 200,
+          height: 80,
           child: SingleChildScrollView(
             //child: SizedBox(
             //height: 200,

@@ -20,9 +20,19 @@ New activity ! Like in Flutter_web_auth !
 
 ### Random
 
+TODO : instead of changing strava_flutter, catch errors ???
+
 - If you do a request without token, even deAuth, an error will be thrown !
 - Same, if you try a request without token => error
 
 Add this in the doc or fix it so it does not append. Or more explicit error ?
 
 - What if I try to connect two times in a row ?
+
+- Use encrypted shared preferences for storing api token (?)
+
+- not load from shared pref every time ? (we don't care ?)
+
+## For development :
+
+- https://stackoverflow.com/questions/58679233/how-to-change-company-domain-name-in-flutter
