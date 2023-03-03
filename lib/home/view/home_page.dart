@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_sport_map/authentication/cubit/client_cubit.dart';
 import 'package:strava_repository/strava_repository.dart';
 
-import '../widgets/widgets.dart';
+import 'package:my_sport_map/home/widgets/widgets.dart';
 
 // TODO : restructruc doc + class (and files ?)
 

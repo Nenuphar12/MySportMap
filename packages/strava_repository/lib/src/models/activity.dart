@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-//import 'package:latlng/latlng.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:strava_client/domain/model/model_detailed_activity.dart'
     show PolyLineMap;
 
-import 'package:strava_api/strava_api.dart';
+import 'package:strava_repository/src/models/sport_types.dart';
+import 'package:strava_repository/src/models/small_models.dart';
 
 part 'activity.g.dart';
 

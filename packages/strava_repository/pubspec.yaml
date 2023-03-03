@@ -13,11 +13,8 @@ dependencies:
   equatable: ^2.0.5
   json_annotation: ^4.8.0
   latlng: ^0.2.0
-  strava_api:
-    path: ../strava_api
-  #strava_client: ^2.0.2
-  strava_client:
-    path: ../strava_flutter
+  strava_client: ^2.0.2
+  google_maps_flutter: ^2.2.5
 
 dev_dependencies:
   #flutter_test:

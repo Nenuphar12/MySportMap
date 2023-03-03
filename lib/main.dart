@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_sport_map/home/view/home_page.dart';
 import 'package:my_sport_map/secret.dart';
 import 'package:strava_repository/strava_repository.dart';
-import 'my_sport_map_observer.dart';
+import 'package:my_sport_map/my_sport_map_observer.dart';
 
 // TODO : splash screen (during loading of client ?)
 
