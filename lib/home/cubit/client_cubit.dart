@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:my_sport_map/utilities/utilities.dart';
 
 part 'client_state.dart';
 
@@ -11,8 +10,5 @@ class ClientCubit extends Cubit<ClientState> {
   ClientCubit() : super(ClientState.appStarting);
 
   /// Change the state to a newState.
-  void setState(ClientState newState) {
-    logger.v('[$newState]');
-    emit(newState);
-  }
+  void setState(ClientState newState) => emit(newState);
 }

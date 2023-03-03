@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.my_sport_map">
+    package="com.example.mysportmap">
+    <!--package="com.example.my_sport_map">-->
    <application
         android:label="my_sport_map"
         android:name="${applicationName}"
@@ -41,25 +42,10 @@
               <category android:name="android.intent.category.DEFAULT" /> 
               <category android:name="android.intent.category.BROWSABLE" /> 
               <!--<data android:scheme="stravaflutter" android:host="redirect" />-->
-              <!--<data android:scheme="com.example.mysportmap" android:host="redirect" />-->
-              <!--<data android:scheme="my_sport_map" android:host="redirect" />    -->
-              <!--<data android:scheme="com.example.mysportmap" android:host="redirect" />-->
               <!-- TODO : is the host useful ? -->
               <data android:scheme="com.example.mysportmap" android:host="redirect" />
             </intent-filter>
         </activity>
-
-        <!-- For FlutterWebAuth (???) -->
-        <!--
-        <activity android:name="com.linusu.flutter_web_auth.CallbackActivity" android:exported="true">
-          <intent-filter android:label="flutter_web_auth">
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="test" />
-          </intent-filter>
-        </activity>
-        -->
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

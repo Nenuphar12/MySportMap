@@ -57,14 +57,10 @@
 			<key>CFBundleURLName</key>
 			<!--<string>stravaflutter</string>-->
 			<string>com.example.mysportmap</string>
-			<!--<string>my_sport_map</string>-->
-			<!--<string>mysportmap</string>-->
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<!--<string>stravaflutter</string>-->
 				<string>com.example.mysportmap</string>
-				<!--<string>my_sport_map</string>-->
-				<!--<string>mysportmap</string>-->
 			</array>
 		</dict>
 	</array>

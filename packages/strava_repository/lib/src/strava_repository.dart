@@ -94,7 +94,7 @@ class StravaRepository {
   // (This should directly load the token in the client (idealy))
   Future<bool> isAuthenticated() async {
     var token =
-        await LocalStorageManager.getToken(applicationName: 'mysportmap');
+        await LocalStorageManager.getToken(applicationName: 'mySportMap');
     // return true if a token is stored
     return (token != null);
   }
@@ -111,16 +111,7 @@ class StravaRepository {
         AuthenticationScope.profile_read_all
       ],
       redirectUrl: 'com.example.mysportmap://redirect',
-      //redirectUrl: 'com.example.mysportmap://redirect',
-      //redirectUrl: 'com.example.mysportmap',
-      //redirectUrl: 'my_sport_map://auth',
-      //redirectUrl: 'com.example.my_sport_map://auth',
-      //redirectUrl: 'stravaflutter://redirect',
-      //callbackUrlScheme: 'com.example.mysportmap',
       callbackUrlScheme: 'com.example.mysportmap',
-      //callbackUrlScheme: 'com.example.my_sport_map',
-      //callbackUrlScheme: 'stravaflutter',
-      //callbackUrlScheme: 'localhost',
       forceShowingApproval: true, // TEST (not enought...)
     );
     print('[strava_repository] Authenticated ! (?)');

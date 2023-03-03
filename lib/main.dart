@@ -33,13 +33,6 @@ void main() {
 class MySportMapApp extends StatelessWidget {
   /// {@macro my_sport_map_app}
   const MySportMapApp({super.key});
-  /*{
-    stravaRepository =
-        StravaRepository(secret: clientSecret, clientId: clientId);
-  }
-  */
-
-  //late StravaRepository stravaRepository;
 
   @override
   Widget build(BuildContext context) {

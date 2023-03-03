@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_sport_map/authentication/cubit/client_cubit.dart';
+import 'package:my_sport_map/home/cubit/client_cubit.dart';
+import 'package:my_sport_map/utilities/utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
 import 'package:my_sport_map/home/widgets/widgets.dart';
@@ -32,12 +33,14 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ClientCubit, ClientState>(builder: (context, state) {
+      logger.d('Building home_page');
       if (state == ClientState.appStarting) {
         // Check the client when the app is starting
         context
             .read<StravaRepository>()
             .isAuthenticated()
             .then((isAuthenticated) {
+          logger.v('Already Authenticated : $isAuthenticated');
           context.read<ClientCubit>().setState(
               isAuthenticated ? ClientState.ready : ClientState.notAuthorized);
         });
@@ -66,10 +69,16 @@ class HomeView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Login(),
+            children: [
+              // Use of `UniqueKey` because these should be rebuild on every
+              // [ClientBloc] change.
+              Login(
+                key: UniqueKey(),
+              ),
               //const Center(child: TestConnection()),
-              MyMap(),
+              MyMap(
+                key: UniqueKey(),
+              ),
               //ApiGroups(
               //  isLoggedIn: isLoggedIn,
               //)
