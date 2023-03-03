@@ -1,29 +1,33 @@
-//import 'dart:js';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter/material.dart';
 import 'package:my_sport_map/authentication/cubit/client_cubit.dart';
+import 'package:my_sport_map/utilities/utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
 
-  void _testDeauth(BuildContext context) {
-    // TODO: implement testDeauth
-    print("[call] testDeauth() - start");
+  void _login(BuildContext context) {
+    // If authorization is needed login, else disable the button.
+    if (context.read<ClientCubit>().state == ClientState.notAuthorized) {
+      context.read<StravaRepository>().authenticate().then(
+          (value) => context.read<ClientCubit>().setState(ClientState.ready));
+    }
+  }
+
+  void _deAuth(BuildContext context) {
     // TEST
-    print(context.read<ClientCubit>().state);
-    // Revoque the client
-    //context.read<ClientCubit>().setStatus(ClientStatus.needAuthentication);
-    // TODO : problem when done 2 times in a row
-    // TODO : tester request after deAuthorize
+    logger.v('[call] testDeauth() - start');
+    // END_TEST
     context.read<StravaRepository>().deAuthorize().then((value) {
-      print('[_testDeauth] Deauthorization successful (?)');
-    }); // TODO : catch error ?
+      logger.v('[_testDeauth] Deauthorization successful (?)');
+      // Update the [ClientCubit].
+      context.read<ClientCubit>().setState(ClientState.notAuthorized);
+    }); // TODO : catch error !!!
     // TEST
-    print(context.read<ClientCubit>().state);
-    print("[call] testDeauth() - end");
+    logger.v('[call] testDeauth() - end');
+    // END_TEST
   }
 
   @override
@@ -36,20 +40,11 @@ class Login extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
-                onPressed: () => context
-                    .read<StravaRepository>()
-                    .authenticate(), //testAuthentication(context),
-                //onPressed: () {
-                //  print('Change of page...');
-                //Navigator.push(
-                //    context,
-                //    MaterialPageRoute(
-                //        builder: (context) => AuthenticationPage()));
-                //},
+                onPressed: () => _login(context),
                 child: const Text("Login With Strava"),
               ),
               ElevatedButton(
-                onPressed: () => _testDeauth(context),
+                onPressed: () => _deAuth(context),
                 child: const Text("De Authorize"),
               )
             ],
@@ -57,23 +52,7 @@ class Login extends StatelessWidget {
           const SizedBox(
             height: 8,
           ),
-          // TextField(
-          //   minLines: 1,
-          //   maxLines: 3,
-          //   //controller: _textEditingController,
-          //   decoration: InputDecoration(
-          //       border: const OutlineInputBorder(),
-          //       label: const Text("Access Token"),
-          //       suffixIcon: TextButton(
-          //         child: const Text("Copy"),
-          //         onPressed: () {
-          //           // TODO ?
-          //           //FlutterClipboard.copy(_textEditingController.text).then(
-          //           //    ((value) => ScaffoldMessenger.of(context).showSnackBar(
-          //           //        const SnackBar(content: Text("Copied !")))));
-          //         },
-          //       )),
-          // ),
+          // TODO : usefull ??? What is this ?
           const Divider()
         ],
       );
@@ -81,8 +60,6 @@ class Login extends StatelessWidget {
   }
 
   void testAuthentication(BuildContext context) {
-    // TODO which one ?
-    //context.read<StravaRepository>();
-    RepositoryProvider.of<StravaRepository>(context).authenticate();
+    context.read<StravaRepository>().authenticate();
   }
 }

@@ -1,6 +1,12 @@
 
 # Random notes
 
+## Best practices
+
+### Logging
+
+- (LogRocket - Flutter logging best practices)[https://blog.logrocket.com/flutter-logging-best-practices/]
+
 ## Process of authentication - Strava
 
 1. Request code (here)[https://www.strava.com/oauth/mobile/authoriz] (function `_getStravaCode`)

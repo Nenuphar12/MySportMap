@@ -11,6 +11,14 @@ import 'my_sport_map_observer.dart';
 
 // TODO : catch errors !!!
 
+// TODO : initialize logger in utility file ?
+
+// TODO : do not call context in build method !
+
+// TODO : insert the repository inside the bloc ?
+
+// TODO : dispose of repository or other stuff ?
+
 void main() {
   Bloc.observer = const MySportMapObserver();
   runApp(const MySportMapApp());

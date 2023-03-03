@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_sport_map/authentication/cubit/client_cubit.dart';
-import 'package:my_sport_map/authentication/view/authentication_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:oauth2/oauth2.dart' as oauth2;
+import 'package:strava_repository/strava_repository.dart';
 
-import '../../secret.dart';
 import '../widgets/widgets.dart';
-
-// TODO where to put this ?
-const String apiEndpoint = "https://www.strava.com/api/v3/";
 
 // TODO : restructruc doc + class (and files ?)
 
@@ -38,49 +32,18 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ClientCubit, ClientState>(builder: (context, state) {
-      switch (state.status) {
-        // The client is ready and functional
-        case ClientStatus.ready:
-          print('WE GOT THE CLIENT (2)');
-          // TODO : save client state after "changes" ?
-          // TODO: Handle this case.
-          break;
-
-        // Need authentication
-        case ClientStatus.needAuthentication:
-          // Authenticate to get access to your strava data
-          return const MaterialApp(
-            home: AuthenticationPage(),
-          );
-
+      if (state == ClientState.appStarting) {
         // Check the client when the app is starting
-        case ClientStatus.appStarting:
-          // To load my client if it exists
-          final prefs = SharedPreferences.getInstance();
-          prefs.then((value) {
-            String? jsonCredentials = value.getString("credentials");
-            // TODO tempo to test
-            //jsonCredentials = null;
-            if (jsonCredentials == null) {
-              // Request creation of credentials
-              context
-                  .read<ClientCubit>()
-                  .setStatus(ClientStatus.needAuthentication);
-            } else {
-              // Load credentials into client
-              var clientCredentials =
-                  oauth2.Credentials.fromJson(jsonCredentials);
-              var newClient = oauth2.Client(clientCredentials,
-                  identifier: clientId, secret: clientSecret, basicAuth: false);
-              context.read<ClientCubit>().setClient(
-                    newClient,
-                  ); // TODO: need a specific status or always "ready" ?
-            }
-          });
-          break;
+        context
+            .read<StravaRepository>()
+            .isAuthenticated()
+            .then((isAuthenticated) {
+          context.read<ClientCubit>().setState(
+              isAuthenticated ? ClientState.ready : ClientState.notAuthorized);
+        });
       }
 
-      var isLoggedIn = (state.status == ClientStatus.ready);
+      var isLoggedIn = (state == ClientState.ready);
 
       // Display the Home page.
       return MaterialApp(
@@ -103,9 +66,9 @@ class HomeView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Login(),
-              const Center(child: TestConnection()),
+            children: const [
+              Login(),
+              //const Center(child: TestConnection()),
               MyMap(),
               //ApiGroups(
               //  isLoggedIn: isLoggedIn,

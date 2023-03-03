@@ -8,13 +8,13 @@ environment:
   flutter: 3.7.0
 
 dependencies:
-  flutter:
-    sdk: flutter
   activities_api:
     path: ../activities_api
-  shared_preferences: ^2.0.18
-  rxdart: ^0.27.7
+  flutter:
+    sdk: flutter
   meta: ^1.8.0
+  rxdart: ^0.27.7
+  shared_preferences: ^2.0.18
 
 dev_dependencies:
   flutter_test:
