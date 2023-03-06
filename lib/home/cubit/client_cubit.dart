@@ -10,5 +10,5 @@ class ClientCubit extends Cubit<ClientState> {
   ClientCubit() : super(ClientState.appStarting);
 
   /// Change the state to a newState.
-  void setState(ClientState newState) => emit(newState);
+  void setCubitState(ClientState newState) => emit(newState);
 }

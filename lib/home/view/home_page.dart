@@ -41,7 +41,7 @@ class HomeView extends StatelessWidget {
             .isAuthenticated()
             .then((isAuthenticated) {
           logger.v('Already Authenticated : $isAuthenticated');
-          context.read<ClientCubit>().setState(
+          context.read<ClientCubit>().setCubitState(
               isAuthenticated ? ClientState.ready : ClientState.notAuthorized);
         });
       }
@@ -77,7 +77,9 @@ class HomeView extends StatelessWidget {
               ),
               //const Center(child: TestConnection()),
               MyMap(
-                key: UniqueKey(),
+                // key: UniqueKey(),
+                isClientReady: state == ClientState.ready,
+                // state: state,
               ),
               //ApiGroups(
               //  isLoggedIn: isLoggedIn,

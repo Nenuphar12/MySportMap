@@ -1,10 +1,14 @@
-//import 'package:strava_api/strava_api.dart';
-import 'package:strava_client/domain/model/model_authentication_scopes.dart';
-import 'package:strava_repository/strava_repository.dart';
+import 'dart:async';
+
+import 'package:logger/logger.dart';
+import 'package:strava_client/domain/model/model_authentication_response.dart';
 import 'package:strava_client/strava_client.dart';
-// TODO : improve strava_flutter to not have to do that ?
+import 'package:strava_client/domain/model/model_authentication_scopes.dart';
 import 'package:strava_client/common/local_storage.dart';
+import 'package:strava_repository/strava_repository.dart';
+// TODO : improve strava_flutter to not have to do that ?
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:strava_client/domain/model/model_fault.dart';
 
 class StravaRepository {
   StravaRepository({required secret, required clientId}) {
@@ -95,8 +99,19 @@ class StravaRepository {
   Future<bool> isAuthenticated() async {
     var token =
         await LocalStorageManager.getToken(applicationName: 'mySportMap');
-    // return true if a token is stored
-    return (token != null);
+    if (token != null) {
+      // Refresh the token if needed.
+      if (isTokenExpired(token)) {
+        // Refresh the token (with authenticate)
+        Logger().d('Refreshing token.');
+        await authenticate();
+        Logger().v('Token refreshed');
+      }
+      // return true if a token is stored
+      return (true);
+    } else {
+      return false;
+    }
   }
 
   Future<void> authenticate() async {
@@ -113,11 +128,34 @@ class StravaRepository {
       redirectUrl: 'com.example.mysportmap://redirect',
       callbackUrlScheme: 'com.example.mysportmap',
       forceShowingApproval: true, // TEST (not enought...)
-    );
+    ).catchError(logErrorMessage);
     print('[strava_repository] Authenticated ! (?)');
   }
 
   Future<void> deAuthorize() async {
-    await stravaClient.authentication.deAuthorize();
+    await stravaClient.authentication.deAuthorize().catchError(logErrorMessage);
+  }
+
+  FutureOr<Null> logErrorMessage(dynamic error, dynamic stackTrace) {
+    if (error is Fault) {
+      Logger().e('Did Receive Fault', error, stackTrace);
+      // showDialog(
+      //     context: context,
+      //     builder: (context) {
+      //       return AlertDialog(
+      //         title: Text("Did Receive Fault"),
+      //         content: Text(
+      //             "Message: ${error.message}\n-----------------\nErrors:\n${(error.errors ?? []).map((e) => "Code: ${e.code}\nResource: ${e.resource}\nField: ${e.field}\n").toList().join("\n----------\n")}"),
+      //       );
+      //     });
+    } else {
+      Logger().e('Recieved Error which is not a Fault', error, stackTrace);
+    }
+  }
+
+  bool isTokenExpired(TokenResponse token) {
+    DateTime expiresAt =
+        DateTime.fromMillisecondsSinceEpoch(token.expiresAt * 1000);
+    return DateTime.now().isAfter(expiresAt);
   }
 }

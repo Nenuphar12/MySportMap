@@ -2,9 +2,11 @@
     package="com.example.mysportmap">
     <!--package="com.example.my_sport_map">-->
    <application
-        android:label="my_sport_map"
+        android:label="My Sport Map"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        
+        <uses-permission android:name="android.permission.INTERNET"/>
    
         <!-- TODO : My API key ? Remove it from prod-->
         <!-- My google maps API key -->
@@ -31,7 +33,6 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-
 
         </activity>
         

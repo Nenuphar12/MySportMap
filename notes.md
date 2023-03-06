@@ -1,6 +1,21 @@
 
 # Random notes
 
+## My Roadmap
+
+- First very basic release
+- add colors !
+- add splash screen (manage loading activities)
+- release android version
+- add tests
+
+### TODO before public
+
+- remove api key (google maps)
+- remove secret file
+- clean all (?)
+- remove this part
+
 ## Best practices
 
 ### Logging

@@ -12,8 +12,8 @@ class Login extends StatelessWidget {
     // If authorization is needed login, else disable the button and display
     // an informative SnackBar.
     if (context.read<ClientCubit>().state == ClientState.notAuthorized) {
-      context.read<StravaRepository>().authenticate().then(
-          (value) => context.read<ClientCubit>().setState(ClientState.ready));
+      context.read<StravaRepository>().authenticate().then((value) =>
+          context.read<ClientCubit>().setCubitState(ClientState.ready));
     } else {
       const snackBar = SnackBar(content: Text('You are already logged in.'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -27,7 +27,7 @@ class Login extends StatelessWidget {
       context.read<StravaRepository>().deAuthorize().then((value) {
         logger.v('[_testDeauth] Deauthorization successful (?)');
         // Update the [ClientCubit].
-        context.read<ClientCubit>().setState(ClientState.notAuthorized);
+        context.read<ClientCubit>().setCubitState(ClientState.notAuthorized);
       }); // TODO : catch error !!!
     } else {
       const snackBar = SnackBar(content: Text('You need to login first.'));
