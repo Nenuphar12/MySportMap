@@ -231,9 +231,9 @@ Update the `CFBundleLocalizations` array in the `Info.plist` at `ios/Runner/Info
 
 ---
 
-## Licence
+## License
 
-Distributed under the MIT licence. See `LICENSE.md` for more information.
+Distributed under the MIT licence. See []`LICENSE.md`](https://github.com/Nenuphar12/MySportMap/blob/main/LICENSE.md) for more information.
 
 ---
 
