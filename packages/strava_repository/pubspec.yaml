@@ -1,0 +1,23 @@
+name: strava_repository
+description: A dart Repository which manages the strava API with strava_client.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+    
+dependencies:
+  equatable: ^2.0.5
+  google_maps_flutter: ^2.2.5
+  json_annotation: ^4.8.0
+  logger: ^1.2.2
+  #strava_client: ^2.0.2
+  strava_client:
+    path: ../strava_flutter
+
+dev_dependencies:
+  build_runner: ^2.3.3
+  json_serializable: ^6.6.1
+  mocktail: ^0.3.0
+  test: ^1.19.2
+  very_good_analysis: ^4.0.0
