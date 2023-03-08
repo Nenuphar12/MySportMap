@@ -76,15 +76,9 @@ class HomeView extends StatelessWidget {
                   Login(
                     key: UniqueKey(),
                   ),
-                  //const Center(child: TestConnection()),
                   MyMap(
-                    // key: UniqueKey(),
                     isClientReady: state == ClientState.ready,
-                    // state: state,
                   ),
-                  //ApiGroups(
-                  //  isLoggedIn: isLoggedIn,
-                  //)
                 ],
               ),
             ),

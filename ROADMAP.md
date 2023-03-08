@@ -1,6 +1,14 @@
 
 # Roadmap for the project
 
+## Before release
+
+- [] Update version
+- [] Generate changelog
+- [] No error, no warning
+- [] Code commented
+- [] Tests added for new code parts
+
 ## Features
 
 - new feature: implement splash screen [planned]
@@ -15,6 +23,7 @@
 - improvement? remove polylines when de authorizing [planned]
 - improvement: remove unnecessary functions from strava_repository model [planned]
 - improvement: improve tests [planned]
+- improvement: add chore to commitizen [planned]
 
 ## Bugs
 
