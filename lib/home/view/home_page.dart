@@ -5,8 +5,6 @@ import 'package:my_sport_map/home/widgets/widgets.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
-// TODO(nenuphar): restructruc doc + class (and files ?)
-
 /// {@template home_page}
 /// A [StatelessWidget] which is responsible for providing a [ClientCubit]
 /// instance to the [HomeView].

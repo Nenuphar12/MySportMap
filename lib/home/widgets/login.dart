@@ -29,7 +29,7 @@ class Login extends StatelessWidget {
         logger.v('[_testDeauth] Deauthorization successful (?)');
         // Update the [ClientCubit].
         context.read<ClientCubit>().setCubitState(ClientState.notAuthorized);
-      }); // TODO(nenuphar): catch error !!!
+      });
     } else {
       const snackBar = SnackBar(content: Text('You need to login first.'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);

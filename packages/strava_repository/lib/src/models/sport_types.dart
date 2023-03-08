@@ -62,7 +62,7 @@ extension SportTypeHelper on SportType {
     );
   }
 
-  // TODO(nenuphar): useless (?)
+  // useless (?)
   String stringValue() {
     return toString().split('.').last;
   }

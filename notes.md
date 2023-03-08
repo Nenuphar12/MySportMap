@@ -58,6 +58,6 @@ Add this in the doc or fix it so it does not append. Or more explicit error ?
 
 - not load from shared pref every time ? (we don't care ?)
 
-## For development :
+## For development
 
 - https://stackoverflow.com/questions/58679233/how-to-change-company-domain-name-in-flutter

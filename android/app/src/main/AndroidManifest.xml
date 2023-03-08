@@ -5,7 +5,6 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
  
-        <!-- TODO : Remove it from prod-->
         <!-- TODO: Add your Google Maps API key here -->
         <meta-data android:name="com.google.android.geo.API_KEY"
                   android:value="YOUR-KEY-HERE" />

@@ -4,8 +4,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
-// TODO(nenuphar): when deAuthorizing, the polylines stay in place
-
 class MyMap extends StatefulWidget {
   const MyMap({required this.isClientReady, super.key});
 
@@ -22,14 +20,12 @@ class _MyMapState extends State<MyMap> {
 
   late Set<Polyline> myPolylines = {};
 
-  // TODO(nenuphar): center map on current position ?
   final LatLng _center = const LatLng(43.5628075, 5.6427871);
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
-  // TODO(nenuphar): use streams ?
   @override
   Widget build(BuildContext context) {
     logger.d('Building map.');
@@ -42,7 +38,6 @@ class _MyMapState extends State<MyMap> {
         logger.v('Requesting polylines...');
         context.read<StravaRepository>().getAllPolylines().then((polylines) {
           logger.v('Got polylines !!!');
-          // TODO(nenuphar): Add short message to notify user
           setState(() {
             myPolylines = polylines;
             polylinesLoaded = true;
