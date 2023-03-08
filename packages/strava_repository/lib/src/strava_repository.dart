@@ -9,8 +9,6 @@ import 'package:strava_client/domain/model/model_fault.dart';
 import 'package:strava_client/strava_client.dart';
 import 'package:strava_repository/strava_repository.dart';
 
-// TODO(nenuphar): improve strava_flutter to not have to do that ?
-
 /// {@template strava_repository}
 /// A dart repository which manages the strava API with strava_client.
 /// {@endtemplate}
@@ -42,15 +40,13 @@ class StravaRepository {
     return allActivities;
   }
 
-  // TODO(nenuphar): summary polylines or just polylines ? => apparently the polylines are empty !
-  // TODO(nenuphar): implementation can be improved
   /// Returns a set of [Polyline] from the summaryPolylines.
   Future<Set<Polyline>> getAllPolylines() async {
     final allActivities = await listAllActivities();
     final allMaps = allActivities.map((a) => a.map).toList();
     final allPolylines = allMaps
         .map((m) {
-          // TODO(nenuphar): manage only when id and summaryPolyline not null ?
+          // TODO(nenuphar): CHANGE manage only when id AND summaryPolyline not null ?
           if (m?.id != null || m?.summaryPolyline != null) {
             return Polyline(
               polylineId: PolylineId(m?.id ?? 'no_id'),
@@ -117,8 +113,6 @@ class StravaRepository {
     );
   }
 
-  // TODO(nenuphar): improve this implementation and maybe integrate it in the package
-  // (This should directly load the token in the client (idealy))
   Future<bool> isAuthenticated() async {
     final token =
         await LocalStorageManager.getToken(applicationName: 'mySportMap');
@@ -138,7 +132,6 @@ class StravaRepository {
   }
 
   Future<void> authenticate() async {
-    // TODO(nenuphar): good parameters ???
     // From source code :
     // RedirectUrl works best when it is a custom scheme. For example: strava://auth
     // If your redirectUrl is, for exmaple, strava://auth then your callbackUrlScheme should be strava
@@ -150,7 +143,7 @@ class StravaRepository {
       ],
       redirectUrl: 'com.nenuphar.mysportmap://redirect',
       callbackUrlScheme: 'com.nenuphar.mysportmap',
-      forceShowingApproval: true, // TEST (not enought...)
+      forceShowingApproval: true, // TODO(nenuphar): useless ?
     ).catchError(logErrorMessage);
     Logger().d('[strava_repository] Authenticated ! (?)');
   }

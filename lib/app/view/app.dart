@@ -5,22 +5,6 @@ import 'package:my_sport_map/l10n/l10n.dart';
 import 'package:my_sport_map/secret.dart';
 import 'package:strava_repository/strava_repository.dart';
 
-// TODO(nenuphar): splash screen (during loading of client ?)
-
-// TODO(nenuphar): token type bearer ??? (ok with strava api ?) looks good
-
-// TODO(nenuphar): catch errors !!!
-
-// TODO(nenuphar): initialize logger in utility file ?
-
-// TODO(nenuphar): do not call context in build method !
-
-// TODO(nenuphar): insert the repository inside the bloc ?
-
-// TODO(nenuphar): dispose of repository or other stuff ?
-
-// TODO(nenuphar): review this doc (and structure of the class)
-
 /// {@template my_sport_map_app}
 /// A [StatelessWidget] which constructs a [MaterialApp] with a home to
 /// [HomePage].

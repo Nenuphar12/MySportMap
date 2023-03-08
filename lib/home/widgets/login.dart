@@ -26,10 +26,10 @@ class Login extends StatelessWidget {
     // informative SnackBar.
     if (context.read<ClientCubit>().state == ClientState.ready) {
       context.read<StravaRepository>().deAuthorize().then((value) {
-        logger.v('[_testDeauth] Deauthorization successful (?)');
+        logger.v('[_deAuth] Deauthorization successful (?)');
         // Update the [ClientCubit].
         context.read<ClientCubit>().setCubitState(ClientState.notAuthorized);
-      }); // TODO(nenuphar): catch error !!!
+      });
     } else {
       const snackBar = SnackBar(content: Text('You need to login first.'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);

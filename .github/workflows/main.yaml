@@ -1,4 +1,4 @@
-name: my_sport_map
+name: CI_main_branch
 
 concurrency:
   group: $-$
