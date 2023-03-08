@@ -3,11 +3,11 @@
 
 ## Before release
 
-- [] Update version
-- [] Generate changelog
-- [] No error, no warning
-- [] Code commented
-- [] Tests added for new code parts
+- [x] Code commented
+- [x] Tests added for new code parts
+- [x] No error, no warning
+- [x] Update version
+- [x] Generate changelog
 
 ## Features
 
@@ -15,7 +15,8 @@
 - new feature: center map on current position [planned]
 - new feature: add short message when polylines loaded [planned]
 - new feature: add colors for activities types [planned]
-- new feature: implement `commitlint` [TODO]
+- new feature: implement `commitlint` [done]
+- CI: integrate `git-cliff` in CI [planned]
 
 ## Improvements
 
@@ -24,6 +25,7 @@
 - improvement: remove unnecessary functions from strava_repository model [planned]
 - improvement: improve tests [planned]
 - improvement: add chore to commitizen [planned]
+- improvement: add a contribution section in the README (commitlint) [planned]
 
 ## Bugs
 

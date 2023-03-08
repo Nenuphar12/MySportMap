@@ -2,7 +2,12 @@
 lib/secret.dart
 
 # Node modules
-node_modules
+node_modules/*
+!node_modules/cz-conventional-changelog
+#!node_modules/cz-conventional-changelog/*
+!node_modules/@commitlint
+node_modules/@commitlint/*
+!node_modules/@commitlint/config-conventional
 
 # Miscellaneous
 *.class
