@@ -7,6 +7,7 @@
 - [x] Tests added for new code parts
 - [x] No error, no warning
 - [x] Update version
+- [x] Secrets and API key removed
 - [x] Generate changelog
 
 ## Features
