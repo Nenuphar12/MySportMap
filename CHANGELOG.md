@@ -6,8 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Documentation
 
-- Add setup and build informations in `README.md`
-- Create MIT licence file
+- Add setup and build information in `README.md`
+- Create MIT license file
 - Create `CHANGELOG.md`
 
 ### Refactor
