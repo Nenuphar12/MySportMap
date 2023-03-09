@@ -134,7 +134,7 @@ class StravaRepository {
   Future<void> authenticate() async {
     // From source code :
     // RedirectUrl works best when it is a custom scheme. For example: strava://auth
-    // If your redirectUrl is, for exmaple, strava://auth then your callbackUrlScheme should be strava
+    // If your redirectUrl is, for example, strava://auth then your callbackUrlScheme should be strava
     await stravaClient.authentication.authenticate(
       scopes: [
         AuthenticationScope.activity_read_all,
@@ -166,7 +166,7 @@ class StravaRepository {
       //     });
     } else {
       Logger().e(
-        'Recieved Error which is not a Fault',
+        'Received Error which is not a Fault',
         error,
         stackTrace as StackTrace,
       );

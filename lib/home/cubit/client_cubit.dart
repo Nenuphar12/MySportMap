@@ -4,7 +4,7 @@ part 'client_state.dart';
 
 /// {@template client_cubit}
 /// A [Cubit] which manages a [ClientState] as its state.
-/// {@endemplate}
+/// {@endtemplate}
 class ClientCubit extends Cubit<ClientState> {
   /// {@macro client_cubit}
   ClientCubit() : super(ClientState.appStarting);

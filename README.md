@@ -46,7 +46,7 @@ these steps :
 
 1. If you have not already, go to https://www.strava.com/register and sign up for a Strava account.
 2. After you are logged in, go to https://www.strava.com/settings/api and create an app.
-3. You should see the “My API Application” page now. Set the following informations :
+3. You should see the “My API Application” page now. Set the following information :
   - Category: Visualizer
   - Authorization Callback Domain: redirect
   - Optional setup
@@ -233,7 +233,7 @@ Update the `CFBundleLocalizations` array in the `Info.plist` at `ios/Runner/Info
 
 ## License
 
-Distributed under the MIT licence. See []`LICENSE.md`](https://github.com/Nenuphar12/MySportMap/blob/main/LICENSE.md) for more information.
+Distributed under the MIT license. See []`LICENSE.md`](https://github.com/Nenuphar12/MySportMap/blob/main/LICENSE.md) for more information.
 
 ---
 
