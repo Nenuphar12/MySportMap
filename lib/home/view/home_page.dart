@@ -75,8 +75,11 @@ class HomeView extends StatelessWidget {
               children: [
                 // Use of `UniqueKey` because these should be rebuild on every
                 // [ClientBloc] change.
-                Login(
+                AuthManagementButtons(
                   key: UniqueKey(),
+                ),
+                const SizedBox(
+                  height: 8,
                 ),
                 MyMap(
                   isClientReady: state.status == ClientStatus.ready,

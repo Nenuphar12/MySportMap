@@ -4,8 +4,37 @@ import 'package:my_sport_map/home/cubit/client_cubit.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
-class Login extends StatelessWidget {
-  const Login({super.key});
+class AuthManagementButtons extends StatelessWidget {
+  const AuthManagementButtons({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    logger.d('Build login');
+    // TODO(nenuphar): Builder useful ?
+    return Builder(
+      builder: (context) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [
+            LoginButton(),
+            DeAuthButton(),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class LoginButton extends StatelessWidget {
+  const LoginButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => _login(context),
+      child: const Text('Login with Strava'),
+    );
+  }
 
   void _login(BuildContext context) {
     // If authorization is needed login, else disable the button and display
@@ -21,6 +50,18 @@ class Login extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
+}
+
+class DeAuthButton extends StatelessWidget {
+  const DeAuthButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => _deAuth(context),
+      child: const Text('De Authorize'),
+    );
+  }
 
   void _deAuth(BuildContext context) {
     // If logged in de-authorize, else disable the button and display an
@@ -35,35 +76,5 @@ class Login extends StatelessWidget {
       const snackBar = SnackBar(content: Text('You need to login first.'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    logger.d('Build login');
-    return Builder(
-      builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () => _login(context),
-                  child: const Text('Login With Strava'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _deAuth(context),
-                  child: const Text('De Authorize'),
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-          ],
-        );
-      },
-    );
   }
 }
