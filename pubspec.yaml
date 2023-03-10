@@ -16,6 +16,7 @@ dependencies:
   google_maps_flutter: ^2.2.5
   intl: ^0.17.0
   logger: ^1.2.2
+  mockingjay: ^0.3.0
   strava_repository:
     path: packages/strava_repository
 

@@ -10,10 +10,11 @@ class Login extends StatelessWidget {
   void _login(BuildContext context) {
     // If authorization is needed login, else disable the button and display
     // an informative SnackBar.
-    if (context.read<ClientCubit>().state == ClientState.notAuthorized) {
+    if (context.read<ClientCubit>().state.status ==
+        ClientStatus.notAuthorized) {
       context.read<StravaRepository>().authenticate().then(
             (value) =>
-                context.read<ClientCubit>().setCubitState(ClientState.ready),
+                context.read<ClientCubit>().setClientStatus(ClientStatus.ready),
           );
     } else {
       const snackBar = SnackBar(content: Text('You are already logged in.'));
@@ -24,11 +25,11 @@ class Login extends StatelessWidget {
   void _deAuth(BuildContext context) {
     // If logged in de-authorize, else disable the button and display an
     // informative SnackBar.
-    if (context.read<ClientCubit>().state == ClientState.ready) {
+    if (context.read<ClientCubit>().state.status == ClientStatus.ready) {
       context.read<StravaRepository>().deAuthorize().then((value) {
-        logger.v('[_deAuth] Deauthorization successful (?)');
+        logger.v('[_deAuth] de authorization successful (?)');
         // Update the [ClientCubit].
-        context.read<ClientCubit>().setCubitState(ClientState.notAuthorized);
+        context.read<ClientCubit>().setClientStatus(ClientStatus.notAuthorized);
       });
     } else {
       const snackBar = SnackBar(content: Text('You need to login first.'));

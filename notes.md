@@ -1,6 +1,12 @@
 
 # Random notes
 
+## Generate coverage
+
+```powershell
+PS C:\Users\depor\FlutterProjects\my_sport_map> perl C:\ProgramData\chocolatey\lib\lcov\tools\bin\genhtml .\coverage\lcov.info -o coverage/
+```
+
 ## My Roadmap
 
 - First very basic release

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 
 part 'client_state.dart';
 
@@ -7,8 +8,11 @@ part 'client_state.dart';
 /// {@endtemplate}
 class ClientCubit extends Cubit<ClientState> {
   /// {@macro client_cubit}
-  ClientCubit() : super(ClientState.appStarting);
+  ClientCubit() : super(const ClientState());
 
   /// Change the state to a newState.
-  void setCubitState(ClientState newState) => emit(newState);
+  void setClientStatus(ClientStatus newStatus) =>
+      emit(ClientState(status: newStatus));
+
+  // TODO(nenuphar): add isReady and isNotAuthorized functions
 }

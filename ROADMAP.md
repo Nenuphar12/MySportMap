@@ -51,6 +51,7 @@
 ## Cleaning
 
 - cleaning: remove all tests // TODO
+- cleaning: remove useless translation stuff [planned]
 
 ---
 

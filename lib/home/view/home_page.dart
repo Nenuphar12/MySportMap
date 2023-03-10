@@ -15,7 +15,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(create: (_) => ClientCubit(), child: const HomeView());
+    return BlocProvider(
+      create: (_) => ClientCubit(),
+      child: const HomeView(),
+    );
   }
 }
 
@@ -32,55 +35,53 @@ class HomeView extends StatelessWidget {
     return BlocBuilder<ClientCubit, ClientState>(
       builder: (context, state) {
         logger.d('Building home_page');
-        if (state == ClientState.appStarting) {
+        if (state.status == ClientStatus.appStarting) {
           // Check the client when the app is starting
           context
               .read<StravaRepository>()
               .isAuthenticated()
               .then((isAuthenticated) {
             logger.v('Already Authenticated : $isAuthenticated');
-            context.read<ClientCubit>().setCubitState(
+            context.read<ClientCubit>().setClientStatus(
                   isAuthenticated
-                      ? ClientState.ready
-                      : ClientState.notAuthorized,
+                      ? ClientStatus.ready
+                      : ClientStatus.notAuthorized,
                 );
           });
         }
 
-        final isLoggedIn = state == ClientState.ready;
+        final isLoggedIn = state.status == ClientStatus.ready;
 
         // Display the Home page.
-        return MaterialApp(
-          home: Scaffold(
-            appBar: AppBar(
-              title: const Text('My sport map'),
-              actions: [
-                Icon(
-                  isLoggedIn
-                      ? Icons.radio_button_checked_outlined
-                      : Icons.radio_button_off,
-                  color: isLoggedIn ? Colors.white : Colors.red,
-                ),
-                const SizedBox(
-                  width: 8,
-                )
-              ],
-            ),
-            body: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Use of `UniqueKey` because these should be rebuild on every
-                  // [ClientBloc] change.
-                  Login(
-                    key: UniqueKey(),
-                  ),
-                  MyMap(
-                    isClientReady: state == ClientState.ready,
-                  ),
-                ],
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('My sport map'),
+            actions: [
+              Icon(
+                isLoggedIn
+                    ? Icons.radio_button_checked_outlined
+                    : Icons.radio_button_off,
+                color: isLoggedIn ? Colors.white : Colors.red,
               ),
+              const SizedBox(
+                width: 8,
+              )
+            ],
+          ),
+          body: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Use of `UniqueKey` because these should be rebuild on every
+                // [ClientBloc] change.
+                Login(
+                  key: UniqueKey(),
+                ),
+                MyMap(
+                  isClientReady: state.status == ClientStatus.ready,
+                ),
+              ],
             ),
           ),
         );

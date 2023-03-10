@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_sport_map/home/home.dart';
 import 'package:my_sport_map/l10n/l10n.dart';
-import 'package:my_sport_map/secret.dart';
 import 'package:strava_repository/strava_repository.dart';
 
 /// {@template my_sport_map_app}
@@ -10,13 +9,14 @@ import 'package:strava_repository/strava_repository.dart';
 /// [HomePage].
 /// {endtemplate}
 class MySportMapApp extends StatelessWidget {
-  const MySportMapApp({super.key});
+  const MySportMapApp({super.key, required this.stravaRepository});
+
+  final StravaRepository stravaRepository;
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) =>
-          StravaRepository(clientId: clientId, secret: clientSecret),
+    return RepositoryProvider.value(
+      value: stravaRepository,
       child: const AppView(),
     );
   }

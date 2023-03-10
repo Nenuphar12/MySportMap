@@ -31,9 +31,6 @@ class _MyMapState extends State<MyMap> {
     logger.d('Building map.');
     if (!polylinesLoaded) {
       if (widget.isClientReady) {
-        //if (widget.state == ClientState.ready) {
-        //if (BlocProvider.of<ClientCubit>(context).state == ClientState.ready) {
-        //if (context.read<ClientCubit>().state == ClientState.ready) {
         // Get the polylines !
         logger.v('Requesting polylines...');
         context.read<StravaRepository>().getAllPolylines().then((polylines) {

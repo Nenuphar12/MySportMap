@@ -1,5 +1,7 @@
 # Specific
 lib/secret.dart
+genhtml.perl
+notes.md
 
 # Node modules
 node_modules/*
