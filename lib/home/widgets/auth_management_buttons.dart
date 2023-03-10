@@ -9,7 +9,7 @@ class AuthManagementButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.d('Build login');
+    logger.d('Build AuthManagementButtons');
     // TODO(nenuphar): Builder useful ?
     return Builder(
       builder: (context) {
@@ -31,6 +31,7 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      key: const Key('loginButton_login_elevatedButton'),
       onPressed: () => _login(context),
       child: const Text('Login with Strava'),
     );
@@ -58,6 +59,7 @@ class DeAuthButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      key: const Key('deAuthButton_deAuth_elevatedButton'),
       onPressed: () => _deAuth(context),
       child: const Text('De Authorize'),
     );
