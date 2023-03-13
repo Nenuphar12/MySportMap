@@ -43,14 +43,12 @@ class _MyMapState extends State<MyMap> {
       }
     }
 
-    return Expanded(
-      child: GoogleMap(
-        polylines: myPolylines,
-        onMapCreated: _onMapCreated,
-        initialCameraPosition: CameraPosition(
-          target: _center,
-          zoom: 11,
-        ),
+    return GoogleMap(
+      polylines: myPolylines,
+      onMapCreated: _onMapCreated,
+      initialCameraPosition: CameraPosition(
+        target: _center,
+        zoom: 11,
       ),
     );
   }

@@ -81,8 +81,10 @@ class HomeView extends StatelessWidget {
                 const SizedBox(
                   height: 8,
                 ),
-                MyMap(
-                  isClientReady: state.status == ClientStatus.ready,
+                Expanded(
+                  child: MyMap(
+                    isClientReady: state.status == ClientStatus.ready,
+                  ),
                 ),
               ],
             ),
