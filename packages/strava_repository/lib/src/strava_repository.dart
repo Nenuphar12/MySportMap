@@ -46,8 +46,7 @@ class StravaRepository {
     final allMaps = allActivities.map((a) => a.map).toList();
     final allPolylines = allMaps
         .map((m) {
-          // TODO(nenuphar): CHANGE manage only when id AND summaryPolyline not null ?
-          if (m?.id != null || m?.summaryPolyline != null) {
+          if (m?.id != null && m?.summaryPolyline != null) {
             return Polyline(
               polylineId: PolylineId(m?.id ?? 'no_id'),
               points: decodeEncodedPolyline(m?.summaryPolyline ?? ''),

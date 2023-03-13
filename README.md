@@ -47,11 +47,13 @@ these steps :
 1. If you have not already, go to https://www.strava.com/register and sign up for a Strava account.
 2. After you are logged in, go to https://www.strava.com/settings/api and create an app.
 3. You should see the “My API Application” page now. Set the following information :
-  - Category: Visualizer
+  - Category: MobileApp
   - Authorization Callback Domain: redirect
   - Optional setup
     - Application name: my_sport_map
     - Application description: Flutter app to see all my activities on one map.
+
+*Note: You can use [this logo](assets/map_logo.png).*
 
 You will now copy your `Client ID` and `Client Secret` into a `lib/secret.dart`
 file :

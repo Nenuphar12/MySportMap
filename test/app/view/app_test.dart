@@ -13,7 +13,6 @@ void main() {
 
   setUp(() {
     stravaRepository = MockStravaRepository();
-    // TODO(nenuphar): difference between `thenAnswer` and `thenReturn`
     when(stravaRepository.isAuthenticated)
         .thenAnswer((_) => Future.value(false));
   });

@@ -3,12 +3,12 @@
 
 ## Before release
 
-- [x] Code commented
-- [x] Tests added for new code parts
-- [x] No error, no warning
-- [x] Update version
-- [x] Secrets and API key removed
-- [x] Generate changelog
+- [] Code commented
+- [] Tests added for new code parts
+- [] No error, no warning
+- [] Update version
+- [] Secrets and API key removed
+- [] Generate changelog
 
 ## Features
 
@@ -24,6 +24,7 @@
 - improvement: manage errors thrown by strava_client [planned]
 - improvement? remove polylines when de authorizing [planned]
 - improvement: remove unnecessary functions from strava_repository model [planned]
+- improvement: improve test coverage [done]
 - improvement: improve tests [planned]
 - improvement: add chore to commitizen [planned]
 - improvement: add a contribution section in the README (commitlint) [planned]
@@ -50,7 +51,7 @@
 
 ## Cleaning
 
-- cleaning: remove all tests // TODO
+- cleaning: remove all "tests" // TODO
 - cleaning: remove useless translation stuff [planned]
 
 ---

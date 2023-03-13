@@ -1,5 +1,5 @@
 # Specific
-lib/secret.dart
+lib/my_secret.dart
 genhtml.perl
 notes.md
 
