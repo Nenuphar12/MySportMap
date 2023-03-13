@@ -1,6 +1,7 @@
 # My stuff
-lib/secret.dart
+lib/my_secret.dart
 notes.md
+node_modules/
 
 # Miscellaneous
 *.class
