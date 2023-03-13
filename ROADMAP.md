@@ -24,7 +24,7 @@
 - improvement: better management of errors thrown by strava_client [planned]
 - improvement? remove polylines when de authorizing [planned]
 - improvement: remove unnecessary functions from strava_repository model [planned]
-- improvement: improve test coverage [done]
+- improvement: improve test coverage to 100% [planned]
 - improvement: improve tests [planned]
 - improvement: add chore to commitizen [planned]
 - improvement: add a contribution section in the README (commitlint) [planned]
