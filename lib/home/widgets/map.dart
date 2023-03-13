@@ -22,6 +22,7 @@ class _MyMapState extends State<MyMap> {
 
   final LatLng _center = const LatLng(43.5628075, 5.6427871);
 
+  // ignore: use_setters_to_change_properties
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }

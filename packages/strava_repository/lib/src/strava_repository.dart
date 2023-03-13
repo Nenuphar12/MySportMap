@@ -1,3 +1,6 @@
+// TODO(nenuphar): Doc...
+// ignore_for_file: public_member_api_docs
+
 import 'dart:async';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -143,6 +146,7 @@ class StravaRepository {
       redirectUrl: 'com.nenuphar.mysportmap://redirect',
       callbackUrlScheme: 'com.nenuphar.mysportmap',
       forceShowingApproval: true, // TODO(nenuphar): useless ?
+      // ignore: invalid_return_type_for_catch_error
     ).catchError(logErrorMessage);
     Logger().d('[strava_repository] Authenticated ! (?)');
   }

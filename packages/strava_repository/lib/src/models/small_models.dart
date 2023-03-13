@@ -1,3 +1,6 @@
+// TODO(nenuphar): Document this...
+// ignore_for_file: public_member_api_docs, camel_case_types
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'small_models.g.dart';
@@ -6,10 +9,10 @@ part 'small_models.g.dart';
 class MetaAthlete {
   const MetaAthlete({this.id});
 
-  final int? id;
-
   factory MetaAthlete.fromJson(Map<String, dynamic> json) =>
       _$MetaAthleteFromJson(json);
+
+  final int? id;
 
   Map<String, dynamic> toJson() => _$MetaAthleteToJson(this);
 }
@@ -21,13 +24,12 @@ class PolylineMap {
     this.polyline,
     this.summaryPolyline,
   });
+  factory PolylineMap.fromJson(Map<String, dynamic> json) =>
+      _$PolylineMapFromJson(json);
 
   final String? id;
   final String? polyline;
   final String? summaryPolyline;
-
-  factory PolylineMap.fromJson(Map<String, dynamic> json) =>
-      _$PolylineMapFromJson(json);
 
   Map<String, dynamic> toJson() => _$PolylineMapToJson(this);
 }
@@ -39,11 +41,11 @@ class PhotosSummary {
     this.primary,
   });
 
-  final int? count;
-  final PhotosSummary_primary? primary;
-
   factory PhotosSummary.fromJson(Map<String, dynamic> json) =>
       _$PhotosSummaryFromJson(json);
+
+  final int? count;
+  final PhotosSummary_primary? primary;
 
   Map<String, dynamic> toJson() => _$PhotosSummaryToJson(this);
 }
@@ -57,13 +59,13 @@ class PhotosSummary_primary {
     this.urls,
   });
 
+  factory PhotosSummary_primary.fromJson(Map<String, dynamic> json) =>
+      _$PhotosSummary_primaryFromJson(json);
+
   final int? id;
   final int? source;
   final String? uniqueId;
   final String? urls;
-
-  factory PhotosSummary_primary.fromJson(Map<String, dynamic> json) =>
-      _$PhotosSummary_primaryFromJson(json);
 
   Map<String, dynamic> toJson() => _$PhotosSummary_primaryToJson(this);
 }

@@ -1,3 +1,6 @@
+// TODO(nenuphar): Document all this...
+// ignore_for_file: public_member_api_docs
+
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
@@ -44,6 +47,9 @@ class Activity extends Equatable {
     this.gearId,
   });
 
+  factory Activity.fromJson(Map<String, dynamic> json) =>
+      _$ActivityFromJson(json);
+
   //@JsonKey(defaultValue: false)
   //@JsonKey(required: true)
   //@JsonKey(ignore: true)
@@ -75,9 +81,6 @@ class Activity extends Equatable {
   final double? averageSpeed;
   final double? maxSpeed;
   final String? gearId;
-
-  factory Activity.fromJson(Map<String, dynamic> json) =>
-      _$ActivityFromJson(json);
 
   Map<String, dynamic> toJson() => _$ActivityToJson(this);
 

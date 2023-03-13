@@ -9,7 +9,10 @@ import 'package:strava_repository/strava_repository.dart';
 /// [HomePage].
 /// {endtemplate}
 class MySportMapApp extends StatelessWidget {
-  const MySportMapApp({super.key, required this.stravaRepository});
+  const MySportMapApp({
+    required this.stravaRepository,
+    super.key,
+  });
 
   final StravaRepository stravaRepository;
 

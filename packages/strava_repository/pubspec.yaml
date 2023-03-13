@@ -12,6 +12,7 @@ dependencies:
   json_annotation: ^4.8.0
   logger: ^1.2.2
   #strava_client: ^2.0.2
+  meta: ^1.8.0
   strava_client:
     path: ../strava_flutter
 

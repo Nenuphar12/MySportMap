@@ -1,3 +1,6 @@
+// TODO(nenuphar): doc...
+// ignore_for_file: public_member_api_docs
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // TODO(nenuphar): manage this file. Where ?

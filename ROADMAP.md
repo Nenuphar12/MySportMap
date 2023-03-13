@@ -21,7 +21,7 @@
 
 ## Improvements
 
-- improvement: manage errors thrown by strava_client [planned]
+- improvement: better management of errors thrown by strava_client [planned]
 - improvement? remove polylines when de authorizing [planned]
 - improvement: remove unnecessary functions from strava_repository model [planned]
 - improvement: improve test coverage [done]
