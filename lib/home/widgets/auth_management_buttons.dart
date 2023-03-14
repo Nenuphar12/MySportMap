@@ -4,14 +4,12 @@ import 'package:my_sport_map/home/cubit/client_cubit.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
-// TODO(nenuphar): remove build logs !
-
 class AuthManagementButtons extends StatelessWidget {
   const AuthManagementButtons({super.key});
 
   @override
   Widget build(BuildContext context) {
-    logger.d('Build AuthManagementButtons');
+    logger.v('Build AuthManagementButtons');
     // TODO(nenuphar): Builder useful ?
     return Builder(
       builder: (context) {

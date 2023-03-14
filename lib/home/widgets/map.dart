@@ -29,7 +29,7 @@ class _MyMapState extends State<MyMap> {
 
   @override
   Widget build(BuildContext context) {
-    logger.d('Building map.');
+    logger.v('Building map.');
     if (!polylinesLoaded) {
       if (widget.isClientReady) {
         // Get the polylines !

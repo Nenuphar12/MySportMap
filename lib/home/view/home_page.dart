@@ -34,7 +34,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ClientCubit, ClientState>(
       builder: (context, state) {
-        logger.d('Building home_page');
+        logger.v('Building home_page');
         if (state.status == ClientStatus.appStarting) {
           // Check the client when the app is starting
           context

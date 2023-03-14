@@ -145,7 +145,6 @@ class StravaRepository {
       ],
       redirectUrl: 'com.nenuphar.mysportmap://redirect',
       callbackUrlScheme: 'com.nenuphar.mysportmap',
-      forceShowingApproval: true, // TODO(nenuphar): useless ?
       // ignore: invalid_return_type_for_catch_error
     ).catchError(logErrorMessage);
     Logger().d('[strava_repository] Authenticated ! (?)');

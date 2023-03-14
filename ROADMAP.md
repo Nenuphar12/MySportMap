@@ -28,7 +28,7 @@
 - improvement: improve tests [planned]
 - improvement: add chore to commitizen [planned]
 - improvement: add a contribution section in the README (commitlint) [planned]
-- improvement: find solution to allow very_good CI tests [planned]
+- improvement: find solution to allow very_good CI tests [done]
 
 ## Bugs
 
