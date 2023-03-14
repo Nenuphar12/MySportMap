@@ -8,7 +8,6 @@ class MyMap extends StatefulWidget {
   const MyMap({required this.isClientReady, super.key});
 
   final bool isClientReady;
-  //final ClientState state;
 
   @override
   State<MyMap> createState() => _MyMapState();

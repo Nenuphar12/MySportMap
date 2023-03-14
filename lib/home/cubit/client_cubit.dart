@@ -13,6 +13,4 @@ class ClientCubit extends Cubit<ClientState> {
   /// Change the state to a newState.
   void setClientStatus(ClientStatus newStatus) =>
       emit(ClientState(status: newStatus));
-
-  // TODO(nenuphar): add isReady and isNotAuthorized functions
 }

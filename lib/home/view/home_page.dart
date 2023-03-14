@@ -35,7 +35,7 @@ class HomeView extends StatelessWidget {
     return BlocBuilder<ClientCubit, ClientState>(
       builder: (context, state) {
         logger.v('Building home_page');
-        if (state.status == ClientStatus.appStarting) {
+        if (state.isAppStarting()) {
           // Check the client when the app is starting
           context
               .read<StravaRepository>()
@@ -50,7 +50,7 @@ class HomeView extends StatelessWidget {
           });
         }
 
-        final isLoggedIn = state.status == ClientStatus.ready;
+        final isLoggedIn = state.isReady();
 
         // Display the Home page.
         return Scaffold(
@@ -83,7 +83,7 @@ class HomeView extends StatelessWidget {
                 ),
                 Expanded(
                   child: MyMap(
-                    isClientReady: state.status == ClientStatus.ready,
+                    isClientReady: state.isReady(),
                   ),
                 ),
               ],
