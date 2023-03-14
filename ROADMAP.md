@@ -35,6 +35,9 @@
 
 ## Bugs
 
+- bug: if two phones on the same account, the refresh token could be wrong
+  and then an error is thrown and the state stays as `appStarting` !
+  [ // TODO ]
 - bug? verification of not calling `context` in `build` method [planned]
 
 ## Documentation

@@ -38,6 +38,9 @@ Add your Google Maps API key in `android\app\src\main\AndroidManifest.xml`.
 
 To get your API key, follow [these instructions](https://developers.google.com/maps/documentation/android-sdk/get-api-key).
 
+*Note:
+I will probably work without an API key but the map precision will be awful.*
+
 ### Setup Strava API
 
 You will need to make an Application. According to [Strava

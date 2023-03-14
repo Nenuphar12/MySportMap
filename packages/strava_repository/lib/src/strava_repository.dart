@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:logger/logger.dart';
+import 'package:strava_client/common/injections.dart';
 import 'package:strava_client/common/local_storage.dart';
+import 'package:strava_client/common/session_manager.dart';
 import 'package:strava_client/domain/model/model_authentication_response.dart';
 import 'package:strava_client/domain/model/model_authentication_scopes.dart';
 import 'package:strava_client/domain/model/model_fault.dart';
 import 'package:strava_client/strava_client.dart';
+import 'package:strava_repository/src/models/sport_types.dart';
 import 'package:strava_repository/strava_repository.dart';
 
 /// Error thrown when an [Activity] with a given id is not found.
@@ -46,8 +49,7 @@ class StravaRepository {
         .map(
           (a) => Activity(
             id: a.id,
-            // TODO(nenuphar): add sportType
-            // sportType: SportTypeHelper.getType(a.type),
+            sportType: SportTypeHelper.getType(a.type),
             map: a.map,
           ),
         )
@@ -72,14 +74,16 @@ class StravaRepository {
   /// Returns a set of [Polyline]s from the encoded summaryPolylines.
   Future<Set<Polyline>> getAllPolylines() async {
     final allActivities = await listAllActivities();
-    final allMaps = allActivities.map((a) => a.map).toList();
-    final allPolylines = allMaps
-        .map((m) {
-          if (m?.id != null && m?.summaryPolyline != null) {
+    // final allMaps = allActivities.map((a) => a.map).toList();
+    final allPolylines = allActivities
+        .map((a) {
+          if (a.map?.id != null && a.map?.summaryPolyline != null) {
             return Polyline(
-              polylineId: PolylineId(m?.id ?? 'no_id'),
-              points: decodeEncodedPolyline(m?.summaryPolyline ?? ''),
+              polylineId: PolylineId(a.map?.id ?? 'no_id'),
+              points: decodeEncodedPolyline(a.map?.summaryPolyline ?? ''),
               width: 2,
+              color:
+                  SportTypeHelper.getColor(a.sportType ?? SportType.undefined),
             );
           }
         })
@@ -93,8 +97,7 @@ class StravaRepository {
     final detailedActivity = await stravaClient.activities.getActivity(id);
     return Activity(
       id: detailedActivity.id,
-      // TODO(nenuphar): add sportType
-      // sportType: SportTypeHelper.getType(detailedActivity.type),
+      sportType: SportTypeHelper.getType(detailedActivity.type),
       map: detailedActivity.map,
     );
   }
@@ -110,8 +113,21 @@ class StravaRepository {
       if (isTokenExpired(token)) {
         // Refresh the token (with authenticate)
         Logger().d('Refreshing token.');
-        await authenticate();
-        Logger().v('Token refreshed');
+        try {
+          await authenticate();
+        } catch (e, s) {
+          logErrorMessage(e, s);
+          await deAuthorize();
+          return false;
+        }
+        // await authenticate().catchError((dynamic error, dynamic stackTrace) {
+        //   logErrorMessage(
+        //     error,
+        //     stackTrace,
+        //   );
+        //   return false;
+        // });
+        Logger().d('Token refreshed');
       }
       // return true if a token is stored
       return true;
@@ -130,16 +146,26 @@ class StravaRepository {
     // From source code :
     // RedirectUrl works best when it is a custom scheme. For example: strava://auth
     // If your redirectUrl is, for example, strava://auth then your callbackUrlScheme should be strava
-    await stravaClient.authentication.authenticate(
-      scopes: [
-        AuthenticationScope.activity_read_all,
-        AuthenticationScope.read_all,
-        AuthenticationScope.profile_read_all
-      ],
-      redirectUrl: 'com.nenuphar.mysportmap://redirect',
-      callbackUrlScheme: 'com.nenuphar.mysportmap',
-      // ignore: invalid_return_type_for_catch_error
-    ).catchError(logErrorMessage);
+    try {
+      await stravaClient.authentication.authenticate(
+        scopes: [
+          AuthenticationScope.activity_read_all,
+          AuthenticationScope.read_all,
+          AuthenticationScope.profile_read_all
+        ],
+        redirectUrl: 'com.nenuphar.mysportmap://redirect',
+        callbackUrlScheme: 'com.nenuphar.mysportmap',
+      );
+    } catch (e, s) {
+      logErrorMessage(e, s);
+      // TODO(nenuphar): remove token from memory
+      // and authenticate from zero again
+      // (ok not authenticate directly, just set as notAuthorized)
+      await sl<SessionManager>().logout();
+      // WARNING possible infinite recursive call !
+      await authenticate();
+    }
+    // ).catchError(logErrorMessage);
     Logger().d('[strava_repository] Authenticated ! (?)');
   }
 
