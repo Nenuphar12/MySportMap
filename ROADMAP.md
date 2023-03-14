@@ -21,6 +21,9 @@
 
 ## Improvements
 
+- improvement: remove local strava_client and use the "real" one [planned]
+- improvement: add exceptions int `strava_repository.dart` [planned]
+- improvement: clean my models to the bare minimum [done]
 - improvement: better management of errors thrown by strava_client [planned]
 - improvement? remove polylines when de authorizing [planned]
 - improvement: remove unnecessary functions from strava_repository model [planned]

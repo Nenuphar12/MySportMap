@@ -1,14 +1,14 @@
-// TODO(nenuphar): doc...
-// ignore_for_file: public_member_api_docs
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // TODO(nenuphar): manage this file. Where ?
 
-// Algorithm source :
-// https://developers.google.com/maps/documentation/utilities/polylinealgorithm
-// Code "inspiration" :
-// https://gist.github.com/Dammyololade/ce4eda8544e76c8f66a2664af9a1e0f3/
+/// Returns a decoded `polyline` from a polyline encoded as a [String].
+///
+/// The encoded polyline is encoded as a sting using this algorithm :
+/// https://developers.google.com/maps/documentation/utilities/polylinealgorithm
+///
+/// The code to decode was inspired from Dammyololade :
+/// https://gist.github.com/Dammyololade/ce4eda8544e76c8f66a2664af9a1e0f3/
 List<LatLng> decodeEncodedPolyline(String encodedPolyline) {
   final polyline = <LatLng>[];
   final len = encodedPolyline.length;
@@ -16,8 +16,11 @@ List<LatLng> decodeEncodedPolyline(String encodedPolyline) {
   var lat = 0;
   var lng = 0;
 
+  // For the whole encoded string, decode point by point.
   while (index < len) {
     int b;
+
+    // Decode the latitude value
     var shift = 0;
     var result = 0;
     do {
@@ -30,6 +33,7 @@ List<LatLng> decodeEncodedPolyline(String encodedPolyline) {
     final dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
     lat += dlat;
 
+    // Decode the longitude value
     shift = 0;
     result = 0;
     do {
