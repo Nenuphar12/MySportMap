@@ -12,10 +12,10 @@
 
 ## Features
 
-- new feature: implement splash screen [planned]
+- new feature: implement splash screen [in process]
 - new feature: center map on current position [planned]
 - new feature: add short message when polylines loaded [planned]
-- new feature: add colors for activities types [planned]
+- new feature: add colors for activities types [done]
 - new feature: implement `commitlint` [done]
 - CI: integrate `git-cliff` in CI [planned]
 
@@ -57,8 +57,9 @@
 
 ## Cleaning
 
-- cleaning: remove all "tests" // TODO
+- cleaning: remove all "tests" [done] (?)
 - cleaning: remove useless translation stuff [planned]
+- cleaning: clean launcher icons ?
 
 ---
 
