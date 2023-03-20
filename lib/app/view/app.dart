@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_sport_map/home/home.dart';
-import 'package:my_sport_map/l10n/l10n.dart';
 import 'package:my_sport_map/splash/splash.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
@@ -79,8 +78,6 @@ class _AppViewState extends State<AppView> {
           accentColor: const Color(0xFF13B9FF),
         ),
       ),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
       navigatorKey: navigatorKey,
       title: 'My sport map',
       // home: const HomePage(),
