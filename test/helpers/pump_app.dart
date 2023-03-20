@@ -10,29 +10,27 @@ class MockStravaRepository extends Mock implements StravaRepository {}
 
 class MockClientCubit extends Mock implements ClientCubit {}
 
+// class MockNavigatorObserver extends Mock implements NavigatorObserver {}
+
 extension PumpApp on WidgetTester {
   Future<void> pumpApp(
     Widget widget, {
     StravaRepository? stravaRepository,
     ClientCubit? clientCubit,
+    // NavigatorObserver? navigatorObserver,
   }) {
     return pumpWidget(
       RepositoryProvider.value(
         value: stravaRepository ?? MockStravaRepository(),
-        // TODO(nenuphar): change not needed anymore ?
         child: BlocProvider.value(
           value: clientCubit ?? MockClientCubit(),
           child: MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(body: widget),
+            // navigatorObservers: [navigatorObserver ?? MockNavigatorObserver()],
           ),
         ),
-        // child: MaterialApp(
-        //   localizationsDelegates: AppLocalizations.localizationsDelegates,
-        //   supportedLocales: AppLocalizations.supportedLocales,
-        //   home: Scaffold(body: widget),
-        // ),
       ),
     );
   }

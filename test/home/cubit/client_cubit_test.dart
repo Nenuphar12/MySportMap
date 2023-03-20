@@ -36,7 +36,7 @@ void main() {
 
     group('setState', () {
       blocTest<ClientCubit, ClientState>(
-        'sets state to given value',
+        'emits correct state when set to ready',
         build: buildCubit,
         act: (cubit) => cubit.setClientStatus(ClientStatus.ready),
         expect: () => [
@@ -44,6 +44,14 @@ void main() {
         ],
       );
     });
+
+    // Not working
+    // blocTest<ClientCubit, ClientState>(
+    //   'returns true if the app is starting when isAppStarting is called',
+    //   build: buildCubit,
+    //   act: (cubit) => cubit.state.isAppStarting(),
+    //   expect: () => true,
+    // );
 
     // blocTest<ClientCubit, ClientState>(
     //   'emits [1] when increment is called',

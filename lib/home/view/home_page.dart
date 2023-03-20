@@ -19,10 +19,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const HomeView();
-    // return BlocProvider(
-    //   create: (_) => ClientCubit(),
-    //   child: const HomeView(),
-    // );
   }
 }
 
@@ -39,20 +35,6 @@ class HomeView extends StatelessWidget {
     return BlocBuilder<ClientCubit, ClientState>(
       builder: (context, state) {
         logger.v('Building home_page');
-        // if (state.isAppStarting()) {
-        //   // Check the client when the app is starting
-        //   context
-        //       .read<StravaRepository>()
-        //       .isAuthenticated()
-        //       .then((isAuthenticated) {
-        //     logger.v('Already Authenticated : $isAuthenticated');
-        //     context.read<ClientCubit>().setClientStatus(
-        //           isAuthenticated
-        //               ? ClientStatus.ready
-        //               : ClientStatus.notAuthorized,
-        //         );
-        //   });
-        // }
 
         final isLoggedIn = state.isReady();
 

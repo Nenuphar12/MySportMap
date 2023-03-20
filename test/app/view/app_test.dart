@@ -12,29 +12,39 @@ import 'package:strava_repository/strava_repository.dart';
 
 import '../../helpers/helpers.dart';
 
-// TODO(nenuphar): clean this file and implement more tests.
-
 void main() {
   late StravaRepository stravaRepository;
   late ClientCubit clientCubit;
+  // late NavigatorObserver navigatorObserver;
 
   setUp(() {
     stravaRepository = MockStravaRepository();
+    // Needs to wait a little bit ? To be sure to get to the Splash Screen ?
     when(stravaRepository.isAuthenticated)
         .thenAnswer((_) => Future.value(false));
 
     clientCubit = MockClientCubit();
-    // TEST: necessary section
     whenListen(
       clientCubit,
       Stream.fromIterable(
         [
           const ClientState(),
-          // const ClientState(status: ClientStatus.notAuthorized),
+          const ClientState(status: ClientStatus.notAuthorized),
         ],
       ),
       initialState: const ClientState(),
     );
+
+    // Verify that the states of clientCubit are emitted in the right way
+    // expectLater(
+    //   clientCubit.stream,
+    //   emitsInOrder([
+    //     const ClientState(),
+    //     const ClientState(status: ClientStatus.notAuthorized),
+    //   ]),
+    // );
+
+    // navigatorObserver = MockNavigatorObserver();
   });
 
   group('MySportMapApp', () {
@@ -52,18 +62,24 @@ void main() {
 
   group('AppView', () {
     testWidgets('renders MaterialApp with correct themes', (tester) async {
-      // TODO(nenuphar): do I use this ?
-      // Wait indefinitely to stay on the SplashPage and generate only one
-      // MaterialApp.
-      when(stravaRepository.isAuthenticated)
-          .thenAnswer((_) => Completer<bool>().future);
+      // Verify that the states of clientCubit are emitted in the right way
+      // Not working at some other places, I don't know why...
+      // (not working before pumpAndSettle because it makes wait and then
+      // everything is already settled ?)
+      await expectLater(
+        clientCubit.stream,
+        emitsInOrder([
+          const ClientState(),
+          const ClientState(status: ClientStatus.notAuthorized),
+        ]),
+      );
 
-      // ERROR: this generates 2 MaterialApps...
-      // await tester.pumpApp(
-      //   const AppView(),
-      //   stravaRepository: stravaRepository,
-      //   clientCubit: clientCubit,
-      // );
+      // Wait indefinitely to stay on the SplashPage and generate only one
+      // MaterialApp. (Not necessary - not used here)
+      when(stravaRepository.isAuthenticated)
+          .thenAnswer((_) => Future<bool>.value(false));
+      // .thenAnswer((_) => Completer<bool>().future);
+
       await tester.pumpWidget(
         RepositoryProvider.value(
           value: stravaRepository,
@@ -73,15 +89,6 @@ void main() {
           ),
         ),
       );
-
-      // TODO(nenuphar): Test ? working ?
-      // await expectLater(
-      //   clientCubit.stream,
-      //   emitsInOrder([
-      //     const ClientState(),
-      //     const ClientState(status: ClientStatus.notAuthorized),
-      //   ]),
-      // );
 
       // Finds two widgets: one for the SplashPage and then one for the HomePage
       // (after authentication status acquired).
@@ -108,26 +115,42 @@ void main() {
         stravaRepository: stravaRepository,
         clientCubit: clientCubit,
       );
-      // await tester.pumpWidget(
-      //   RepositoryProvider.value(
-      //     value: stravaRepository,
-      //     child: const AppView(),
-      //   ),
-      // );
 
       expect(find.byType(SplashPage), findsOneWidget);
     });
 
-    // testWidgets('renders HomePage', (tester) async {
+    testWidgets('renders HomePage', (tester) async {
+      await tester.pumpApp(
+        const AppView(),
+        stravaRepository: stravaRepository,
+        clientCubit: clientCubit,
+        // navigatorObserver: navigatorObserver,
+      );
+
+      // Wait for the splash screen to be removed and for HomePage
+      // to be rendered
+      await tester.pumpAndSettle();
+
+      // verify(navigatorObserver.didPush(HomePage.route(), any()));
+
+      expect(find.byType(HomePage), findsOneWidget);
+    });
+
+    // testWidgets('set cubit state properly', (tester) async {
+    //   when(stravaRepository.isAuthenticated)
+    //       .thenAnswer((_) => Future<bool>.value(true));
+
     //   await tester.pumpApp(
     //     const AppView(),
     //     stravaRepository: stravaRepository,
     //     clientCubit: clientCubit,
+    //     // navigatorObserver: navigatorObserver,
     //   );
 
-    //   await tester.pumpAndSettle();
-
-    //   expect(find.byType(HomePage), findsOneWidget);
+    //   expect(
+    //     clientCubit.state,
+    //     equals(const ClientState(status: ClientStatus.ready)),
+    //   );
     // });
   });
 }
