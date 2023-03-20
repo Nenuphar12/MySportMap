@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_sport_map/home/cubit/client_cubit.dart';
 import 'package:my_sport_map/home/widgets/widgets.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
-import 'package:strava_repository/strava_repository.dart';
 
 /// {@template home_page}
 /// A [StatelessWidget] which is responsible for providing a [ClientCubit]
@@ -13,12 +12,17 @@ class HomePage extends StatelessWidget {
   /// {@macro home_page}
   const HomePage({super.key});
 
+  static Route<void> route() {
+    return MaterialPageRoute<void>(builder: (_) => const HomePage());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ClientCubit(),
-      child: const HomeView(),
-    );
+    return const HomeView();
+    // return BlocProvider(
+    //   create: (_) => ClientCubit(),
+    //   child: const HomeView(),
+    // );
   }
 }
 
@@ -35,20 +39,20 @@ class HomeView extends StatelessWidget {
     return BlocBuilder<ClientCubit, ClientState>(
       builder: (context, state) {
         logger.v('Building home_page');
-        if (state.isAppStarting()) {
-          // Check the client when the app is starting
-          context
-              .read<StravaRepository>()
-              .isAuthenticated()
-              .then((isAuthenticated) {
-            logger.v('Already Authenticated : $isAuthenticated');
-            context.read<ClientCubit>().setClientStatus(
-                  isAuthenticated
-                      ? ClientStatus.ready
-                      : ClientStatus.notAuthorized,
-                );
-          });
-        }
+        // if (state.isAppStarting()) {
+        //   // Check the client when the app is starting
+        //   context
+        //       .read<StravaRepository>()
+        //       .isAuthenticated()
+        //       .then((isAuthenticated) {
+        //     logger.v('Already Authenticated : $isAuthenticated');
+        //     context.read<ClientCubit>().setClientStatus(
+        //           isAuthenticated
+        //               ? ClientStatus.ready
+        //               : ClientStatus.notAuthorized,
+        //         );
+        //   });
+        // }
 
         final isLoggedIn = state.isReady();
 

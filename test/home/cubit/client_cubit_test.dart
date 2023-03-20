@@ -1,11 +1,25 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 import 'package:my_sport_map/home/home.dart';
+import 'package:strava_repository/strava_repository.dart';
+
+import '../../helpers/helpers.dart';
 
 void main() {
+  late StravaRepository stravaRepository;
+
+  setUp(() {
+    stravaRepository = MockStravaRepository();
+    when(stravaRepository.isAuthenticated)
+        // Never returns so the bloc initialization
+        // .thenAnswer((_) => Completer<bool>().future);
+        .thenAnswer((_) => Future<bool>.value(true));
+  });
+
   group('ClientCubit', () {
-    ClientCubit buildCubit() => ClientCubit();
+    ClientCubit buildCubit() => ClientCubit(stravaRepository: stravaRepository);
 
     group('constructor', () {
       test('works properly', () {
