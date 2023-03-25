@@ -21,6 +21,7 @@
 
 ## Improvements
 
+- move: move from google maps to flutter_map ? [planned]
 - improvement: remove local strava_client and use the "real" one [planned]
 - improvement: add exceptions int `strava_repository.dart` [planned]
 - improvement: clean my models to the bare minimum [done]
