@@ -14,6 +14,7 @@ dependencies:
   flutter_bloc: ^8.1.2
   flutter_localizations:
     sdk: flutter
+  geolocator: ^9.0.2
   google_maps_flutter: ^2.2.5
   intl: ^0.17.0
   logger: ^1.2.2
