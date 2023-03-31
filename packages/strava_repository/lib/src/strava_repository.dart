@@ -178,16 +178,6 @@ class StravaRepository {
   FutureOr<void> logErrorMessage(dynamic error, dynamic stackTrace) {
     if (error is Fault) {
       Logger().e('Did Receive Fault', error, stackTrace as StackTrace);
-      // TODO(nenuphar): show dialog when error ?
-      // showDialog(
-      //     context: context,
-      //     builder: (context) {
-      //       return AlertDialog(
-      //         title: Text("Did Receive Fault"),
-      //         content: Text(
-      //             "Message: ${error.message}\n-----------------\nErrors:\n${(error.errors ?? []).map((e) => "Code: ${e.code}\nResource: ${e.resource}\nField: ${e.field}\n").toList().join("\n----------\n")}"),
-      //       );
-      //     });
     } else {
       Logger().e(
         'Received Error which is not a Fault',

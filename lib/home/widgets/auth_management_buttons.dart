@@ -10,17 +10,12 @@ class AuthManagementButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     logger.v('Build AuthManagementButtons');
-    // TODO(nenuphar): Builder useful ?
-    return Builder(
-      builder: (context) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            LoginButton(),
-            DeAuthButton(),
-          ],
-        );
-      },
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: const [
+        LoginButton(),
+        DeAuthButton(),
+      ],
     );
   }
 }

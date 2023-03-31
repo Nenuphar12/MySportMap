@@ -90,7 +90,7 @@ extension SportTypeHelper on SportType {
   Map<String, dynamic> toJson() =>
       <String, dynamic>{'sport_type': toString().split('.').last};
 
-  // TODO(nenuphar): doc...
+  /// Returns a color for each [SportType].
   static Color getColor(SportType sportType) {
     switch (sportType) {
       case SportType.undefined:

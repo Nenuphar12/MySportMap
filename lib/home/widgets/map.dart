@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart'
+    hide LocationServiceDisabledException, PermissionDeniedException;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:my_sport_map/home/errors/errors.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
@@ -15,83 +19,93 @@ class MyMap extends StatefulWidget {
 }
 
 class _MyMapState extends State<MyMap> {
-  late GoogleMapController mapController;
-  bool polylinesLoaded = false;
+  final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
 
-  /// Whether the location permission is granted (on the spot).
-  bool isLocationPermissionChanged = false;
+  bool _polylinesLoaded = false;
 
-  /// [Key] used to rebuild the map when location is authorized.
-  Key googleMapKey = const Key('initial_google_map');
+  /// The default initial position to center the map
+  final LatLng _center = const LatLng(43.5628075, 5);
 
-  late Set<Polyline> myPolylines = {};
-
-  final LatLng _center = const LatLng(43.5628075, 5.6427871);
-
-  // ignore: use_setters_to_change_properties
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
+  late Set<Polyline> _myPolylines = {};
 
   @override
   void initState() {
     super.initState();
-    // Ask for location permission (if needed) and if it is newly granted,
-    // rebuild the map
-    _checkLocalizationPermission().then((value) {
-      logger.d('Location permission granted.');
-      setState(() {
-        isLocationPermissionChanged = true;
-        // Reload the map
-        googleMapKey = const Key('google_map_reloaded_with_location');
-      });
-    }).onError((error, stackTrace) {
-      const snackBar = SnackBar(
-        content: Text('Localization is not permitted.\n\n'
-            'Consider enabling it if you want the map to display'
-            ' your position.'),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    });
+    // Tries to determine current position and ask permission if needed.
+    // The map initial position is then updated.
+    _determinePosition().then(
+      (position) {
+        final currentPosition = CameraPosition(
+          target: LatLng(position.latitude, position.longitude),
+          zoom: 13,
+        );
+        // Animate the map to the current position
+        _controller.future.then(
+          (controller) => controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              currentPosition,
+            ),
+          ),
+        );
+      },
+    ).onError<LocationServiceDisabledException>(
+      (error, stackTrace) {
+        final snackBar = SnackBar(content: Text(error.toString()));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
+    ).onError<PermissionDeniedException>(
+      (error, stackTrace) {
+        logger.i('location permission request denied', [error, stackTrace]);
+        final snackBar = SnackBar(content: Text(error.toString()));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
+    ).onError<PermissionDeniedForeverException>(
+      (error, stackTrace) {
+        logger.w('location permission permanently denied', [error, stackTrace]);
+        final snackBar = SnackBar(content: Text(error.toString()));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
+    );
+
+    // Load polylines of activities to be displayed
+    if (!_polylinesLoaded) {
+      if (widget.isClientReady) {
+        // Get the polylines !
+        logger.v('[polylines] Requesting polylines');
+        context.read<StravaRepository>().getAllPolylines().then((polylines) {
+          logger.v('[polylines] Got polylines');
+          setState(() {
+            _myPolylines = polylines;
+            _polylinesLoaded = true;
+          });
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     logger.v('Building map.');
-    if (!polylinesLoaded) {
-      if (widget.isClientReady) {
-        // Get the polylines !
-        logger.v('Requesting polylines...');
-        context.read<StravaRepository>().getAllPolylines().then((polylines) {
-          logger.v('Got polylines !!!');
-          setState(() {
-            myPolylines = polylines;
-            polylinesLoaded = true;
-          });
-        });
-      }
-    }
 
     return GoogleMap(
-      key: googleMapKey,
-      polylines: myPolylines,
-      onMapCreated: _onMapCreated,
+      polylines: _myPolylines,
+      onMapCreated: _controller.complete,
       initialCameraPosition: CameraPosition(
         target: _center,
-        zoom: 11,
+        zoom: 10,
       ),
       myLocationEnabled: true,
+      // mapType: MapType.terrain,
     );
   }
 
-  /// Determine if localization is permitted and ask permission if needed.
-  ///
-  /// Returns `true` if the permission is newly granted and `false` if it was
-  /// already granted previously. (indicates a change)
+  /// Determine the current position of the device.
   ///
   /// When the location services are not enabled or permissions
   /// are denied the `Future` will return an error.
-  Future<bool> _checkLocalizationPermission() async {
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
     LocationPermission permission;
 
     permission = await Geolocator.checkPermission();
@@ -103,21 +117,31 @@ class _MyMapState extends State<MyMap> {
         // Android's shouldShowRequestPermissionRationale
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
-      }
 
-      return true;
+        return Future.error(const PermissionDeniedException());
+      }
     }
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
+
       return Future.error(
-        'Location permissions are permanently denied,'
-        ' we cannot request permissions.',
+        const PermissionDeniedForeverException(),
       );
     }
 
-    // When we reach here, permissions are granted
-    return false;
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+
+      return Future.error(const LocationServiceDisabledException());
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return Geolocator.getCurrentPosition();
   }
 }
