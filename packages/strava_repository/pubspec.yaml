@@ -13,13 +13,14 @@ dependencies:
   google_maps_flutter: ^2.2.5
   json_annotation: ^4.8.0
   logger: ^1.2.2
-  #strava_client: ^2.0.2
   meta: ^1.8.0
-  strava_client:
-    path: ../strava_flutter
+  strava_client: ^2.0.3
+  # strava_client:
+  #   path: ../strava_flutter
 
 dev_dependencies:
   build_runner: ^2.3.3
+  dependency_validator: ^3.2.2
   json_serializable: ^6.6.1
   mocktail: ^0.3.0
   test: ^1.19.2

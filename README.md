@@ -126,17 +126,6 @@ $ open coverage/index.html
 
 ---
 
-[coverage_badge]: coverage_badge.svg
-[flutter_localizations_link]: https://api.flutter.dev/flutter/flutter_localizations/flutter_localizations-library.html
-[internationalization_link]: https://flutter.dev/docs/development/accessibility-and-localization/internationalization
-[license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
-[license_link]: https://opensource.org/licenses/MIT
-[very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
-[very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
-[very_good_cli_link]: https://github.com/VeryGoodOpenSource/very_good_cli
-
----
-
 ## License
 
 Distributed under the MIT license. See [`LICENSE.md`](https://github.com/Nenuphar12/MySportMap/blob/main/LICENSE.md) for more information.
@@ -148,3 +137,12 @@ Distributed under the MIT license. See [`LICENSE.md`](https://github.com/Nenupha
 Thanks to [dreampowder](https://github.com/dreampowder/) for implementing
 [strava_flutter](https://github.com/dreampowder/strava_flutter/), a Strava API
 for Flutter.
+
+---
+
+[coverage_badge]: coverage_badge.svg
+[license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[license_link]: LICENSE.md
+[very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
+[very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
+[very_good_cli_link]: https://github.com/VeryGoodOpenSource/very_good_cli
