@@ -1,6 +1,6 @@
 name: my_sport_map
 description: A flutter project to view all your strava's activities on one map.
-version: 0.2.0+1
+version: 0.3.0+1
 publish_to: none
 
 environment:

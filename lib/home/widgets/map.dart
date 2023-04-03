@@ -2,25 +2,32 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart'
-    hide LocationServiceDisabledException, PermissionDeniedException;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_sport_map/home/errors/errors.dart';
+import 'package:my_sport_map/home/helpers/geolocator_helper.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
 class MyMap extends StatefulWidget {
-  const MyMap({required this.isClientReady, super.key});
+  const MyMap({
+    required this.isClientReady,
+    super.key,
+    this.geolocatorHelper = const GeolocatorHelper(),
+  });
 
   final bool isClientReady;
+  final GeolocatorHelper geolocatorHelper;
 
   @override
-  State<MyMap> createState() => _MyMapState();
+  State<MyMap> createState() => MyMapState();
 }
 
-class _MyMapState extends State<MyMap> {
-  final Completer<GoogleMapController> _controller =
+class MyMapState extends State<MyMap> {
+  final Completer<GoogleMapController> controller =
       Completer<GoogleMapController>();
+
+  /// The center of the map.
+  late LatLng centerOfMap;
 
   bool _polylinesLoaded = false;
 
@@ -34,14 +41,14 @@ class _MyMapState extends State<MyMap> {
     super.initState();
     // Tries to determine current position and ask permission if needed.
     // The map initial position is then updated.
-    _determinePosition().then(
+    widget.geolocatorHelper.determinePosition().then(
       (position) {
         final currentPosition = CameraPosition(
           target: LatLng(position.latitude, position.longitude),
           zoom: 13,
         );
         // Animate the map to the current position
-        _controller.future.then(
+        controller.future.then(
           (controller) => controller.animateCamera(
             CameraUpdate.newCameraPosition(
               currentPosition,
@@ -51,18 +58,19 @@ class _MyMapState extends State<MyMap> {
       },
     ).onError<LocationServiceDisabledException>(
       (error, stackTrace) {
+        logger.i('location service is disabled');
         final snackBar = SnackBar(content: Text(error.toString()));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
     ).onError<PermissionDeniedException>(
       (error, stackTrace) {
-        logger.i('location permission request denied', [error, stackTrace]);
+        logger.i('location permission request denied');
         final snackBar = SnackBar(content: Text(error.toString()));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
     ).onError<PermissionDeniedForeverException>(
       (error, stackTrace) {
-        logger.w('location permission permanently denied', [error, stackTrace]);
+        logger.w('location permission permanently denied');
         final snackBar = SnackBar(content: Text(error.toString()));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
@@ -90,58 +98,15 @@ class _MyMapState extends State<MyMap> {
 
     return GoogleMap(
       polylines: _myPolylines,
-      onMapCreated: _controller.complete,
+      onMapCreated: controller.complete,
       initialCameraPosition: CameraPosition(
         target: _center,
         zoom: 10,
       ),
       myLocationEnabled: true,
       // mapType: MapType.terrain,
+      // Keeps centerOfMap updated
+      onCameraMove: (position) => centerOfMap = position.target,
     );
-  }
-
-  /// Determine the current position of the device.
-  ///
-  /// When the location services are not enabled or permissions
-  /// are denied the `Future` will return an error.
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-
-        return Future.error(const PermissionDeniedException());
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-
-      return Future.error(
-        const PermissionDeniedForeverException(),
-      );
-    }
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-
-      return Future.error(const LocationServiceDisabledException());
-    }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
-    return Geolocator.getCurrentPosition();
   }
 }

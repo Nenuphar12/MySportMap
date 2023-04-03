@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2023-04-03
+
+### Bug Fixes
+
+- Fix splash icon size
+
+### Features
+
+- Add custom launch icon !
+- Add kind of splash screen
+- Add localization to the map
+- Center map on current position at start
+
+### Miscellaneous Tasks
+
+- Update `CHANGELOG.md`
+- Removes useless translation stuff
+- Changes launch icon size
+- Add `CODE_OF_CONDUCT.md`
+
+### Testing
+
+- Add and fix some tests
+- Add tests for position functions
+
 ## [0.2.0] - 2023-03-14
 
 ### Documentation
