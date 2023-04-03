@@ -8,6 +8,8 @@ environment:
     
 dependencies:
   equatable: ^2.0.5
+  flutter:
+    sdk: flutter
   google_maps_flutter: ^2.2.5
   json_annotation: ^4.8.0
   logger: ^1.2.2

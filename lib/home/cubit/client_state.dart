@@ -15,4 +15,13 @@ class ClientState extends Equatable {
 
   @override
   List<Object> get props => [status];
+
+  /// Whether the app is starting (client state not known yet)
+  bool isAppStarting() => status == ClientStatus.appStarting;
+
+  /// Whether the client is ready
+  bool isReady() => status == ClientStatus.ready;
+
+  /// Whether the client is not authorized
+  bool isNotAuthorized() => status == ClientStatus.notAuthorized;
 }

@@ -1,19 +1,22 @@
-// TODO(nenuphar): Doc...
-// ignore_for_file: public_member_api_docs
-
 import 'dart:async';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:logger/logger.dart';
+import 'package:strava_client/common/injections.dart';
 import 'package:strava_client/common/local_storage.dart';
+import 'package:strava_client/common/session_manager.dart';
 import 'package:strava_client/domain/model/model_authentication_response.dart';
 import 'package:strava_client/domain/model/model_authentication_scopes.dart';
 import 'package:strava_client/domain/model/model_fault.dart';
 import 'package:strava_client/strava_client.dart';
+import 'package:strava_repository/src/models/sport_types.dart';
 import 'package:strava_repository/strava_repository.dart';
 
+/// Error thrown when an [Activity] with a given id is not found.
+class ActivityNotFoundException implements Exception {}
+
 /// {@template strava_repository}
-/// A dart repository which manages the strava API with strava_client.
+/// A dart repository that handles `activity` by wrapping the `strava_client`.
 /// {@endtemplate}
 class StravaRepository {
   /// {@macro strava_repository}
@@ -24,10 +27,35 @@ class StravaRepository {
       applicationName: 'mySportMap',
     );
   }
-  //: _stravaApiClient = stravaApiClient ?? StravaApiClient();
 
-  //final StravaApiClient stravaApiClient;
+  /// The client used by the repository to fetch data.
   late final StravaClient stravaClient;
+
+  /// List [Activity]s of the user.
+  Future<List<Activity>> listActivities({
+    DateTime? before,
+    DateTime? after,
+    int? page,
+    int? perPage,
+  }) async {
+    final listSummaryActivities =
+        await stravaClient.activities.listLoggedInAthleteActivities(
+      before ?? DateTime.now(),
+      after ?? DateTime(1999),
+      page ?? 1,
+      perPage ?? 30,
+    );
+    final listActivities = listSummaryActivities
+        .map(
+          (a) => Activity(
+            id: a.id,
+            sportType: SportTypeHelper.getType(a.type),
+            map: a.map,
+          ),
+        )
+        .toList();
+    return listActivities;
+  }
 
   /// List **all** [Activity] of the user.
   Future<List<Activity>> listAllActivities() async {
@@ -43,17 +71,19 @@ class StravaRepository {
     return allActivities;
   }
 
-  /// Returns a set of [Polyline] from the summaryPolylines.
+  /// Returns a set of [Polyline]s from the encoded summaryPolylines.
   Future<Set<Polyline>> getAllPolylines() async {
     final allActivities = await listAllActivities();
-    final allMaps = allActivities.map((a) => a.map).toList();
-    final allPolylines = allMaps
-        .map((m) {
-          if (m?.id != null && m?.summaryPolyline != null) {
+    // final allMaps = allActivities.map((a) => a.map).toList();
+    final allPolylines = allActivities
+        .map((a) {
+          if (a.map?.id != null && a.map?.summaryPolyline != null) {
             return Polyline(
-              polylineId: PolylineId(m?.id ?? 'no_id'),
-              points: decodeEncodedPolyline(m?.summaryPolyline ?? ''),
+              polylineId: PolylineId(a.map?.id ?? 'no_id'),
+              points: decodeEncodedPolyline(a.map?.summaryPolyline ?? ''),
               width: 2,
+              color:
+                  SportTypeHelper.getColor(a.sportType ?? SportType.undefined),
             );
           }
         })
@@ -62,59 +92,19 @@ class StravaRepository {
     return allPolylines;
   }
 
-  /// List [Activity] of the user.
-  Future<List<Activity>> listActivities({
-    DateTime? before,
-    DateTime? after,
-    int? page,
-    int? perPage,
-  }) async {
-    final listSummaryActivities =
-        await stravaClient.activities.listLoggedInAthleteActivities(
-      before ?? DateTime.now(),
-      after ?? DateTime(1999),
-      page ?? 1,
-      perPage ?? 30,
-    );
-    /*
-    await stravaClient.getLoggedInAthleteActivities(
-        before ?? DateTime.now(), after ?? DateTime(1999),
-        page: page ?? 1, perPage: perPage ?? 30);
-    */
-    final listActivities = listSummaryActivities
-        .map(
-          (a) => Activity(
-            id: a.id,
-            name: a.name,
-            distance: a.distance,
-            map: a.map,
-          ),
-        )
-        .toList();
-    /*
-    var listActivities = [];
-    for (var activity in listDetailedActivities) {
-      listActivities.add(Activity(
-          id: activity.id,
-          name: activity.name,
-          distance: activity.distance,
-          map: activity.map));
-    }
-    */
-    return listActivities;
-  }
-
-  /// Fetch a specific [Activity].
+  /// Fetch a specific [Activity] from its [id].
   Future<Activity> getActivity(int id) async {
     final detailedActivity = await stravaClient.activities.getActivity(id);
     return Activity(
       id: detailedActivity.id,
-      name: detailedActivity.name,
-      distance: detailedActivity.distance,
+      sportType: SportTypeHelper.getType(detailedActivity.type),
       map: detailedActivity.map,
     );
   }
 
+  /// Whether the client is already authenticated.
+  ///
+  /// If the client is authenticated, the token is refreshed.
   Future<bool> isAuthenticated() async {
     final token =
         await LocalStorageManager.getToken(applicationName: 'mySportMap');
@@ -123,8 +113,21 @@ class StravaRepository {
       if (isTokenExpired(token)) {
         // Refresh the token (with authenticate)
         Logger().d('Refreshing token.');
-        await authenticate();
-        Logger().v('Token refreshed');
+        try {
+          await authenticate();
+        } catch (e, s) {
+          logErrorMessage(e, s);
+          await deAuthorize();
+          return false;
+        }
+        // await authenticate().catchError((dynamic error, dynamic stackTrace) {
+        //   logErrorMessage(
+        //     error,
+        //     stackTrace,
+        //   );
+        //   return false;
+        // });
+        Logger().d('Token refreshed');
       }
       // return true if a token is stored
       return true;
@@ -133,40 +136,48 @@ class StravaRepository {
     }
   }
 
+  /// Authenticates to Strava and authorizes the required scopes.
+  ///
+  /// The required scopes are :
+  /// - activity_read_all
+  /// - read_all
+  /// - profile_read_all
   Future<void> authenticate() async {
     // From source code :
     // RedirectUrl works best when it is a custom scheme. For example: strava://auth
     // If your redirectUrl is, for example, strava://auth then your callbackUrlScheme should be strava
-    await stravaClient.authentication.authenticate(
-      scopes: [
-        AuthenticationScope.activity_read_all,
-        AuthenticationScope.read_all,
-        AuthenticationScope.profile_read_all
-      ],
-      redirectUrl: 'com.nenuphar.mysportmap://redirect',
-      callbackUrlScheme: 'com.nenuphar.mysportmap',
-      forceShowingApproval: true, // TODO(nenuphar): useless ?
-      // ignore: invalid_return_type_for_catch_error
-    ).catchError(logErrorMessage);
+    try {
+      await stravaClient.authentication.authenticate(
+        scopes: [
+          AuthenticationScope.activity_read_all,
+          AuthenticationScope.read_all,
+          AuthenticationScope.profile_read_all
+        ],
+        redirectUrl: 'com.nenuphar.mysportmap://redirect',
+        callbackUrlScheme: 'com.nenuphar.mysportmap',
+      );
+    } catch (e, s) {
+      logErrorMessage(e, s);
+      // TODO(nenuphar): remove token from memory
+      // and authenticate from zero again
+      // (ok not authenticate directly, just set as notAuthorized)
+      await sl<SessionManager>().logout();
+      // WARNING possible infinite recursive call !
+      await authenticate();
+    }
+    // ).catchError(logErrorMessage);
     Logger().d('[strava_repository] Authenticated ! (?)');
   }
 
+  /// De authorizes the app from the user's Strava account.
   Future<void> deAuthorize() async {
     await stravaClient.authentication.deAuthorize().catchError(logErrorMessage);
   }
 
+  /// Logs an error message.
   FutureOr<void> logErrorMessage(dynamic error, dynamic stackTrace) {
     if (error is Fault) {
       Logger().e('Did Receive Fault', error, stackTrace as StackTrace);
-      // showDialog(
-      //     context: context,
-      //     builder: (context) {
-      //       return AlertDialog(
-      //         title: Text("Did Receive Fault"),
-      //         content: Text(
-      //             "Message: ${error.message}\n-----------------\nErrors:\n${(error.errors ?? []).map((e) => "Code: ${e.code}\nResource: ${e.resource}\nField: ${e.field}\n").toList().join("\n----------\n")}"),
-      //       );
-      //     });
     } else {
       Logger().e(
         'Received Error which is not a Fault',
@@ -176,6 +187,7 @@ class StravaRepository {
     }
   }
 
+  /// Whether the token is expired.
   bool isTokenExpired(TokenResponse token) {
     final expiresAt =
         DateTime.fromMillisecondsSinceEpoch(token.expiresAt * 1000);

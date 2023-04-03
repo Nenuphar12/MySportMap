@@ -4,25 +4,18 @@ import 'package:my_sport_map/home/cubit/client_cubit.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
-// TODO(nenuphar): remove build logs !
-
 class AuthManagementButtons extends StatelessWidget {
   const AuthManagementButtons({super.key});
 
   @override
   Widget build(BuildContext context) {
-    logger.d('Build AuthManagementButtons');
-    // TODO(nenuphar): Builder useful ?
-    return Builder(
-      builder: (context) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            LoginButton(),
-            DeAuthButton(),
-          ],
-        );
-      },
+    logger.v('Build AuthManagementButtons');
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: const [
+        LoginButton(),
+        DeAuthButton(),
+      ],
     );
   }
 }
@@ -42,8 +35,7 @@ class LoginButton extends StatelessWidget {
   void _login(BuildContext context) {
     // If authorization is needed login, else disable the button and display
     // an informative SnackBar.
-    if (context.read<ClientCubit>().state.status ==
-        ClientStatus.notAuthorized) {
+    if (context.read<ClientCubit>().state.isNotAuthorized()) {
       context.read<StravaRepository>().authenticate().then(
             (value) =>
                 context.read<ClientCubit>().setClientStatus(ClientStatus.ready),
@@ -70,7 +62,7 @@ class DeAuthButton extends StatelessWidget {
   void _deAuth(BuildContext context) {
     // If logged in de-authorize, else disable the button and display an
     // informative SnackBar.
-    if (context.read<ClientCubit>().state.status == ClientStatus.ready) {
+    if (context.read<ClientCubit>().state.isReady()) {
       context.read<StravaRepository>().deAuthorize().then((value) {
         logger.v('[_deAuth] de authorization successful (?)');
         // Update the [ClientCubit].

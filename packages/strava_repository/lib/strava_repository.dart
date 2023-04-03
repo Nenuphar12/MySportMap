@@ -1,4 +1,4 @@
-/// A Very Good Project created by Very Good CLI.
+/// A library to wrap [strava_flutter](https://pub.dev/packages/strava_client).
 library strava_repository;
 
 export 'src/models/models.dart';

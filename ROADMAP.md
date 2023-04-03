@@ -12,15 +12,19 @@
 
 ## Features
 
-- new feature: implement splash screen [planned]
+- new feature: implement splash screen [in process]
 - new feature: center map on current position [planned]
 - new feature: add short message when polylines loaded [planned]
-- new feature: add colors for activities types [planned]
+- new feature: add colors for activities types [done]
 - new feature: implement `commitlint` [done]
 - CI: integrate `git-cliff` in CI [planned]
 
 ## Improvements
 
+- move: move from google maps to flutter_map ? [planned]
+- improvement: remove local strava_client and use the "real" one [planned]
+- improvement: add exceptions int `strava_repository.dart` [planned]
+- improvement: clean my models to the bare minimum [done]
 - improvement: better management of errors thrown by strava_client [planned]
 - improvement? remove polylines when de authorizing [planned]
 - improvement: remove unnecessary functions from strava_repository model [planned]
@@ -28,10 +32,15 @@
 - improvement: improve tests [planned]
 - improvement: add chore to commitizen [planned]
 - improvement: add a contribution section in the README (commitlint) [planned]
-- improvement: find solution to allow very_good CI tests [planned]
+- improvement: find solution to allow very_good CI tests [done]
+- change: change clientState to AuthenticationState ?
+- substitution: change the custom function to decode polylines to GoogleMap function to do so [planned]
 
 ## Bugs
 
+- bug: if two phones on the same account, the refresh token could be wrong
+  and then an error is thrown and the state stays as `appStarting` !
+  [ // TODO ]
 - bug? verification of not calling `context` in `build` method [planned]
 
 ## Documentation
@@ -51,8 +60,9 @@
 
 ## Cleaning
 
-- cleaning: remove all "tests" // TODO
+- cleaning: remove all "tests" [done] (?)
 - cleaning: remove useless translation stuff [planned]
+- cleaning: clean launcher icons ?
 
 ---
 

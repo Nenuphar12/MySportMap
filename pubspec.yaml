@@ -1,6 +1,6 @@
 name: my_sport_map
 description: A flutter project to view all your strava's activities on one map.
-version: 0.1.0+1
+version: 0.3.0+1
 publish_to: none
 
 environment:
@@ -14,6 +14,7 @@ dependencies:
   flutter_bloc: ^8.1.2
   flutter_localizations:
     sdk: flutter
+  geolocator: ^9.0.2
   google_maps_flutter: ^2.2.5
   intl: ^0.17.0
   logger: ^1.2.2
@@ -23,6 +24,7 @@ dependencies:
 
 dev_dependencies:
   bloc_test: ^9.1.1
+  flutter_launcher_icons: ^0.12.0
   flutter_test:
     sdk: flutter
   mocktail: ^0.3.0
@@ -31,3 +33,23 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+flutter_icons:
+  android: "launcher_icon"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/icons/launcher_icon.png"
+  ios: true
+  image_path: "assets/icons/launcher_icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: false
+    # image_path: "path/to/image.png"
+    # background_color: "#hexcode"
+    # theme_color: "#hexcode"
+  windows:
+    generate: false
+    # image_path: "path/to/image.png"
+    # icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: false
+    # image_path: "path/to/image.png"

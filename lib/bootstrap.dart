@@ -5,7 +5,6 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:my_sport_map/app/app.dart';
 import 'package:my_sport_map/app/app_bloc_observer.dart';
-import 'package:strava_repository/strava_repository.dart';
 
 void bootstrap({required String clientId, required String secret}) {
   FlutterError.onError = (details) {
@@ -14,13 +13,13 @@ void bootstrap({required String clientId, required String secret}) {
 
   Bloc.observer = const AppBlocObserver();
 
-  final stravaRepository = StravaRepository(
-    clientId: clientId,
-    secret: secret,
-  );
-
   runZonedGuarded(
-    () => runApp(MySportMapApp(stravaRepository: stravaRepository)),
+    () => runApp(
+      MySportMapApp(
+        clientId: clientId,
+        secret: secret,
+      ),
+    ),
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
 }

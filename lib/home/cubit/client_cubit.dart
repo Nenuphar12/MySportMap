@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:my_sport_map/utilities/utilities.dart';
+import 'package:strava_repository/strava_repository.dart';
 
 part 'client_state.dart';
 
@@ -8,11 +10,21 @@ part 'client_state.dart';
 /// {@endtemplate}
 class ClientCubit extends Cubit<ClientState> {
   /// {@macro client_cubit}
-  ClientCubit() : super(const ClientState());
+  ///
+  /// During initialization, checks if the user is already logged in with
+  /// the provided [StravaRepository].
+  ClientCubit({required StravaRepository stravaRepository})
+      : super(const ClientState()) {
+    // Check if user is already logged in.
+    stravaRepository.isAuthenticated().then((isAuthenticated) {
+      logger.v('Already Authenticated : $isAuthenticated');
+      setClientStatus(
+        isAuthenticated ? ClientStatus.ready : ClientStatus.notAuthorized,
+      );
+    });
+  }
 
   /// Change the state to a newState.
   void setClientStatus(ClientStatus newStatus) =>
       emit(ClientState(status: newStatus));
-
-  // TODO(nenuphar): add isReady and isNotAuthorized functions
 }

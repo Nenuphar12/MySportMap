@@ -19,10 +19,8 @@
   ],
   "useGitignore": true,
   "words": [
-    "Loïc",
-    "Porcaro",
-    "strava",
-    "Strava",
+    "appbundle",
+    "appflowy",
     "commitlint",
     "meta-data",
     "appbundle",
@@ -30,8 +28,14 @@
     "appflowy",
     "Contador",
     "localizable",
+    "Loïc",
+    "meta-data",
     "mostrado",
     "página",
+    "polylines",
+    "Porcaro",
+    "strava",
+    "Strava",
     "Texto"
   ],
   "ignorePaths": [

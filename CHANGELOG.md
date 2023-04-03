@@ -2,20 +2,75 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.0] - 2023-03-09
+## [0.3.0] - 2023-04-03
+
+### Bug Fixes
+
+- Fix splash icon size
+
+### Features
+
+- Add custom launch icon !
+- Add kind of splash screen
+- Add localization to the map
+- Center map on current position at start
+
+### Miscellaneous Tasks
+
+- Update `CHANGELOG.md`
+- Removes useless translation stuff
+- Changes launch icon size
+- Add `CODE_OF_CONDUCT.md`
+
+### Testing
+
+- Add and fix some tests
+- Add tests for position functions
+
+## [0.2.0] - 2023-03-14
 
 ### Documentation
 
-- Add setup and build information in `README.md`
-- Create MIT license file
-- Create `CHANGELOG.md`
+- Add documentation for `strava_repository` package
+
+### Features
+
+- Add color to activities
+
+### Miscellaneous Tasks
+
+- Generate `CHANGELOG.md` for v0.1.0
+- Add of *test* values for Strava API
+
+### Refactor
+
+- Create custom login and de authorize buttons
+- Change debug logging to verbose for widget builds
+- Add functions to `ClientState` for improving usage
+
+### Styling
+
+- Fix typos
+- Fix code warnings
+
+### Testing
+
+- Fix existing tests
+- Add tests to reach 100% coverage over `auth_management_buttons.dart`
+- Implement tests for `MyMap` widget
+
+### Ci
+
+- Improving cspell and very_good_workflow configurations
+
+## [0.1.0] - 2023-03-09
 
 ### Miscellaneous Tasks
 
 - Add setup and build information in `README.md`
 - Create MIT license file
 - Referencing of `LICENSE` in README.md
-- Create `CHANGELOG.md`
+- Create `CHANGELOG.md` file
 - Create `ROADMAP.md` file
 
 ### Refactor
@@ -24,7 +79,6 @@ All notable changes to this project will be documented in this file.
 
 ### Styling
 
-- Referencing of `LICENSE` in README.md
 - Clean "TEST" comments in code
 
 ### Ci
