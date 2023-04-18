@@ -11,17 +11,21 @@
       "path": "https://raw.githubusercontent.com/verygoodopensource/very_good_dictionaries/main/allowed.txt",
       "description": "Allowed VGV Spellings"
     },
-    {
-      "name": "vgv_forbidden",
-      "path": "https://raw.githubusercontent.com/verygoodopensource/very_good_dictionaries/main/forbidden.txt",
-      "description": "Forbidden VGV Spellings"
-    }
+    // {
+    //   "name": "vgv_forbidden",
+    //   "path": "https://raw.githubusercontent.com/verygoodopensource/very_good_dictionaries/main/forbidden.txt",
+    //   "description": "Forbidden VGV Spellings"
+    // }
   ],
   "useGitignore": true,
   "words": [
     "appbundle",
     "appflowy",
     "commitlint",
+    "meta-data",
+    "appbundle",
+    "polylines",
+    "appflowy",
     "Contador",
     "localizable",
     "Loïc",
@@ -33,7 +37,9 @@
     "strava",
     "Strava",
     "Texto",
-    "dreampowder"
+    "dreampowder",
+    "opensource",
+    "stackoverflow"
   ],
   "ignorePaths": [
     "packages/strava_flutter/**"
