@@ -1,6 +1,6 @@
 name: my_sport_map
 description: A flutter project to view all your strava's activities on one map.
-version: 0.3.0+1
+version: 0.3.1+1
 publish_to: none
 
 environment:
@@ -12,22 +12,23 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.2
-  flutter_localizations:
-    sdk: flutter
   geolocator: ^9.0.2
   google_maps_flutter: ^2.2.5
-  intl: ^0.17.0
   logger: ^1.2.2
-  mockingjay: ^0.3.0
   strava_repository:
     path: packages/strava_repository
 
 dev_dependencies:
   bloc_test: ^9.1.1
-  flutter_launcher_icons: ^0.13.0
+  dependency_validator: ^3.2.2
+  flutter_launcher_icons: ^0.12.0
   flutter_test:
     sdk: flutter
+  json_annotation: ^4.8.0
+  meta: ^1.8.0
   mocktail: ^0.3.0
+  strava_client: ^2.1.0
+  test: ^1.22.0
   very_good_analysis: ^4.0.0
 
 flutter:

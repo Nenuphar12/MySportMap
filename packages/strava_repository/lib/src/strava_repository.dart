@@ -2,12 +2,9 @@ import 'dart:async';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:logger/logger.dart';
-import 'package:strava_client/common/injections.dart';
-import 'package:strava_client/common/local_storage.dart';
-import 'package:strava_client/common/session_manager.dart';
-import 'package:strava_client/domain/model/model_authentication_response.dart';
-import 'package:strava_client/domain/model/model_authentication_scopes.dart';
-import 'package:strava_client/domain/model/model_fault.dart';
+// TODO(nenuphar): improve strava_client to not have this problem
+// ignore: implementation_imports
+import 'package:strava_client/src/common/common.dart';
 import 'package:strava_client/strava_client.dart';
 import 'package:strava_repository/src/models/sport_types.dart';
 import 'package:strava_repository/strava_repository.dart';

@@ -36,7 +36,8 @@
     "Porcaro",
     "strava",
     "Strava",
-    "Texto"
+    "Texto",
+    "dreampowder"
   ],
   "ignorePaths": [
     "packages/strava_flutter/**"

@@ -43,38 +43,23 @@ class HomeView extends StatelessWidget {
           appBar: AppBar(
             title: const Text('My sport map'),
             actions: [
-              Icon(
-                isLoggedIn
-                    ? Icons.radio_button_checked_outlined
-                    : Icons.radio_button_off,
-                color: isLoggedIn ? Colors.white : Colors.red,
-              ),
+              if (isLoggedIn)
+                const Icon(
+                  Icons.radio_button_checked_outlined,
+                  color: Colors.white,
+                )
+              else
+                const Icon(
+                  Icons.radio_button_off,
+                  color: Colors.red,
+                ),
               const SizedBox(
                 width: 8,
               )
             ],
           ),
-          body: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Use of `UniqueKey` because these should be rebuild on every
-                // [ClientBloc] change.
-                AuthManagementButtons(
-                  key: UniqueKey(),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                Expanded(
-                  child: MyMap(
-                    isClientReady: state.isReady(),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          drawer: HomePageDrawer(isLoggedIn: isLoggedIn),
+          body: MyMap(isClientReady: isLoggedIn),
         );
       },
     );
