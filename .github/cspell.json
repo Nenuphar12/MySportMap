@@ -10,7 +10,7 @@
       "name": "vgv_allowed",
       "path": "https://raw.githubusercontent.com/verygoodopensource/very_good_dictionaries/main/allowed.txt",
       "description": "Allowed VGV Spellings"
-    },
+    }
     // {
     //   "name": "vgv_forbidden",
     //   "path": "https://raw.githubusercontent.com/verygoodopensource/very_good_dictionaries/main/forbidden.txt",
