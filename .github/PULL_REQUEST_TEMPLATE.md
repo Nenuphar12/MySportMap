@@ -1,14 +1,26 @@
 <!--
   Thanks for contributing!
 
-  Provide a description of your changes below and a general summary in the title
+  Provide a description of your changes below and a general summary in the title.
+-->
 
-  Please look at the following checklist to ensure that your PR can be accepted quickly:
+<!--
+  Note: This template is mostly informative, feel free to dismiss it if you feel like it.
+-->
+
+<!--
+  Check before PR :
+  - no more warnings (at least as few as possible)
+  - all tests pass
 -->
 
 ## Description
 
-<!--- Describe your changes in detail -->
+<!---
+- describe your changes in detail
+- explain why you need it
+- explain how it should work
+-->
 
 ## Type of Change
 
