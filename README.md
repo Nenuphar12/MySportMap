@@ -2,10 +2,8 @@
 
 # My Sport Map
 
-![coverage][coverage_badge]
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
 [![License: MIT][license_badge]][license_link]
-
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 > Small application to view all your Strava's activities on one map !
@@ -151,7 +149,7 @@ $ genhtml coverage/lcov.info -o coverage/html/
 $ open coverage/index.html
 ```
 
-## Contributing
+## Contributing 🙌
 
 Any contribution is welcome ! If you have new feature idea that you would like
 to see or if you spot a bug, feel free to open an issue.
@@ -159,21 +157,21 @@ to see or if you spot a bug, feel free to open an issue.
 And if you want to implement a new feature or fix an issue that would be
 awesome.
 
-## License
+For more information check [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+
+## License 📄
 
 Distributed under the *MIT license*. See
 [`LICENSE`](https://github.com/Nenuphar12/MySportMap/blob/main/LICENSE)
 for more information.
 
-## Acknowledgments
+## Acknowledgments ⭐
 
 Thanks to [dreampowder](https://github.com/dreampowder/) for implementing
 [strava_flutter](https://github.com/dreampowder/strava_flutter/), a Strava API
 for Flutter.
 
-[coverage_badge]: coverage_badge.svg
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: LICENSE
 [very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
 [very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
-[very_good_cli_link]: https://github.com/VeryGoodOpenSource/very_good_cli
