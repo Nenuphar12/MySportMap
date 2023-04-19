@@ -27,10 +27,7 @@ class MyFlutterMap extends StatefulWidget {
 }
 
 class MyFlutterMapState extends State<MyFlutterMap> {
-  // TODO(nenuphar): remove
-  // final Completer<GoogleMapController> controller =
-  //     Completer<GoogleMapController>();
-
+  // TODO(nenuphar): do something about this
   // late MapController _mapController;
 
   /// The center of the map.
@@ -41,7 +38,7 @@ class MyFlutterMapState extends State<MyFlutterMap> {
   /// The default initial position to center the map
   final LatLng _center = LatLng(43.5628075, 5);
 
-  late Set<Polyline> _myPolylines = {};
+  late List<Polyline> _myPolylines = [];
 
   late FollowOnLocationUpdate _followOnLocationUpdate;
   late StreamController<double?> _followCurrentLocationStreamController;
@@ -52,43 +49,6 @@ class MyFlutterMapState extends State<MyFlutterMap> {
 
     _followOnLocationUpdate = FollowOnLocationUpdate.always;
     _followCurrentLocationStreamController = StreamController<double?>();
-
-    // Tries to determine current position and ask permission if needed.
-    // The map initial position is then updated.
-    // widget.geolocatorHelper.determinePosition().then(
-    //   (position) {
-    //     final currentPosition = CameraPosition(
-    //       target: LatLng(position.latitude, position.longitude),
-    //       zoom: 13,
-    //     );
-    //     // Animate the map to the current position
-    //     controller.future.then(
-    //       (controller) => controller.animateCamera(
-    //         CameraUpdate.newCameraPosition(
-    //           currentPosition,
-    //         ),
-    //       ),
-    //     );
-    //   },
-    // ).onError<LocationServiceDisabledException>(
-    //   (error, stackTrace) {
-    //     logger.i('location service is disabled');
-    //     final snackBar = SnackBar(content: Text(error.toString()));
-    //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    //   },
-    // ).onError<PermissionDeniedException>(
-    //   (error, stackTrace) {
-    //     logger.i('location permission request denied');
-    //     final snackBar = SnackBar(content: Text(error.toString()));
-    //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    //   },
-    // ).onError<PermissionDeniedForeverException>(
-    //   (error, stackTrace) {
-    //     logger.w('location permission permanently denied');
-    //     final snackBar = SnackBar(content: Text(error.toString()));
-    //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    //   },
-    // );
 
     // Load polylines of activities to be displayed
     if (!_polylinesLoaded) {
@@ -166,29 +126,19 @@ class MyFlutterMapState extends State<MyFlutterMap> {
           maxZoom: 19,
         ),
         PolylineLayer(
-          // TODO(nenuphar): change set of polylines to list
           // TODO(nenuphar): simplify polylines when zoomed out
-          polylines: _myPolylines.toList(),
+          polylines: _myPolylines,
         ),
         CurrentLocationLayer(
           followCurrentLocationStream:
               _followCurrentLocationStreamController.stream,
           followOnLocationUpdate: _followOnLocationUpdate,
+          style: const LocationMarkerStyle(
+            markerSize: Size.square(12),
+            headingSectorRadius: 40,
+          ),
         ),
       ],
     );
-
-    // return GoogleMap(
-    //   polylines: _myPolylines,
-    //   onMapCreated: controller.complete,
-    //   initialCameraPosition: CameraPosition(
-    //     target: _center,
-    //     zoom: 10,
-    //   ),
-    //   myLocationEnabled: true,
-    //   // mapType: MapType.terrain,
-    //   // Keeps centerOfMap updated
-    //   onCameraMove: (position) => centerOfMap = position.target,
-    // );
   }
 }

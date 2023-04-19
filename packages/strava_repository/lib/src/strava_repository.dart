@@ -75,7 +75,7 @@ class StravaRepository {
 
   /// Returns a set of flutter_map [fm.Polyline]s from the encoded
   /// summaryPolylines.
-  Future<Set<fm.Polyline>> getAllPolylinesFM() async {
+  Future<List<fm.Polyline>> getAllPolylinesFM() async {
     final allActivities = await listAllActivities();
     // final allMaps = allActivities.map((a) => a.map).toList();
     final allPolylines = allActivities
@@ -91,7 +91,7 @@ class StravaRepository {
           }
         })
         .whereType<fm.Polyline>()
-        .toSet();
+        .toList();
     return allPolylines;
   }
 
