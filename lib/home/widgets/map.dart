@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:my_sport_map/home/helpers/geolocator_helper.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
@@ -40,9 +43,16 @@ class MyMapState extends State<MyMap> {
 
   late Set<Polyline> _myPolylines = {};
 
+  late FollowOnLocationUpdate _followOnLocationUpdate;
+  late StreamController<double?> _followCurrentLocationStreamController;
+
   @override
   void initState() {
     super.initState();
+
+    _followOnLocationUpdate = FollowOnLocationUpdate.always;
+    _followCurrentLocationStreamController = StreamController<double?>();
+
     // Tries to determine current position and ask permission if needed.
     // The map initial position is then updated.
     // widget.geolocatorHelper.determinePosition().then(
@@ -97,6 +107,12 @@ class MyMapState extends State<MyMap> {
   }
 
   @override
+  void dispose() {
+    _followCurrentLocationStreamController.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     logger.v('Building map.');
 
@@ -105,10 +121,40 @@ class MyMapState extends State<MyMap> {
       options: MapOptions(
         center: _center,
         zoom: 10,
+        // Stop following the location marker on the map if user interacted with
+        // the map.
+        onPositionChanged: (MapPosition position, bool hasGesture) {
+          if (hasGesture &&
+              _followOnLocationUpdate != FollowOnLocationUpdate.never) {
+            setState(
+              () => _followOnLocationUpdate = FollowOnLocationUpdate.never,
+            );
+          }
+        },
       ),
       nonRotatedChildren: [
         AttributionWidget.defaultWidget(
           source: 'OpenStreetMap contributors',
+        ),
+        Positioned(
+          right: 15,
+          bottom: 30,
+          child: FloatingActionButton(
+            onPressed: () {
+              // Follow the location marker on the map when location updated
+              // until user interact with the map.
+              setState(
+                () => _followOnLocationUpdate = FollowOnLocationUpdate.always,
+              );
+              // Follow the location marker on the map and zoom the map to
+              // level 12.
+              _followCurrentLocationStreamController.add(12);
+            },
+            child: const Icon(
+              Icons.my_location,
+              color: Colors.white,
+            ),
+          ),
         ),
       ],
       children: [
@@ -121,7 +167,12 @@ class MyMapState extends State<MyMap> {
           // TODO(nenuphar): change set of polylines to list
           // TODO(nenuphar): simplify polylines when zoomed out
           polylines: _myPolylines.toList(),
-        )
+        ),
+        CurrentLocationLayer(
+          followCurrentLocationStream:
+              _followCurrentLocationStreamController.stream,
+          followOnLocationUpdate: _followOnLocationUpdate,
+        ),
       ],
     );
 
