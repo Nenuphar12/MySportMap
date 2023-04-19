@@ -3,7 +3,9 @@ import 'dart:async';
 // TODO(nenuphar): remove this one
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_map/flutter_map.dart' show Polyline;
+import 'package:flutter_map/flutter_map.dart' as fm show Polyline;
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gm
+    show Polyline, PolylineId;
 import 'package:logger/logger.dart';
 // TODO(nenuphar): improve strava_client to not have this problem
 // ignore: implementation_imports
@@ -71,23 +73,46 @@ class StravaRepository {
     return allActivities;
   }
 
-  /// Returns a set of [Polyline]s from the encoded summaryPolylines.
-  Future<Set<Polyline>> getAllPolylines() async {
+  /// Returns a set of flutter_map [fm.Polyline]s from the encoded
+  /// summaryPolylines.
+  Future<Set<fm.Polyline>> getAllPolylinesFM() async {
     final allActivities = await listAllActivities();
     // final allMaps = allActivities.map((a) => a.map).toList();
     final allPolylines = allActivities
         .map((a) {
           if (a.map?.id != null && a.map?.summaryPolyline != null) {
-            return Polyline(
+            return fm.Polyline(
               key: Key(a.map?.id ?? 'no_id'),
-              points: decodeEncodedPolyline(a.map?.summaryPolyline ?? ''),
+              points: decodeEncodedPolylineFM(a.map?.summaryPolyline ?? ''),
               strokeWidth: 2,
               color:
                   SportTypeHelper.getColor(a.sportType ?? SportType.undefined),
             );
           }
         })
-        .whereType<Polyline>()
+        .whereType<fm.Polyline>()
+        .toSet();
+    return allPolylines;
+  }
+
+  /// Returns a set of google_maps_flutter [fm.Polyline]s from the encoded
+  /// summaryPolylines.
+  Future<Set<gm.Polyline>> getAllPolylinesGM() async {
+    final allActivities = await listAllActivities();
+    // final allMaps = allActivities.map((a) => a.map).toList();
+    final allPolylines = allActivities
+        .map((a) {
+          if (a.map?.id != null && a.map?.summaryPolyline != null) {
+            return gm.Polyline(
+              polylineId: gm.PolylineId(a.map?.id ?? 'no_id'),
+              points: decodeEncodedPolylineGM(a.map?.summaryPolyline ?? ''),
+              width: 2,
+              color:
+                  SportTypeHelper.getColor(a.sportType ?? SportType.undefined),
+            );
+          }
+        })
+        .whereType<gm.Polyline>()
         .toSet();
     return allPolylines;
   }

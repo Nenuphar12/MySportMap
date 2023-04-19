@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_sport_map/home/cubit/client_cubit.dart';
+import 'package:my_sport_map/home/cubit/settings_cubit.dart';
 import 'package:my_sport_map/home/widgets/widgets.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
 
@@ -32,36 +33,45 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ClientCubit, ClientState>(
-      builder: (context, state) {
-        logger.v('Building home_page');
+    return BlocProvider(
+      create: (_) => SettingsCubit(),
+      child: BlocBuilder<ClientCubit, ClientState>(
+        builder: (context, state) {
+          logger.v('Building home_page');
 
-        final isLoggedIn = state.isReady();
+          final isLoggedIn = state.isReady();
 
-        // Display the Home page.
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('My sport map'),
-            actions: [
-              if (isLoggedIn)
-                const Icon(
-                  Icons.radio_button_checked_outlined,
-                  color: Colors.white,
+          // Display the Home page.
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('My sport map'),
+              actions: [
+                if (isLoggedIn)
+                  const Icon(
+                    Icons.radio_button_checked_outlined,
+                    color: Colors.white,
+                  )
+                else
+                  const Icon(
+                    Icons.radio_button_off,
+                    color: Colors.red,
+                  ),
+                const SizedBox(
+                  width: 8,
                 )
-              else
-                const Icon(
-                  Icons.radio_button_off,
-                  color: Colors.red,
-                ),
-              const SizedBox(
-                width: 8,
-              )
-            ],
-          ),
-          drawer: HomePageDrawer(isLoggedIn: isLoggedIn),
-          body: MyMap(isClientReady: isLoggedIn),
-        );
-      },
+              ],
+            ),
+            drawer: HomePageDrawer(isLoggedIn: isLoggedIn),
+            body: BlocBuilder<SettingsCubit, SettingsState>(
+              builder: (context, state) {
+                return state.mapType == MyMapTypes.flutterMap
+                    ? MyFlutterMap(isClientReady: isLoggedIn)
+                    : MyGoogleMap(isClientReady: isLoggedIn);
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }

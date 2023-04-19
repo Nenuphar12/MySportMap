@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:my_sport_map/home/cubit/client_cubit.dart';
 import 'package:my_sport_map/home/errors/errors.dart';
 import 'package:my_sport_map/home/helpers/geolocator_helper.dart';
-import 'package:my_sport_map/home/widgets/map.dart';
+import 'package:my_sport_map/home/widgets/flutter_map.dart';
 import 'package:strava_repository/strava_repository.dart';
 
 import '../../helpers/helpers.dart';
@@ -26,7 +26,7 @@ void main() {
 
     setUp(() {
       stravaRepository = MockStravaRepository();
-      when(() => stravaRepository.getAllPolylines()).thenAnswer(
+      when(() => stravaRepository.getAllPolylinesFM()).thenAnswer(
         (_) => Future<Set<Polyline>>.value(
           testPolylines,
         ),
@@ -35,7 +35,7 @@ void main() {
 
     group('constructor', () {
       test('works properly', () {
-        expect(() => const MyMap(isClientReady: false), returnsNormally);
+        expect(() => const MyFlutterMap(isClientReady: false), returnsNormally);
       });
     });
 
@@ -45,18 +45,18 @@ void main() {
       setUp(() => geolocatorHelper = MockGeolocatorHelper());
 
       testWidgets('is rendered', (tester) async {
-        await tester.pumpApp(const MyMap(isClientReady: false));
+        await tester.pumpApp(const MyFlutterMap(isClientReady: false));
 
         expect(find.byType(GoogleMap), findsOneWidget);
       });
 
       testWidgets('sets the polylines', (tester) async {
         await tester.pumpApp(
-          const MyMap(isClientReady: true),
+          const MyFlutterMap(isClientReady: true),
           stravaRepository: stravaRepository,
         );
 
-        verify(() => stravaRepository.getAllPolylines()).called(1);
+        verify(() => stravaRepository.getAllPolylinesFM()).called(1);
 
         await tester.pumpAndSettle();
 
@@ -123,7 +123,7 @@ void main() {
         testWidgets('checks for location and displays informative SnackBar',
             (tester) async {
           await tester.pumpApp(
-            MyMap(
+            MyFlutterMap(
               isClientReady: true,
               geolocatorHelper: geolocatorHelper,
             ),
@@ -157,7 +157,7 @@ void main() {
             'checks for location permissions'
             ' and displays informative SnackBar', (tester) async {
           await tester.pumpApp(
-            MyMap(
+            MyFlutterMap(
               isClientReady: true,
               geolocatorHelper: geolocatorHelper,
             ),
@@ -190,7 +190,7 @@ void main() {
             'checks for location permissions'
             ' and displays informative SnackBar', (tester) async {
           await tester.pumpApp(
-            MyMap(
+            MyFlutterMap(
               isClientReady: true,
               geolocatorHelper: geolocatorHelper,
             ),

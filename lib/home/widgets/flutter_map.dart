@@ -12,8 +12,8 @@ import 'package:strava_repository/strava_repository.dart';
 // TODO(nenuphar): add Strava heatmap
 // https://nuxx.net/blog/2020/05/24/high-resolution-strava-global-heatmap-in-josm/
 
-class MyMap extends StatefulWidget {
-  const MyMap({
+class MyFlutterMap extends StatefulWidget {
+  const MyFlutterMap({
     required this.isClientReady,
     super.key,
     this.geolocatorHelper = const GeolocatorHelper(),
@@ -23,10 +23,10 @@ class MyMap extends StatefulWidget {
   final GeolocatorHelper geolocatorHelper;
 
   @override
-  State<MyMap> createState() => MyMapState();
+  State<MyFlutterMap> createState() => MyFlutterMapState();
 }
 
-class MyMapState extends State<MyMap> {
+class MyFlutterMapState extends State<MyFlutterMap> {
   // TODO(nenuphar): remove
   // final Completer<GoogleMapController> controller =
   //     Completer<GoogleMapController>();
@@ -95,7 +95,7 @@ class MyMapState extends State<MyMap> {
       if (widget.isClientReady) {
         // Get the polylines !
         logger.v('[polylines] Requesting polylines');
-        context.read<StravaRepository>().getAllPolylines().then((polylines) {
+        context.read<StravaRepository>().getAllPolylinesFM().then((polylines) {
           logger.v('[polylines] Got polylines');
           setState(() {
             _myPolylines = polylines;
