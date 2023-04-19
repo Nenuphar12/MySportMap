@@ -63,6 +63,7 @@
 - cleaning: remove all "tests" [done] (?)
 - cleaning: remove useless translation stuff [planned]
 - cleaning: clean launcher icons ?
+- do something for `LatLng` (do not import google_maps just for LatLng) (Have to use the one from `latlong2`) [planned]
 
 ---
 

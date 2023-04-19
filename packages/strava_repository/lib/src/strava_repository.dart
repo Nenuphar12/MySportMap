@@ -1,6 +1,9 @@
 import 'dart:async';
 
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// TODO(nenuphar): remove this one
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_map/flutter_map.dart' show Polyline;
 import 'package:logger/logger.dart';
 // TODO(nenuphar): improve strava_client to not have this problem
 // ignore: implementation_imports
@@ -76,9 +79,9 @@ class StravaRepository {
         .map((a) {
           if (a.map?.id != null && a.map?.summaryPolyline != null) {
             return Polyline(
-              polylineId: PolylineId(a.map?.id ?? 'no_id'),
+              key: Key(a.map?.id ?? 'no_id'),
               points: decodeEncodedPolyline(a.map?.summaryPolyline ?? ''),
-              width: 2,
+              strokeWidth: 2,
               color:
                   SportTypeHelper.getColor(a.sportType ?? SportType.undefined),
             );

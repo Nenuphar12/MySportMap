@@ -1,6 +1,6 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart';
 
-// TODO(nenuphar): manage this file. Where ? Remove it and use GoogleMap.
+// TODO(nenuphar): manage this file. Where ? Remove it and use GoogleMap (?)
 
 /// Returns a decoded `polyline` from a polyline encoded as a [String].
 ///
