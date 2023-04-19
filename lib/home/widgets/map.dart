@@ -131,6 +131,8 @@ class MyMapState extends State<MyMap> {
             );
           }
         },
+        // disable rotation
+        interactiveFlags: InteractiveFlag.all & ~InteractiveFlag.rotate,
       ),
       nonRotatedChildren: [
         AttributionWidget.defaultWidget(

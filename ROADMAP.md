@@ -18,6 +18,7 @@
 - new feature: add colors for activities types [done]
 - new feature: implement `commitlint` [done]
 - CI: integrate `git-cliff` in CI [planned]
+- new feature: add rotation to the flutter_map (create plugin) [planned]
 
 ## Improvements
 
