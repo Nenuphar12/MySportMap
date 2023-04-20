@@ -93,12 +93,12 @@ class _AppViewState extends State<AppView> {
             logger.v('[state] $state');
             switch (state.status) {
               case ClientStatus.ready:
-              // logger.v('case ready');
-              // navigator.pushAndRemoveUntil<void>(
-              //   HomePage.route(),
-              //   (route) => false,
-              // );
-              // break;
+                logger.v('case ready');
+                navigator.pushAndRemoveUntil<void>(
+                  HomePage.route(),
+                  (route) => false,
+                );
+                break;
               case ClientStatus.notAuthorized:
                 logger.v('case notAuthorized (or ready)');
                 navigator.pushAndRemoveUntil<void>(

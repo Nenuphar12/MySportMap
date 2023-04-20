@@ -80,19 +80,7 @@ class MyGoogleMapState extends State<MyGoogleMap> {
     );
 
     // Load polylines of activities to be displayed
-    if (!_polylinesLoaded) {
-      if (widget.isClientReady) {
-        // Get the polylines !
-        logger.v('[polylines] Requesting polylines');
-        context.read<StravaRepository>().getAllPolylinesGM().then((polylines) {
-          logger.v('[polylines] Got polylines');
-          setState(() {
-            _myPolylines = polylines;
-            _polylinesLoaded = true;
-          });
-        });
-      }
-    }
+    loadPolylines();
   }
 
   @override
@@ -111,5 +99,21 @@ class MyGoogleMapState extends State<MyGoogleMap> {
       // Keeps centerOfMap updated
       onCameraMove: (position) => centerOfMap = position.target,
     );
+  }
+
+  void loadPolylines() {
+    if (!_polylinesLoaded) {
+      if (widget.isClientReady) {
+        // Get the polylines !
+        logger.v('[polylines] Requesting polylines');
+        context.read<StravaRepository>().getAllPolylinesGM().then((polylines) {
+          logger.v('[polylines] Got polylines');
+          setState(() {
+            _myPolylines = polylines;
+            _polylinesLoaded = true;
+          });
+        });
+      }
+    }
   }
 }

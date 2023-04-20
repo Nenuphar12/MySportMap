@@ -51,19 +51,7 @@ class MyFlutterMapState extends State<MyFlutterMap> {
     _followCurrentLocationStreamController = StreamController<double?>();
 
     // Load polylines of activities to be displayed
-    if (!_polylinesLoaded) {
-      if (widget.isClientReady) {
-        // Get the polylines !
-        logger.v('[polylines] Requesting polylines');
-        context.read<StravaRepository>().getAllPolylinesFM().then((polylines) {
-          logger.v('[polylines] Got polylines');
-          setState(() {
-            _myPolylines = polylines;
-            _polylinesLoaded = true;
-          });
-        });
-      }
-    }
+    loadPolylines();
   }
 
   @override
@@ -140,5 +128,61 @@ class MyFlutterMapState extends State<MyFlutterMap> {
         ),
       ],
     );
+  }
+
+  // TODO(nenuphar): could be in intiState (?)
+  void loadPolylines() {
+    context.read<StravaRepository>().initLocalStorage();
+    // TODO(nenuphar): this test is useless as it is in initState (?)
+    if (!_polylinesLoaded) {
+      if (widget.isClientReady) {
+        // Get the polylines !
+        logger.v('[polylines] Requesting polylines');
+        // context.read<StravaRepository>().getAllPolylinesFM().then((polylines) {
+        //   logger.v('[polylines] Got polylines');
+        //   setState(() {
+        //     _myPolylines = polylines;
+        //     _polylinesLoaded = true;
+        //   });
+        // });
+
+        // TODO(nenuphar): test
+        context
+            .read<StravaRepository>()
+            .localPolylinesCompleterFM
+            .future
+            .then((localPolylines) {
+          setState(() {
+            _myPolylines = localPolylines;
+            _polylinesLoaded = true;
+          });
+        });
+        context
+            .read<StravaRepository>()
+            .updatedPolylinesCompleterFM
+            .future
+            .then((updatedPolylines) {
+          setState(() {
+            _myPolylines = updatedPolylines;
+          });
+        });
+
+        // final localPolylines =
+        //     context.read<StravaRepository>().getPolylinesFM();
+        // setState(() {
+        //   _myPolylines = localPolylines;
+        //   _polylinesLoaded = true;
+        // });
+        // context
+        //     .read<StravaRepository>()
+        //     .updatedPolylinesCompleterFM
+        //     .future
+        //     .then((updatedPolylines) {
+        //   setState(() {
+        //     _myPolylines += updatedPolylines;
+        //   });
+        // });
+      }
+    }
   }
 }

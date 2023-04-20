@@ -16,12 +16,18 @@ class ClientCubit extends Cubit<ClientState> {
   ClientCubit({required StravaRepository stravaRepository})
       : super(const ClientState()) {
     // Check if user is already logged in.
-    stravaRepository.isAuthenticated().then((isAuthenticated) {
+    stravaRepository.isAuthenticatedCompleter.future.then((isAuthenticated) {
       logger.v('Already Authenticated : $isAuthenticated');
       setClientStatus(
         isAuthenticated ? ClientStatus.ready : ClientStatus.notAuthorized,
       );
     });
+    // stravaRepository.isAuthenticated().then((isAuthenticated) {
+    //   logger.v('Already Authenticated : $isAuthenticated');
+    //   setClientStatus(
+    //     isAuthenticated ? ClientStatus.ready : ClientStatus.notAuthorized,
+    //   );
+    // });
   }
 
   /// Change the state to a newState.

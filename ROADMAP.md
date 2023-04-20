@@ -37,6 +37,7 @@
 - change: change clientState to AuthenticationState ?
 - substitution: change the custom function to decode polylines to GoogleMap function to do so [planned]
 - clean: clean GM and FM versions to something clearer [planned]
+- improvement: improve logs [planned]
 
 ## Bugs
 

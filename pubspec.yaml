@@ -18,6 +18,7 @@ dependencies:
   google_maps_flutter: ^2.2.5
   latlong2: ^0.8.1
   logger: ^1.2.2
+  shared_preferences: ^2.1.0
   strava_repository:
     path: packages/strava_repository
 
