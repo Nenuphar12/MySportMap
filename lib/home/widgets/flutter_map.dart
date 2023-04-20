@@ -152,6 +152,7 @@ class MyFlutterMapState extends State<MyFlutterMap> {
             .localPolylinesCompleterFM
             .future
             .then((localPolylines) {
+          logger.d('[polylines] Got local polylines');
           setState(() {
             _myPolylines = localPolylines;
             _polylinesLoaded = true;
@@ -162,9 +163,12 @@ class MyFlutterMapState extends State<MyFlutterMap> {
             .updatedPolylinesCompleterFM
             .future
             .then((updatedPolylines) {
-          setState(() {
-            _myPolylines = updatedPolylines;
-          });
+          if (updatedPolylines.isNotEmpty) {
+            logger.d('[polylines] Updated polylines');
+            setState(() {
+              _myPolylines = updatedPolylines;
+            });
+          }
         });
 
         // final localPolylines =

@@ -31,26 +31,41 @@ class StravaRepository {
       applicationName: 'mySportMap',
     );
     isAuthenticated();
+    // SharedPreferences.getInstance().then((instance) => prefs = instance);
     // TODO(nenuphar): Problem -> too fast, I'm not authenticated
     // initLocalStorage();
     // prefsCompleter.complete(SharedPreferences.getInstance());
+    // prefsCompleter.future.then((prefsValue) => prefs = prefsValue);
   }
 
   // TODO(nenuphar): rename ?
+  // This should only be called once at start
   Future<void> initLocalStorage() async {
-    prefs = await SharedPreferences.getInstance();
-    // Get activities stored locally
-    getLocalActivities();
-    // Get polylines from the local activities
-    localPolylinesCompleterFM.complete(getPolylinesFM());
-    // Update the list of activities
-    await updateLocalActivities();
-    // Get all the polylines
-    updatedPolylinesCompleterFM.complete(getPolylinesFM());
+    if (!localStorageInitialized) {
+      prefs = await SharedPreferences.getInstance();
+      // if (!prefsCompleter.isCompleted) {
+      //   await prefsCompleter.future;
+      // }
+      // Get activities stored locally
+      getLocalActivities();
+      // Get polylines from the local activities
+      localPolylinesCompleterFM.complete(getPolylinesFM());
+      localPolylinesCompleterGM.complete(getPolylinesGM());
+      // Update the list of activities
+      await updateLocalActivities();
+      // Get all the polylines
+      updatedPolylinesCompleterFM.complete(getPolylinesFM());
+      updatedPolylinesCompleterGM.complete(getPolylinesGM());
+
+      localStorageInitialized = true;
+    }
   }
 
   /// The client used by the repository to fetch data.
   late final StravaClient stravaClient;
+
+  // TODO(nenuphar): use this or initialize in the constructor ?
+  bool localStorageInitialized = false;
 
   /// The key used for storing the activities locally
   static const activitiesCollectionKey = '__activities_collection_key__';
@@ -71,10 +86,10 @@ class StravaRepository {
       Completer<List<fm.Polyline>>();
   final Completer<List<fm.Polyline>> updatedPolylinesCompleterFM =
       Completer<List<fm.Polyline>>();
-  final Completer<List<gm.Polyline>> localPolylinesCompleterGM =
-      Completer<List<gm.Polyline>>();
-  final Completer<List<gm.Polyline>> updatedPolylinesCompleterGM =
-      Completer<List<gm.Polyline>>();
+  final Completer<Set<gm.Polyline>> localPolylinesCompleterGM =
+      Completer<Set<gm.Polyline>>();
+  final Completer<Set<gm.Polyline>> updatedPolylinesCompleterGM =
+      Completer<Set<gm.Polyline>>();
 
   final Completer<bool> isAuthenticatedCompleter = Completer<bool>();
 
@@ -289,6 +304,27 @@ class StravaRepository {
         .whereType<gm.Polyline>()
         .toSet();
     return allPolylines;
+  }
+
+  FutureOr<Set<gm.Polyline>> getPolylinesGM() {
+    return activitiesToPolylinesGM(userActivities);
+  }
+
+  Set<gm.Polyline> activitiesToPolylinesGM(List<Activity> activities) {
+    return activities
+        .map((a) {
+          if (a.map?.id != null && a.map?.summaryPolyline != null) {
+            return gm.Polyline(
+              polylineId: gm.PolylineId(a.map?.id ?? 'no_id'),
+              points: decodeEncodedPolylineGM(a.map?.summaryPolyline ?? ''),
+              width: 2,
+              color:
+                  SportTypeHelper.getColor(a.sportType ?? SportType.undefined),
+            );
+          }
+        })
+        .whereType<gm.Polyline>()
+        .toSet();
   }
 
   /// Fetch a specific [Activity] from its [id].

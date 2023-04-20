@@ -102,16 +102,42 @@ class MyGoogleMapState extends State<MyGoogleMap> {
   }
 
   void loadPolylines() {
+    // Not needed because already called in FM
+    // context.read<StravaRepository>().initLocalStorage();
     if (!_polylinesLoaded) {
       if (widget.isClientReady) {
         // Get the polylines !
-        logger.v('[polylines] Requesting polylines');
-        context.read<StravaRepository>().getAllPolylinesGM().then((polylines) {
-          logger.v('[polylines] Got polylines');
+        // logger.v('[polylines] Requesting polylines');
+        // context.read<StravaRepository>().getAllPolylinesGM().then((polylines) {
+        //   logger.v('[polylines] Got polylines');
+        //   setState(() {
+        //     _myPolylines = polylines;
+        //     _polylinesLoaded = true;
+        //   });
+        // });
+
+        context
+            .read<StravaRepository>()
+            .localPolylinesCompleterGM
+            .future
+            .then((localPolylines) {
+          logger.d('[polylines] Got local polylines');
           setState(() {
-            _myPolylines = polylines;
+            _myPolylines = localPolylines;
             _polylinesLoaded = true;
           });
+        });
+        context
+            .read<StravaRepository>()
+            .updatedPolylinesCompleterGM
+            .future
+            .then((updatedPolylines) {
+          if (updatedPolylines.isNotEmpty) {
+            logger.d('[polylines] Updated polylines');
+            setState(() {
+              _myPolylines = updatedPolylines;
+            });
+          }
         });
       }
     }
