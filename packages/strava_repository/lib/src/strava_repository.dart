@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-// TODO(nenuphar): remove this one
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart' as fm show Polyline;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gm
@@ -16,14 +14,25 @@ import 'package:strava_client/strava_client.dart';
 import 'package:strava_repository/src/models/sport_types.dart';
 import 'package:strava_repository/strava_repository.dart';
 
+// TODO(nenuphar): wait for auth everywhere ?
+// TODO(nenuphar): divide this file ! Reduce it
+
 /// Error thrown when an [Activity] with a given id is not found.
 class ActivityNotFoundException implements Exception {}
 
-/// {@template strava_repository}
 /// A dart repository that handles `activity` by wrapping the `strava_client`.
-/// {@endtemplate}
+///
+/// Note:
+/// `FM` refers to **Flutter Map** (using `flutter_map`) and `GM` refers to
+/// **Google Map** (using `google_maps_flutter`).
 class StravaRepository {
-  /// {@macro strava_repository}
+  /// Create a [StravaRepository] instance.
+  ///
+  /// [secret] is Strava's secret to access its *API* and [clientId] is your
+  /// client id for Strava's *API*.
+  ///
+  /// This constructor calls [isAuthenticated].
+  // TODO(nenuphar): develop consequences of calling isAuthenticated
   StravaRepository({required String secret, required String clientId}) {
     stravaClient = StravaClient(
       secret: secret,
@@ -31,33 +40,64 @@ class StravaRepository {
       applicationName: 'mySportMap',
     );
     isAuthenticated();
-    // SharedPreferences.getInstance().then((instance) => prefs = instance);
-    // TODO(nenuphar): Problem -> too fast, I'm not authenticated
-    // initLocalStorage();
-    // prefsCompleter.complete(SharedPreferences.getInstance());
-    // prefsCompleter.future.then((prefsValue) => prefs = prefsValue);
   }
 
   // TODO(nenuphar): rename ?
   // This should only be called once at start
+  /// Initialize the [userActivities] list.
+  ///
+  /// First the [Activity]s stored locally are fetched from the
+  /// [SharedPreferences] and then the new [Activity]s are fetched from Strava's
+  /// server. Finally, the local activities are updated with the new activities.
+  ///
+  /// After getting the local [Activity]s, [localPolylinesCompleterFM] and
+  /// [localPolylinesCompleterGM] are completed with the [fm.Polyline]s and
+  /// [gm.Polyline]s stored locally.
+  /// After getting the new [Activity]s from Strava's server,
+  /// [updatedPolylinesCompleterFM] and [updatedPolylinesCompleterGM] are
+  /// completed with the new [fm.Polyline]s and [gm.Polyline]s from Strava that
+  /// are not yet stored locally.
+  ///
+  /// Usage example:
+  /// ```dart
+  /// StravaRepository stravaRepository =
+  ///     StravaRepository(secret: 'your-secret', clientId: 'your-client-id');
+  ///
+  /// stravaRepository.initLocalStorage();
+  ///
+  /// // Get polylines stored locally
+  /// // (you can also omit this and directly get the updated polylines)
+  /// stravaRepository.localPolylinesCompleterFM.future
+  ///     .then((localPolylinesFM) {
+  ///   // This is called when the local polylines have been fetched.
+  ///   // Do something with the polylines...
+  /// });
+  ///
+  /// // Get updated polylines (including stored and new ones)
+  /// stravaRepository.updatedPolylinesCompleterFM.future
+  ///     .then((localPolylinesFM) {
+  ///   // This is called when the polylines have been updated.
+  ///   // Do something with the polylines...
+  /// });
+  /// ```
   Future<void> initLocalStorage() async {
-    if (!localStorageInitialized) {
-      prefs = await SharedPreferences.getInstance();
-      // if (!prefsCompleter.isCompleted) {
-      //   await prefsCompleter.future;
-      // }
+    // To make sure it is only called once
+    if (!_localStorageInitialized) {
+      _prefs = await SharedPreferences.getInstance();
+
       // Get activities stored locally
       getLocalActivities();
       // Get polylines from the local activities
       localPolylinesCompleterFM.complete(getPolylinesFM());
       localPolylinesCompleterGM.complete(getPolylinesGM());
+
       // Update the list of activities
       await updateLocalActivities();
       // Get all the polylines
       updatedPolylinesCompleterFM.complete(getPolylinesFM());
       updatedPolylinesCompleterGM.complete(getPolylinesGM());
 
-      localStorageInitialized = true;
+      _localStorageInitialized = true;
     }
   }
 
@@ -65,43 +105,107 @@ class StravaRepository {
   late final StravaClient stravaClient;
 
   // TODO(nenuphar): use this or initialize in the constructor ?
-  bool localStorageInitialized = false;
+
+  /// Wether the activities have been initialized via the [initLocalStorage]
+  /// function.
+  ///
+  /// This is to ensure that [initLocalStorage] executes only once.
+  bool _localStorageInitialized = false;
 
   /// The key used for storing the activities locally
-  static const activitiesCollectionKey = '__activities_collection_key__';
+  static const _activitiesCollectionKey =
+      '[com.nenuphar.mySportMap]__activities_collection_key__';
 
   /// The key used for storing locally the date of the last activity fetched
-  static const activitiesLastCollectionKey =
-      '__activities_last_collection_key__';
+  static const _activitiesLastCollectionKey =
+      '[com.nenuphar.mySportMap]__activities_last_collection_key__';
 
-  // TODO(nenuphar): remove if not needed
-  /// [Completer] to access the `shared preferences`.
-  final Completer<SharedPreferences> prefsCompleter =
-      Completer<SharedPreferences>();
-
-  final Completer<bool> gotLocalActivities = Completer<bool>();
-  final Completer<bool> gotUpdatedActivities = Completer<bool>();
-
+  /// [Completer] used to get the [fm.Polyline]s from local storage.
+  ///
+  /// [initLocalStorage] needs to be called (at least) once for this [Completer]
+  ///  to be completed.
+  ///
+  /// Note:
+  /// If you directly want all the polylines (including new ones), directly use
+  /// [updatedPolylinesCompleterFM].
+  ///
+  /// Usage example:
+  /// ```dart
+  /// // Then get the polylines stored locally
+  /// stravaRepository.localPolylinesCompleterFM.future.then((polylines) {
+  ///   // Do something when the polylines are returned...
+  /// })
   final Completer<List<fm.Polyline>> localPolylinesCompleterFM =
       Completer<List<fm.Polyline>>();
+
+  /// [Completer] used to get the updated [fm.Polyline]s (with potential new
+  /// polylines).
+  ///
+  /// [initLocalStorage] needs to be called (at least) once for this [Completer]
+  ///  to be completed.
+  ///
+  /// Usage example:
+  /// ```dart
+  /// // Get the updated polylines
+  /// stravaRepository.updatedPolylinesCompleterFM.future.then((polylines) {
+  ///   // Do something when the polylines are returned...
+  /// })
   final Completer<List<fm.Polyline>> updatedPolylinesCompleterFM =
       Completer<List<fm.Polyline>>();
+
+  /// [Completer] used to get the [gm.Polyline]s from local storage.
+  ///
+  /// [initLocalStorage] needs to be called (at least) once for this [Completer]
+  ///  to be completed.
+  ///
+  /// Note:
+  /// If you directly want all the polylines (including new ones), directly use
+  /// [updatedPolylinesCompleterGM].
+  ///
+  /// Usage example:
+  /// ```dart
+  /// // Then get the polylines stored locally
+  /// stravaRepository.localPolylinesCompleterGM.future.then((polylines) {
+  ///   // Do something when the polylines are returned...
+  /// })
   final Completer<Set<gm.Polyline>> localPolylinesCompleterGM =
       Completer<Set<gm.Polyline>>();
+
+  /// [Completer] used to get the updated [gm.Polyline]s (with potential new
+  /// polylines).
+  ///
+  /// [initLocalStorage] needs to be called (at least) once for this [Completer]
+  ///  to be completed.
+  ///
+  /// Usage example:
+  /// ```dart
+  /// // Get the updated polylines
+  /// stravaRepository.updatedPolylinesCompleterGM.future.then((polylines) {
+  ///   // Do something when the polylines are returned...
+  /// })
   final Completer<Set<gm.Polyline>> updatedPolylinesCompleterGM =
       Completer<Set<gm.Polyline>>();
 
+  /// Wether the user is authenticated.
+  ///
+  /// This [Completer] is completed after [isAuthenticated] completes.
   final Completer<bool> isAuthenticatedCompleter = Completer<bool>();
 
   /// [SharedPreferences] instance to access the local stored data.
-  late final SharedPreferences prefs;
+  late final SharedPreferences _prefs;
 
-  // TODO(nenuphar): use a set ?
+  /// Strava's [Activity]s of the authenticated user.
   List<Activity> userActivities = [];
 
   /// Whether the client is already authenticated.
   ///
-  /// If the client is authenticated, the token is refreshed.
+  /// To verify authentication, the stored [TokenResponse] is checked.
+  ///
+  /// If the client is authenticated and the token has expired, the token is
+  /// refreshed by calling [authenticate].
+  ///
+  /// [isAuthenticatedCompleter] is completed with the result of the
+  /// authentication.
   Future<bool> isAuthenticated() async {
     final token =
         await LocalStorageManager.getToken(applicationName: 'mySportMap');
@@ -109,21 +213,16 @@ class StravaRepository {
       // Refresh the token if needed.
       if (isTokenExpired(token)) {
         // Refresh the token (with authenticate)
-        Logger().d('Refreshing token.');
+        Logger().d('[Token] Refreshing');
         try {
           await authenticate();
         } catch (e, s) {
+          // Currently never reached I think because all errors are catched by
+          // authenticate.
           logErrorMessage(e, s);
-          await deAuthorize();
+          isAuthenticatedCompleter.complete(false);
           return false;
         }
-        // await authenticate().catchError((dynamic error, dynamic stackTrace) {
-        //   logErrorMessage(
-        //     error,
-        //     stackTrace,
-        //   );
-        //   return false;
-        // });
         Logger().d('Token refreshed');
       }
       isAuthenticatedCompleter.complete(true);
@@ -138,9 +237,14 @@ class StravaRepository {
   /// Authenticates to Strava and authorizes the required scopes.
   ///
   /// The required scopes are :
-  /// - activity_read_all
-  /// - read_all
-  /// - profile_read_all
+  /// - `activity_read_all`
+  /// - `read_all`
+  /// - `profile_read_all`
+  ///
+  /// In case of an error during authentication, the `token` is revoked by
+  /// calling [SessionManager.logout] and then [authenticate] is called again
+  /// (**WARNING** this could lead to an infinite recursive call of
+  /// [authenticate]).
   Future<void> authenticate() async {
     // From source code :
     // RedirectUrl works best when it is a custom scheme. For example: strava://auth
@@ -169,11 +273,14 @@ class StravaRepository {
   }
 
   /// De authorizes the app from the user's Strava account.
+  ///
+  /// **Information**: The current [TokenResponse] needs to be valid.
+  /// Else an error is thrown.
   Future<void> deAuthorize() async {
     await stravaClient.authentication.deAuthorize().catchError(logErrorMessage);
   }
 
-  /// List [Activity]s of the user.
+  /// List Strava's [Activity]s of the user.
   Future<List<Activity>> listActivities({
     DateTime? before,
     DateTime? after,
@@ -199,7 +306,7 @@ class StravaRepository {
     return listActivities;
   }
 
-  /// List **all** [Activity] of the user.
+  /// List **all** Strava's [Activity]s of the user.
   ///
   /// To get all the [Activity]s after a [DateTime], use the [after] parameter.
   Future<List<Activity>> listAllActivities({
@@ -220,55 +327,12 @@ class StravaRepository {
     return allActivities;
   }
 
-  /// Returns a set of flutter_map [fm.Polyline]s from the encoded
-  /// summaryPolylines.
-  Future<List<fm.Polyline>> getAllPolylinesFM() async {
-    final allActivities = await listAllActivities();
-    // final allMaps = allActivities.map((a) => a.map).toList();
-    final allPolylines = allActivities
-        .map((a) {
-          if (a.map?.id != null && a.map?.summaryPolyline != null) {
-            return fm.Polyline(
-              key: Key(a.map?.id ?? 'no_id'),
-              points: decodeEncodedPolylineFM(a.map?.summaryPolyline ?? ''),
-              strokeWidth: 2,
-              color:
-                  SportTypeHelper.getColor(a.sportType ?? SportType.undefined),
-            );
-          }
-        })
-        .whereType<fm.Polyline>()
-        .toList();
-    return allPolylines;
-  }
-
-  // List<fm.Polyline> getPolylinesFM() {
-  //   // TODO(nenuphar): possible race condition of prefs...
-  //   final localPolylines = getLocalPolylinesFM();
-  //   updatePolylinesFM();
-  //   return localPolylines;
-  // }
-
+  /// Returns the [List] of flutter_map [fm.Polyline]s from the
+  /// [userActivities].
+  ///
+  /// The encoded [fm.Polyline] are decoded with [decodeEncodedPolylineFM].
   FutureOr<List<fm.Polyline>> getPolylinesFM() {
-    return activitiesToPolylinesFM(userActivities);
-  }
-
-  List<fm.Polyline> getLocalPolylinesFM() {
-    final localActivities = userActivities;
-    final localPolylines = activitiesToPolylinesFM(localActivities);
-    localPolylinesCompleterFM.complete(localPolylines);
-    return localPolylines;
-  }
-
-  Future<List<fm.Polyline>> updatePolylinesFM() async {
-    final newActivities = await updateLocalActivities();
-    final newPolylines = activitiesToPolylinesFM(newActivities);
-    updatedPolylinesCompleterFM.complete(newPolylines);
-    return newPolylines;
-  }
-
-  List<fm.Polyline> activitiesToPolylinesFM(List<Activity> activities) {
-    return activities
+    return userActivities
         .map((a) {
           if (a.map?.id != null && a.map?.summaryPolyline != null) {
             return fm.Polyline(
@@ -284,34 +348,12 @@ class StravaRepository {
         .toList();
   }
 
-  /// Returns a set of google_maps_flutter [fm.Polyline]s from the encoded
-  /// summaryPolylines.
-  Future<Set<gm.Polyline>> getAllPolylinesGM() async {
-    final allActivities = await listAllActivities();
-    // final allMaps = allActivities.map((a) => a.map).toList();
-    final allPolylines = allActivities
-        .map((a) {
-          if (a.map?.id != null && a.map?.summaryPolyline != null) {
-            return gm.Polyline(
-              polylineId: gm.PolylineId(a.map?.id ?? 'no_id'),
-              points: decodeEncodedPolylineGM(a.map?.summaryPolyline ?? ''),
-              width: 2,
-              color:
-                  SportTypeHelper.getColor(a.sportType ?? SportType.undefined),
-            );
-          }
-        })
-        .whereType<gm.Polyline>()
-        .toSet();
-    return allPolylines;
-  }
-
+  /// Returns the [Set] of flutter_map [gm.Polyline]s from the
+  /// [userActivities].
+  ///
+  /// The encoded [gm.Polyline] are decoded with [decodeEncodedPolylineGM].
   FutureOr<Set<gm.Polyline>> getPolylinesGM() {
-    return activitiesToPolylinesGM(userActivities);
-  }
-
-  Set<gm.Polyline> activitiesToPolylinesGM(List<Activity> activities) {
-    return activities
+    return userActivities
         .map((a) {
           if (a.map?.id != null && a.map?.summaryPolyline != null) {
             return gm.Polyline(
@@ -337,13 +379,12 @@ class StravaRepository {
     );
   }
 
+  /// Fetch all the user's [Activity]s locally stored with [SharedPreferences].
   List<Activity> getLocalActivities() {
     Logger().v('Get local activities');
-    final encodedActivities = prefs.getString(activitiesCollectionKey);
+    final encodedActivities = _prefs.getString(_activitiesCollectionKey);
     final activitiesJsonList =
         jsonDecode(encodedActivities ?? '[]') as List<dynamic>;
-    // return userActivities =
-    //     jsonDecode(encodedActivities ?? '[]') as List<Activity>;
     return userActivities = activitiesJsonList
         .map(
           (jsonActivity) =>
@@ -352,37 +393,40 @@ class StravaRepository {
         .toList();
   }
 
-  /// Stores [Activity]s locally.
-  Future<void> storeActivitiesLocally(List<Activity> activitiesList) async {
-    Logger().v('Store activities locally');
-    await prefs.setString(
-      activitiesCollectionKey,
-      jsonEncode(userActivities),
-    );
-  }
-
-  // TODO(nenuphar): return userActivities ?
+  /// Update [userActivities] with the most recent [Activity]s.
+  ///
+  /// Waits for the authentication check to be completed, with
+  /// [isAuthenticatedCompleter], before querying Strava.
   Future<List<Activity>> updateLocalActivities() async {
-    Logger().v("Update user's activities");
-    // TODO(nenuphar): does this work ? (it waits ?)
+    Logger().v("[activities - remote] Update user's activities");
+
+    // Get last update time
     final lastUpdate = DateTime.fromMillisecondsSinceEpoch(
-      prefs.getInt(activitiesLastCollectionKey) ?? 0,
+      _prefs.getInt(_activitiesLastCollectionKey) ?? 0,
     );
+
+    // Wait for authentication
     final isAuth = await isAuthenticatedCompleter.future;
+
+    // If we can access Strava's database
     if (isAuth) {
       final newActivities = await listAllActivities(after: lastUpdate);
-      // TODO(nenuphar): test if duplicates
-      userActivities += newActivities;
-      // Update last fetch time to current time
-      await prefs.setInt(
-        activitiesLastCollectionKey,
-        DateTime.now().millisecondsSinceEpoch,
-      );
-      await prefs.setString(
-        activitiesCollectionKey,
-        jsonEncode(userActivities),
-      );
+      if (newActivities.isNotEmpty) {
+        // TODO(nenuphar): test if duplicates
+        userActivities += newActivities;
+        // Update last fetch time to current time
+        await _prefs.setInt(
+          _activitiesLastCollectionKey,
+          DateTime.now().millisecondsSinceEpoch,
+        );
+        // Store the user's activities
+        await _prefs.setString(
+          _activitiesCollectionKey,
+          jsonEncode(userActivities),
+        );
+      }
     } else {
+      // The user is not authenticated
       // TODO(nenuphar): throw error
     }
     return userActivities;

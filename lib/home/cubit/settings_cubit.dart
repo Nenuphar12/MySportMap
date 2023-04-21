@@ -11,15 +11,11 @@ class SettingsCubit extends Cubit<SettingsState> {
   /// {@macro settings_cubit}
   SettingsCubit() : super(const SettingsState());
 
-  // TODO(nenuphar): implement this (?)
-  /// Change the state to a new state
-  void setSettingsState(SettingsState newState) => emit(const SettingsState());
-
-  /// Change the map type
+  /// Change the map type.
   void setMapType(MyMapTypes newMapType) =>
       emit(state.changeMapType(newMapType));
 
-  /// Switch the map type
+  /// Switch the map type.
   ///
   /// Change from [MyMapTypes.flutterMap] to [MyMapTypes.googleMap] or the
   /// opposite.

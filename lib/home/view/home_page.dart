@@ -33,12 +33,11 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logger.v('[Build] HomeView');
     return BlocProvider(
       create: (_) => SettingsCubit(),
       child: BlocBuilder<ClientCubit, ClientState>(
         builder: (context, state) {
-          logger.v('Building home_page');
-
           final isLoggedIn = state.isReady();
 
           // Display the Home page.

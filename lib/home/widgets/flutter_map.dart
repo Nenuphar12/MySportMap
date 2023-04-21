@@ -27,13 +27,8 @@ class MyFlutterMap extends StatefulWidget {
 }
 
 class MyFlutterMapState extends State<MyFlutterMap> {
-  // TODO(nenuphar): do something about this
-  // late MapController _mapController;
-
   /// The center of the map.
   late LatLng centerOfMap;
-
-  bool _polylinesLoaded = false;
 
   /// The default initial position to center the map
   final LatLng _center = LatLng(43.5628075, 5);
@@ -62,7 +57,7 @@ class MyFlutterMapState extends State<MyFlutterMap> {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('Building map.');
+    logger.v('[Build] MyFlutterMap');
 
     return FlutterMap(
       // mapController: _mapController,
@@ -83,9 +78,11 @@ class MyFlutterMapState extends State<MyFlutterMap> {
         interactiveFlags: InteractiveFlag.all & ~InteractiveFlag.rotate,
       ),
       nonRotatedChildren: [
+        // Credit used tile server
         AttributionWidget.defaultWidget(
           source: 'OpenStreetMap contributors',
         ),
+        // Button used for user's position
         Positioned(
           right: 15,
           bottom: 30,
@@ -97,8 +94,8 @@ class MyFlutterMapState extends State<MyFlutterMap> {
                 () => _followOnLocationUpdate = FollowOnLocationUpdate.always,
               );
               // Follow the location marker on the map and zoom the map to
-              // level 12.
-              _followCurrentLocationStreamController.add(12);
+              // level 15.
+              _followCurrentLocationStreamController.add(15);
             },
             child: const Icon(
               Icons.my_location,
@@ -108,15 +105,17 @@ class MyFlutterMapState extends State<MyFlutterMap> {
         ),
       ],
       children: [
+        // OpenStreetMap tile layer
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           userAgentPackageName: 'com.nenuphar.mySportMap',
           maxZoom: 19,
         ),
+        // Polylines of the user
         PolylineLayer(
-          // TODO(nenuphar): simplify polylines when zoomed out
           polylines: _myPolylines,
         ),
+        // Marker showing user's position
         CurrentLocationLayer(
           followCurrentLocationStream:
               _followCurrentLocationStreamController.stream,
@@ -130,63 +129,38 @@ class MyFlutterMapState extends State<MyFlutterMap> {
     );
   }
 
-  // TODO(nenuphar): could be in intiState (?)
   void loadPolylines() {
+    // TODO(nenuphar): do this earlier ? On creation of repository ?
+    // (but it blocks the loading and displaying of the map...)
+
+    // Inits (if not already) the storage of Activities
     context.read<StravaRepository>().initLocalStorage();
-    // TODO(nenuphar): this test is useless as it is in initState (?)
-    if (!_polylinesLoaded) {
-      if (widget.isClientReady) {
-        // Get the polylines !
-        logger.v('[polylines] Requesting polylines');
-        // context.read<StravaRepository>().getAllPolylinesFM().then((polylines) {
-        //   logger.v('[polylines] Got polylines');
-        //   setState(() {
-        //     _myPolylines = polylines;
-        //     _polylinesLoaded = true;
-        //   });
-        // });
 
-        // TODO(nenuphar): test
-        context
-            .read<StravaRepository>()
-            .localPolylinesCompleterFM
-            .future
-            .then((localPolylines) {
-          logger.d('[polylines] Got local polylines');
-          setState(() {
-            _myPolylines = localPolylines;
-            _polylinesLoaded = true;
-          });
-        });
-        context
-            .read<StravaRepository>()
-            .updatedPolylinesCompleterFM
-            .future
-            .then((updatedPolylines) {
-          if (updatedPolylines.isNotEmpty) {
-            logger.d('[polylines] Updated polylines');
-            setState(() {
-              _myPolylines = updatedPolylines;
-            });
-          }
-        });
+    // Get polylines stored locally
+    context
+        .read<StravaRepository>()
+        .localPolylinesCompleterFM
+        .future
+        .then((localPolylines) {
+      logger.d('[polylines] Got local polylines');
+      setState(() {
+        _myPolylines = localPolylines;
+      });
+    });
 
-        // final localPolylines =
-        //     context.read<StravaRepository>().getPolylinesFM();
-        // setState(() {
-        //   _myPolylines = localPolylines;
-        //   _polylinesLoaded = true;
-        // });
-        // context
-        //     .read<StravaRepository>()
-        //     .updatedPolylinesCompleterFM
-        //     .future
-        //     .then((updatedPolylines) {
-        //   setState(() {
-        //     _myPolylines += updatedPolylines;
-        //   });
-        // });
+    // Get new and updated polylines
+    context
+        .read<StravaRepository>()
+        .updatedPolylinesCompleterFM
+        .future
+        .then((updatedPolylines) {
+      logger.d('[polylines] No updated polylines');
+      if (updatedPolylines.isNotEmpty) {
+        logger.d('[polylines] Got updated polylines');
+        setState(() {
+          _myPolylines = updatedPolylines;
+        });
       }
-    }
+    });
   }
 }

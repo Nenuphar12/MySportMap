@@ -1,6 +1,8 @@
 
 # Roadmap for the project
 
+// TODO(nenuphar): clean this !
+
 ## Before release
 
 - [] Code commented
@@ -19,6 +21,8 @@
 - new feature: implement `commitlint` [done]
 - CI: integrate `git-cliff` in CI [planned]
 - new feature: add rotation to the flutter_map (create plugin) [planned]
+- new feature: implement cache for `flutter_map` [planned]
+- new feature: add strava heatmap to fm [planned]
 
 ## Improvements
 
@@ -38,6 +42,10 @@
 - substitution: change the custom function to decode polylines to GoogleMap function to do so [planned]
 - clean: clean GM and FM versions to something clearer [planned]
 - improvement: improve logs [planned]
+- location: remember last position and use it as initial position [planned]
+- polylines/FM: simplify polylines when zooming out (?) [planned]
+- logging: improve and systemize logging [planned]
+- errors: improve errors management ! [planned]
 
 ## Bugs
 

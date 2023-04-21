@@ -70,7 +70,7 @@ class _AppViewState extends State<AppView> {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('[build] Build MaterialApp...');
+    logger.v('[Build] AppView (MaterialApp)');
     return MaterialApp(
       theme: ThemeData(
         appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),

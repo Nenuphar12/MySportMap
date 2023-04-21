@@ -8,9 +8,6 @@ import 'package:my_sport_map/home/helpers/geolocator_helper.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
-// TODO(nenuphar): add Strava heatmap
-// https://nuxx.net/blog/2020/05/24/high-resolution-strava-global-heatmap-in-josm/
-
 class MyGoogleMap extends StatefulWidget {
   const MyGoogleMap({
     required this.isClientReady,
@@ -31,8 +28,6 @@ class MyGoogleMapState extends State<MyGoogleMap> {
 
   /// The center of the map.
   late LatLng centerOfMap;
-
-  bool _polylinesLoaded = false;
 
   /// The default initial position to center the map
   final LatLng _center = const LatLng(43.5628075, 5);
@@ -85,7 +80,7 @@ class MyGoogleMapState extends State<MyGoogleMap> {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('Building map.');
+    logger.v('[Build] MyGoogleMap');
 
     return GoogleMap(
       polylines: _myPolylines,
@@ -102,44 +97,34 @@ class MyGoogleMapState extends State<MyGoogleMap> {
   }
 
   void loadPolylines() {
-    // Not needed because already called in FM
-    // context.read<StravaRepository>().initLocalStorage();
-    if (!_polylinesLoaded) {
-      if (widget.isClientReady) {
-        // Get the polylines !
-        // logger.v('[polylines] Requesting polylines');
-        // context.read<StravaRepository>().getAllPolylinesGM().then((polylines) {
-        //   logger.v('[polylines] Got polylines');
-        //   setState(() {
-        //     _myPolylines = polylines;
-        //     _polylinesLoaded = true;
-        //   });
-        // });
+    // Inits (if not already) the storage of Activities
+    context.read<StravaRepository>().initLocalStorage();
 
-        context
-            .read<StravaRepository>()
-            .localPolylinesCompleterGM
-            .future
-            .then((localPolylines) {
-          logger.d('[polylines] Got local polylines');
-          setState(() {
-            _myPolylines = localPolylines;
-            _polylinesLoaded = true;
-          });
-        });
-        context
-            .read<StravaRepository>()
-            .updatedPolylinesCompleterGM
-            .future
-            .then((updatedPolylines) {
-          if (updatedPolylines.isNotEmpty) {
-            logger.d('[polylines] Updated polylines');
-            setState(() {
-              _myPolylines = updatedPolylines;
-            });
-          }
+    // Get polylines stored locally
+    context
+        .read<StravaRepository>()
+        .localPolylinesCompleterGM
+        .future
+        .then((localPolylines) {
+      logger.d('[polylines] Got local polylines');
+      setState(() {
+        _myPolylines = localPolylines;
+      });
+    });
+
+    // Get new and updated polylines
+    context
+        .read<StravaRepository>()
+        .updatedPolylinesCompleterGM
+        .future
+        .then((updatedPolylines) {
+      logger.d('[polylines] No updated polylines');
+      if (updatedPolylines.isNotEmpty) {
+        logger.d('[polylines] Got updated polylines');
+        setState(() {
+          _myPolylines = updatedPolylines;
         });
       }
-    }
+    });
   }
 }

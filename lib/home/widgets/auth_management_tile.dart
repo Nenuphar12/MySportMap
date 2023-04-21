@@ -11,7 +11,7 @@ class AuthManagementTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('Build AuthManagementTile');
+    logger.v('[Build] AuthManagementTile');
     if (isLoggedIn) {
       return ListTile(
         key: const Key('authManagement_loggedIn_ListTile'),

@@ -12,7 +12,7 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('[build] Build SplashPage');
+    logger.v('[Build] SplashPage');
     return const Scaffold(
       body: Center(child: CircularProgressIndicator()),
     );
