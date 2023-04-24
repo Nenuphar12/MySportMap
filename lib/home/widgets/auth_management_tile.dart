@@ -12,43 +12,47 @@ class AuthManagementTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MyUtilities.logger.v('[Build] AuthManagementTile');
-    if (isLoggedIn) {
-      return ListTile(
-        key: const Key('authManagement_loggedIn_ListTile'),
-        leading: const Icon(
-          Icons.toggle_on,
-          color: Colors.green,
-        ),
-        title: const Text('Logout of Strava'),
-        onTap: () => _deAuth(context),
-      );
+
+    return isLoggedIn
+        ? ListTile(
+            key: const Key('authManagement_loggedIn_ListTile'),
+            leading: const Icon(Icons.toggle_on, color: Colors.green),
+            title: const Text('Logout of Strava'),
+            onTap: () => _deAuth(context),
+          )
+        : ListTile(
+            key: const Key('authManagement_notLoggedIn_ListTile'),
+            leading: const Icon(Icons.toggle_off, color: Colors.red),
+            title: const Text('Login with Strava'),
+            onTap: () => _login(context),
+          );
+  }
+
+  Future<void> _login(BuildContext context) async {
+    // If authorization is needed login.
+    await context.read<StravaRepository>().authenticate();
+
+    // Assert mounted property of the context after asynchronous gap.
+    if (context.mounted) {
+      MyUtilities.logger.v('[_login] login successful');
+      context.read<ClientCubit>().setClientStatus(ClientStatus.ready);
     } else {
-      return ListTile(
-        key: const Key('authManagement_notLoggedIn_ListTile'),
-        leading: const Icon(
-          Icons.toggle_off,
-          color: Colors.red,
-        ),
-        title: const Text('Login with Strava'),
-        onTap: () => _login(context),
-      );
+      MyUtilities.logger.e('Login "failed", context is not mounted any more');
     }
   }
 
-  void _login(BuildContext context) {
-    // If authorization is needed login.
-    context.read<StravaRepository>().authenticate().then((value) {
-      MyUtilities.logger.v('[_login] login successful');
-      context.read<ClientCubit>().setClientStatus(ClientStatus.ready);
-    });
-  }
-
-  void _deAuth(BuildContext context) {
+  Future<void> _deAuth(BuildContext context) async {
     // If logged in de-authorize.
-    context.read<StravaRepository>().deAuthorize().then((value) {
+    await context.read<StravaRepository>().deAuthorize();
+
+    // Assert mounted property of the context after asynchronous gap.
+    if (context.mounted) {
       MyUtilities.logger.v('[_deAuth] de authorization successful (?)');
       // Update the [ClientCubit].
       context.read<ClientCubit>().setClientStatus(ClientStatus.notAuthorized);
-    });
+    } else {
+      MyUtilities.logger
+          .e('De authorization "failed", context is not mounted any more');
+    }
   }
 }

@@ -74,14 +74,15 @@ class MyFlutterMapState extends State<MyFlutterMap> {
         interactiveFlags: InteractiveFlag.all & ~InteractiveFlag.rotate,
         // Stop following the location marker on the map if user interacted with
         // the map.
-        onPositionChanged: (MapPosition position, bool hasGesture) {
-          if (hasGesture &&
-              _followOnLocationUpdate != FollowOnLocationUpdate.never) {
-            setState(
-              () => _followOnLocationUpdate = FollowOnLocationUpdate.never,
-            );
-          }
-        },
+        onPositionChanged: handlePositionChanged,
+        // onPositionChanged: (MapPosition position, bool hasGesture) {
+        //   if (hasGesture &&
+        //       _followOnLocationUpdate != FollowOnLocationUpdate.never) {
+        //     setState(
+        //       () => _followOnLocationUpdate = FollowOnLocationUpdate.never,
+        //     );
+        //   }
+        // },
       ),
       nonRotatedChildren: [
         // Credit used tile server
@@ -117,6 +118,9 @@ class MyFlutterMapState extends State<MyFlutterMap> {
           maxZoom: maxZoom,
           userAgentPackageName: 'com.nenuphar.mySportMap',
         ),
+
+        // TODO(nenuphar): use a Cubit...
+
         // Polylines of the user
         PolylineLayer(
           polylines: _myPolylines,
@@ -135,7 +139,7 @@ class MyFlutterMapState extends State<MyFlutterMap> {
     );
   }
 
-  void loadPolylines() {
+  Future<void> loadPolylines() async {
     // TODO(nenuphar): do this earlier ? On creation of repository ?
     // (but it blocks the loading and displaying of the map...)
 
@@ -143,30 +147,35 @@ class MyFlutterMapState extends State<MyFlutterMap> {
     context.read<StravaRepository>().initLocalStorage();
 
     // Get polylines stored locally
-    context
-        .read<StravaRepository>()
-        .localPolylinesCompleterFM
-        .future
-        .then((localPolylines) {
-      MyUtilities.logger.d('[polylines] Got local polylines');
-      setState(() {
-        _myPolylines = localPolylines;
-      });
+    final localPolylines =
+        await context.read<StravaRepository>().localPolylinesCompleterFM.future;
+    MyUtilities.logger.d('[polylines] Got local polylines');
+    setState(() {
+      _myPolylines = localPolylines;
     });
 
     // Get new and updated polylines
-    context
+    final updatedPolylines = await context
         .read<StravaRepository>()
         .updatedPolylinesCompleterFM
-        .future
-        .then((updatedPolylines) {
+        .future;
+
+    // if (MyUtilities.listFMPolylinesEquals(updatedPolylines, _myPolylines)) {
+    if (updatedPolylines.length == _myPolylines.length) {
       MyUtilities.logger.d('[polylines] No updated polylines');
-      if (updatedPolylines.isNotEmpty) {
-        MyUtilities.logger.d('[polylines] Got updated polylines');
-        setState(() {
-          _myPolylines = updatedPolylines;
-        });
-      }
-    });
+    } else {
+      MyUtilities.logger.d('[polylines] Got updated polylines');
+      setState(() {
+        _myPolylines = updatedPolylines;
+      });
+    }
+  }
+
+  void handlePositionChanged(MapPosition position, bool hasGesture) {
+    if (hasGesture && _followOnLocationUpdate != FollowOnLocationUpdate.never) {
+      setState(
+        () => _followOnLocationUpdate = FollowOnLocationUpdate.never,
+      );
+    }
   }
 }

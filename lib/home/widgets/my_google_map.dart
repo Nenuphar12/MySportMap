@@ -23,7 +23,7 @@ class MyGoogleMap extends StatefulWidget {
 }
 
 class MyGoogleMapState extends State<MyGoogleMap> {
-  final Completer<GoogleMapController> controller =
+  final Completer<GoogleMapController> mapControllerCompleter =
       Completer<GoogleMapController>();
 
   /// The center of the map.
@@ -39,42 +39,10 @@ class MyGoogleMapState extends State<MyGoogleMap> {
   @override
   void initState() {
     super.initState();
+
     // Tries to determine current position and ask permission if needed.
     // The map initial position is then updated.
-    widget.geolocatorHelper.determinePosition().then(
-      (position) {
-        final currentPosition = CameraPosition(
-          target: LatLng(position.latitude, position.longitude),
-          zoom: 13,
-        );
-        // Animate the map to the current position
-        controller.future.then(
-          (controller) => controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              currentPosition,
-            ),
-          ),
-        );
-      },
-    ).onError<LocationServiceDisabledException>(
-      (error, stackTrace) {
-        MyUtilities.logger.i('location service is disabled');
-        final snackBar = SnackBar(content: Text(error.toString()));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      },
-    ).onError<PermissionDeniedException>(
-      (error, stackTrace) {
-        MyUtilities.logger.i('location permission request denied');
-        final snackBar = SnackBar(content: Text(error.toString()));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      },
-    ).onError<PermissionDeniedForeverException>(
-      (error, stackTrace) {
-        MyUtilities.logger.w('location permission permanently denied');
-        final snackBar = SnackBar(content: Text(error.toString()));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      },
-    );
+    initializePosition();
 
     // Load polylines of activities to be displayed
     loadPolylines();
@@ -89,7 +57,7 @@ class MyGoogleMapState extends State<MyGoogleMap> {
         target: _center,
         zoom: initialZoom,
       ),
-      onMapCreated: controller.complete,
+      onMapCreated: mapControllerCompleter.complete,
       myLocationEnabled: true,
       polylines: _myPolylines,
       // mapType: MapType.terrain,
@@ -98,35 +66,62 @@ class MyGoogleMapState extends State<MyGoogleMap> {
     );
   }
 
-  void loadPolylines() {
+  Future<void> loadPolylines() async {
     // Inits (if not already) the storage of Activities
     context.read<StravaRepository>().initLocalStorage();
 
     // Get polylines stored locally
-    context
-        .read<StravaRepository>()
-        .localPolylinesCompleterGM
-        .future
-        .then((localPolylines) {
-      MyUtilities.logger.d('[polylines] Got local polylines');
-      setState(() {
-        _myPolylines = localPolylines;
-      });
+    final localPolylines =
+        await context.read<StravaRepository>().localPolylinesCompleterGM.future;
+    MyUtilities.logger.d('[polylines] Got local polylines');
+    setState(() {
+      _myPolylines = localPolylines;
     });
 
     // Get new and updated polylines
-    context
+    final updatedPolylines = await context
         .read<StravaRepository>()
         .updatedPolylinesCompleterGM
-        .future
-        .then((updatedPolylines) {
+        .future;
+
+    // if (MyUtilities.setGMPolylinesEquals(updatedPolylines, _myPolylines)) {
+    if (updatedPolylines.length == _myPolylines.length) {
       MyUtilities.logger.d('[polylines] No updated polylines');
-      if (updatedPolylines.isNotEmpty) {
-        MyUtilities.logger.d('[polylines] Got updated polylines');
-        setState(() {
-          _myPolylines = updatedPolylines;
-        });
-      }
-    });
+    } else {
+      MyUtilities.logger.d('[polylines] Got updated polylines');
+      setState(() {
+        _myPolylines = updatedPolylines;
+      });
+    }
+  }
+
+  Future<void> initializePosition() async {
+    try {
+      final userPosition = await widget.geolocatorHelper.determinePosition();
+      final cameraPosition = CameraPosition(
+        target: LatLng(userPosition.latitude, userPosition.longitude),
+        zoom: 13,
+      );
+
+      // Animate the map to the current position
+      final controller = await mapControllerCompleter.future;
+      await controller.animateCamera(
+        CameraUpdate.newCameraPosition(
+          cameraPosition,
+        ),
+      );
+    } on LocationServiceDisabledException catch (error, stacktrace) {
+      MyUtilities.logger.i('location service is disabled');
+      final snackBar = SnackBar(content: Text(error.toString()));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } on PermissionDeniedException catch (error, stacktrace) {
+      MyUtilities.logger.i('location permission request denied');
+      final snackBar = SnackBar(content: Text(error.toString()));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } on PermissionDeniedForeverException catch (error, stacktrace) {
+      MyUtilities.logger.w('location permission permanently denied');
+      final snackBar = SnackBar(content: Text(error.toString()));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 }

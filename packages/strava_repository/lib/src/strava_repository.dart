@@ -55,7 +55,7 @@ class StravaRepository {
   /// completed with the new [fm.Polyline]s and [gm.Polyline]s from Strava that
   /// are not yet stored locally.
   ///
-  /// Usage example:
+  /// Usage example (using `FM` ie. `flutter_map`):
   /// ```dart
   /// StravaRepository stravaRepository =
   ///     StravaRepository(secret: 'your-secret', clientId: 'your-client-id');
@@ -64,18 +64,16 @@ class StravaRepository {
   ///
   /// // Get polylines stored locally
   /// // (you can also omit this and directly get the updated polylines)
-  /// stravaRepository.localPolylinesCompleterFM.future
-  ///     .then((localPolylinesFM) {
-  ///   // This is called when the local polylines have been fetched.
-  ///   // Do something with the polylines...
-  /// });
+  /// final localPolylinesFM =
+  ///     await stravaRepository.localPolylinesCompleterFM.future;
+  ///
+  /// // Do something with the polylines
   ///
   /// // Get updated polylines (including stored and new ones)
-  /// stravaRepository.updatedPolylinesCompleterFM.future
-  ///     .then((localPolylinesFM) {
-  ///   // This is called when the polylines have been updated.
-  ///   // Do something with the polylines...
-  /// });
+  /// final updatedPolylinesFM =
+  ///     await stravaRepository.updatedPolylinesCompleterFM.future
+  ///
+  /// // Do something with the polylines...
   /// ```
   Future<void> initLocalStorage() async {
     // To make sure it is only called once
@@ -129,9 +127,9 @@ class StravaRepository {
   /// Usage example:
   /// ```dart
   /// // Then get the polylines stored locally
-  /// stravaRepository.localPolylinesCompleterFM.future.then((polylines) {
-  ///   // Do something when the polylines are returned...
-  /// })
+  /// final polylines = await stravaRepository.localPolylinesCompleterFM.future;
+  /// // Do something when the polylines are returned...
+  /// ```
   final Completer<List<fm.Polyline>> localPolylinesCompleterFM =
       Completer<List<fm.Polyline>>();
 
@@ -144,9 +142,10 @@ class StravaRepository {
   /// Usage example:
   /// ```dart
   /// // Get the updated polylines
-  /// stravaRepository.updatedPolylinesCompleterFM.future.then((polylines) {
-  ///   // Do something when the polylines are returned...
-  /// })
+  /// final polylines =
+  ///     await stravaRepository.updatedPolylinesCompleterFM.future;
+  /// // Do something when the polylines are returned...
+  /// ```
   final Completer<List<fm.Polyline>> updatedPolylinesCompleterFM =
       Completer<List<fm.Polyline>>();
 
@@ -162,9 +161,9 @@ class StravaRepository {
   /// Usage example:
   /// ```dart
   /// // Then get the polylines stored locally
-  /// stravaRepository.localPolylinesCompleterGM.future.then((polylines) {
-  ///   // Do something when the polylines are returned...
-  /// })
+  /// final polylines = await stravaRepository.localPolylinesCompleterGM.future;
+  /// // Do something when the polylines are returned...
+  /// ```
   final Completer<Set<gm.Polyline>> localPolylinesCompleterGM =
       Completer<Set<gm.Polyline>>();
 
@@ -177,9 +176,10 @@ class StravaRepository {
   /// Usage example:
   /// ```dart
   /// // Get the updated polylines
-  /// stravaRepository.updatedPolylinesCompleterGM.future.then((polylines) {
-  ///   // Do something when the polylines are returned...
-  /// })
+  /// final polylines =
+  ///     await stravaRepository.updatedPolylinesCompleterGM.future;
+  /// // Do something when the polylines are returned...
+  /// ```
   final Completer<Set<gm.Polyline>> updatedPolylinesCompleterGM =
       Completer<Set<gm.Polyline>>();
 
@@ -349,6 +349,8 @@ class StravaRepository {
               color:
                   SportTypeHelper.getColor(a.sportType ?? SportTypes.undefined),
             );
+          } else {
+            Logger().w('[Polyline] empty `mapId` or `mapSummaryPolyline`');
           }
         })
         .whereType<fm.Polyline>()
@@ -408,7 +410,7 @@ class StravaRepository {
   /// Waits for the authentication check to be completed, with
   /// [isAuthenticatedCompleter], before querying Strava.
   Future<List<Activity>> updateLocalActivities() async {
-    Logger().v("[activities - remote] Update user's activities");
+    Logger().v("[Activities - remote] Update user's activities");
 
     // Get last update time
     final lastUpdate = DateTime.fromMillisecondsSinceEpoch(

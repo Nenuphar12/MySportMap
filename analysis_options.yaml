@@ -21,17 +21,17 @@ dart_code_metrics:
         allowed-line-count: 4
     - format-comment:
         only-doc-comments: true
-    - member-ordering:
-        order:
-          # - constructors
-          # - named-constructors
-          # - const-fields
-          # - static-methods
-          # - final-fields
-          # - static-fields
-          # - var-fields
-          # - private-methods
-          # - overridden-public-methods
+    - member-ordering: false
+        # order:
+        #   # - constructors
+        #   # - named-constructors
+        #   # - const-fields
+        #   # - static-methods
+        #   # - final-fields
+        #   # - static-fields
+        #   # - var-fields
+        #   # - private-methods
+        #   # - overridden-public-methods
     - arguments-ordering:
         child-last: true
     - avoid-dynamic: false
