@@ -1,7 +1,7 @@
 /// An exception thrown when trying to access the device's location
 /// information while access is **permanently** denied.
 class PermissionDeniedForeverException implements Exception {
-  /// Constructs the [PermissionDeniedForeverException]
+  /// Constructs the [PermissionDeniedForeverException].
   const PermissionDeniedForeverException({this.message});
 
   /// A [message] describing more details on the denied permission.
@@ -9,10 +9,13 @@ class PermissionDeniedForeverException implements Exception {
 
   @override
   String toString() {
-    if (message == null || message == '') {
-      return 'Access to the location of the device is permanently denied,'
-          ' permissions cannot be requested.';
+    const defaultMessage =
+        'Access to the location of the device is permanently denied,'
+        ' permissions cannot be requested.';
+    if (message == '') {
+      return defaultMessage;
     }
-    return message!;
+
+    return message ?? defaultMessage;
   }
 }

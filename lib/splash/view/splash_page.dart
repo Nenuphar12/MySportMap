@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_sport_map/utilities/utilities.dart';
+import 'package:my_sport_map/utilities/my_utilities.dart';
 
 /// Simple view rendered right when the app is launched while the app determines
 /// whether the user is authenticated.
@@ -12,7 +12,8 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('[Build] SplashPage');
+    MyUtilities.logger.v('[Build] SplashPage');
+
     return const Scaffold(
       body: Center(child: CircularProgressIndicator()),
     );

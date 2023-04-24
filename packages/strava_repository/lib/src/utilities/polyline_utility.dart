@@ -50,6 +50,7 @@ List<fm.LatLng> decodeEncodedPolylineFM(String encodedPolyline) {
     final p = fm.LatLng(lat / 1E5, lng / 1E5);
     polyline.add(p);
   }
+
   return polyline;
 }
 
@@ -94,5 +95,6 @@ List<gm.LatLng> decodeEncodedPolylineGM(String encodedPolyline) {
     final p = gm.LatLng(lat / 1E5, lng / 1E5);
     polyline.add(p);
   }
+
   return polyline;
 }

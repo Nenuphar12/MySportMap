@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart' show Color, Colors;
 
 /// sport type of an `activity`.
-enum SportType {
+enum SportTypes {
   undefined,
   alpineSki,
   backcountrySki,
@@ -57,20 +57,20 @@ enum SportType {
   yoga
 }
 
-/// Helper adding functions to manipulate [SportType]s.
-extension SportTypeHelper on SportType {
-  /// Returns a [SportType] from a [String] referring to this sport type.
+/// Helper adding functions to manipulate [SportTypes]s.
+extension SportTypeHelper on SportTypes {
+  /// Returns a [SportTypes] from a [String] referring to this sport type.
   ///
-  /// if no [SportType] corresponds, the type is set to `undefined`.
+  /// if no [SportTypes] corresponds, the type is set to `undefined`.
   ///
   /// The function is case insensitive.
-  static SportType getType(String? sportTypeValue) {
-    return SportType.values.firstWhere(
+  static SportTypes getType(String? sportTypeValue) {
+    return SportTypes.values.firstWhere(
       (element) => element
           .toString()
           .toLowerCase()
           .endsWith((sportTypeValue ?? 'undefined').toLowerCase()),
-      orElse: () => SportType.undefined,
+      orElse: () => SportTypes.undefined,
     );
   }
 
@@ -82,120 +82,120 @@ extension SportTypeHelper on SportType {
     return toString().split('.').last;
   }
 
-  /// Deserializes the given json data into an [SportType].
-  static SportType fromJson(Map<String, dynamic> json) =>
+  /// Deserializes the given json data into an [SportTypes].
+  static SportTypes fromJson(Map<String, dynamic> json) =>
       getType(json['sport_type'] as String);
 
-  /// Converts this [SportType] into json data.
+  /// Converts this [SportTypes] into json data.
   Map<String, dynamic> toJson() =>
       <String, dynamic>{'sport_type': toString().split('.').last};
 
-  /// Returns a color for each [SportType].
-  static Color getColor(SportType sportType) {
+  /// Returns a color for each [SportTypes].
+  static Color getColor(SportTypes sportType) {
     switch (sportType) {
-      case SportType.undefined:
+      case SportTypes.undefined:
         return Colors.black;
-      case SportType.hike:
+      case SportTypes.hike:
         return Colors.green;
-      case SportType.mountainBikeRide:
+      case SportTypes.mountainBikeRide:
         return Colors.blueGrey;
-      case SportType.ride:
+      case SportTypes.ride:
         return Colors.blue;
-      case SportType.run:
+      case SportTypes.run:
         return Colors.red;
-      case SportType.trailRun:
+      case SportTypes.trailRun:
         return Colors.orange;
-      case SportType.walk:
+      case SportTypes.walk:
         return Colors.lightGreen;
 
       // All black from here
-      case SportType.alpineSki:
+      case SportTypes.alpineSki:
         return Colors.black;
-      case SportType.backcountrySki:
+      case SportTypes.backcountrySki:
         return Colors.black;
-      case SportType.badminton:
+      case SportTypes.badminton:
         return Colors.black;
-      case SportType.canoeing:
+      case SportTypes.canoeing:
         return Colors.black;
-      case SportType.crossfit:
+      case SportTypes.crossfit:
         return Colors.black;
-      case SportType.eBikeRide:
+      case SportTypes.eBikeRide:
         return Colors.black;
-      case SportType.elliptical:
+      case SportTypes.elliptical:
         return Colors.black;
-      case SportType.eMountainBikeRide:
+      case SportTypes.eMountainBikeRide:
         return Colors.black;
-      case SportType.golf:
+      case SportTypes.golf:
         return Colors.black;
-      case SportType.gravelRide:
+      case SportTypes.gravelRide:
         return Colors.black;
-      case SportType.handcycle:
+      case SportTypes.handcycle:
         return Colors.black;
-      case SportType.highIntensityIntervalTraining:
+      case SportTypes.highIntensityIntervalTraining:
         return Colors.black;
-      case SportType.iceSkate:
+      case SportTypes.iceSkate:
         return Colors.black;
-      case SportType.inlineSkate:
+      case SportTypes.inlineSkate:
         return Colors.black;
-      case SportType.kayaking:
+      case SportTypes.kayaking:
         return Colors.black;
-      case SportType.kitesurf:
+      case SportTypes.kitesurf:
         return Colors.black;
-      case SportType.nordicSki:
+      case SportTypes.nordicSki:
         return Colors.black;
-      case SportType.pickleball:
+      case SportTypes.pickleball:
         return Colors.black;
-      case SportType.pilates:
+      case SportTypes.pilates:
         return Colors.black;
-      case SportType.racquetball:
+      case SportTypes.racquetball:
         return Colors.black;
-      case SportType.rockClimbing:
+      case SportTypes.rockClimbing:
         return Colors.black;
-      case SportType.rollerSki:
+      case SportTypes.rollerSki:
         return Colors.black;
-      case SportType.rowing:
+      case SportTypes.rowing:
         return Colors.black;
-      case SportType.sail:
+      case SportTypes.sail:
         return Colors.black;
-      case SportType.skateboard:
+      case SportTypes.skateboard:
         return Colors.black;
-      case SportType.snowboard:
+      case SportTypes.snowboard:
         return Colors.black;
-      case SportType.snowshoe:
+      case SportTypes.snowshoe:
         return Colors.black;
-      case SportType.soccer:
+      case SportTypes.soccer:
         return Colors.black;
-      case SportType.squash:
+      case SportTypes.squash:
         return Colors.black;
-      case SportType.stairStepper:
+      case SportTypes.stairStepper:
         return Colors.black;
-      case SportType.standUpPaddling:
+      case SportTypes.standUpPaddling:
         return Colors.black;
-      case SportType.surfing:
+      case SportTypes.surfing:
         return Colors.black;
-      case SportType.swim:
+      case SportTypes.swim:
         return Colors.black;
-      case SportType.tableTennis:
+      case SportTypes.tableTennis:
         return Colors.black;
-      case SportType.tennis:
+      case SportTypes.tennis:
         return Colors.black;
-      case SportType.velomobile:
+      case SportTypes.velomobile:
         return Colors.black;
-      case SportType.virtualRide:
+      case SportTypes.virtualRide:
         return Colors.black;
-      case SportType.virtualRow:
+      case SportTypes.virtualRow:
         return Colors.black;
-      case SportType.virtualRun:
+      case SportTypes.virtualRun:
         return Colors.black;
-      case SportType.weightTraining:
+      case SportTypes.weightTraining:
         return Colors.black;
-      case SportType.wheelchair:
+      case SportTypes.wheelchair:
         return Colors.black;
-      case SportType.windsurf:
+      case SportTypes.windsurf:
         return Colors.black;
-      case SportType.workout:
+      case SportTypes.workout:
         return Colors.black;
-      case SportType.yoga:
+      case SportTypes.yoga:
         return Colors.black;
     }
   }

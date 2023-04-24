@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_sport_map/home/cubit/client_cubit.dart';
-import 'package:my_sport_map/utilities/utilities.dart';
+import 'package:my_sport_map/utilities/my_utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
 class AuthManagementTile extends StatelessWidget {
@@ -11,7 +11,7 @@ class AuthManagementTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('[Build] AuthManagementTile');
+    MyUtilities.logger.v('[Build] AuthManagementTile');
     if (isLoggedIn) {
       return ListTile(
         key: const Key('authManagement_loggedIn_ListTile'),
@@ -38,7 +38,7 @@ class AuthManagementTile extends StatelessWidget {
   void _login(BuildContext context) {
     // If authorization is needed login.
     context.read<StravaRepository>().authenticate().then((value) {
-      logger.v('[_login] login successful');
+      MyUtilities.logger.v('[_login] login successful');
       context.read<ClientCubit>().setClientStatus(ClientStatus.ready);
     });
   }
@@ -46,7 +46,7 @@ class AuthManagementTile extends StatelessWidget {
   void _deAuth(BuildContext context) {
     // If logged in de-authorize.
     context.read<StravaRepository>().deAuthorize().then((value) {
-      logger.v('[_deAuth] de authorization successful (?)');
+      MyUtilities.logger.v('[_deAuth] de authorization successful (?)');
       // Update the [ClientCubit].
       context.read<ClientCubit>().setClientStatus(ClientStatus.notAuthorized);
     });

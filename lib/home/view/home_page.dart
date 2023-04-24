@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_sport_map/home/cubit/client_cubit.dart';
 import 'package:my_sport_map/home/cubit/settings_cubit.dart';
 import 'package:my_sport_map/home/widgets/widgets.dart';
-import 'package:my_sport_map/utilities/utilities.dart';
+import 'package:my_sport_map/utilities/my_utilities.dart';
+
+// TODO(nenuphar): Change no longer valid doc.
 
 /// {@template home_page}
 /// A [StatelessWidget] which is responsible for providing a [ClientCubit]
@@ -33,7 +35,8 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('[Build] HomeView');
+    MyUtilities.logger.v('[Build] HomeView');
+
     return BlocProvider(
       create: (_) => SettingsCubit(),
       child: BlocBuilder<ClientCubit, ClientState>(
@@ -57,10 +60,9 @@ class HomeView extends StatelessWidget {
                   ),
                 const SizedBox(
                   width: 8,
-                )
+                ),
               ],
             ),
-            drawer: HomePageDrawer(isLoggedIn: isLoggedIn),
             body: BlocBuilder<SettingsCubit, SettingsState>(
               builder: (context, state) {
                 return state.mapType == MyMapTypes.flutterMap
@@ -68,6 +70,7 @@ class HomeView extends StatelessWidget {
                     : MyGoogleMap(isClientReady: isLoggedIn);
               },
             ),
+            drawer: HomePageDrawer(isLoggedIn: isLoggedIn),
           );
         },
       ),

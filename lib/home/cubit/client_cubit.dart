@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:my_sport_map/utilities/utilities.dart';
+import 'package:my_sport_map/utilities/my_utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
 part 'client_state.dart';
@@ -17,13 +17,13 @@ class ClientCubit extends Cubit<ClientState> {
       : super(const ClientState()) {
     // Check if user is already logged in.
     stravaRepository.isAuthenticatedCompleter.future.then((isAuthenticated) {
-      logger.v('Already Authenticated : $isAuthenticated');
+      MyUtilities.logger.v('Already Authenticated : $isAuthenticated');
       setClientStatus(
         isAuthenticated ? ClientStatus.ready : ClientStatus.notAuthorized,
       );
     });
     // stravaRepository.isAuthenticated().then((isAuthenticated) {
-    //   logger.v('Already Authenticated : $isAuthenticated');
+    //   MyUtilities.logger.v('Already Authenticated : $isAuthenticated');
     //   setClientStatus(
     //     isAuthenticated ? ClientStatus.ready : ClientStatus.notAuthorized,
     //   );

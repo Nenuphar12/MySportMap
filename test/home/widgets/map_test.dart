@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:my_sport_map/home/cubit/client_cubit.dart';
 import 'package:my_sport_map/home/errors/errors.dart';
 import 'package:my_sport_map/home/helpers/geolocator_helper.dart';
-import 'package:my_sport_map/home/widgets/flutter_map.dart';
+import 'package:my_sport_map/home/widgets/my_flutter_map.dart';
 import 'package:strava_repository/strava_repository.dart';
 
 import '../../helpers/helpers.dart';

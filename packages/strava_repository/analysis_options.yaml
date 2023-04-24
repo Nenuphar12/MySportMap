@@ -1,1 +1,53 @@
 include: package:very_good_analysis/analysis_options.4.0.0.yaml
+  
+analyzer:
+  plugins:
+    - dart_code_metrics
+
+dart_code_metrics:
+  metrics:
+    cyclomatic-complexity: 20
+    number-of-parameters: 4
+    maximum-nesting-level: 5
+  metrics-exclude:
+    - test/**
+  extends:
+    - package:dart_code_metrics_presets/all.yaml
+  rules:
+    - prefer-extracting-callbacks:
+        allowed-line-count: 4
+    - format-comment:
+        only-doc-comments: true
+    - member-ordering:
+        order:
+          # - constructors
+          # - named-constructors
+          # - const-fields
+          # - static-methods
+          # - final-fields
+          # - static-fields
+          # - var-fields
+          # - private-methods
+          # - overridden-public-methods
+    - arguments-ordering:
+        child-last: true
+    - prefer-correct-identifier-length:
+        exceptions: [ 'id' ]
+    - avoid-dynamic: false
+  # rules:
+  #   - avoid-dynamic
+  #   - avoid-passing-async-when-sync-expected
+  #   - avoid-redundant-async
+  #   - avoid-unnecessary-type-assertions
+  #   - avoid-unnecessary-type-casts
+  #   - avoid-unrelated-type-assertions
+  #   - avoid-unused-parameters
+  #   - avoid-nested-conditional-expressions
+  #   - newline-before-return
+  #   - no-boolean-literal-compare
+  #   - no-empty-block
+  #   - prefer-trailing-comma
+  #   - prefer-conditional-expressions
+  #   - no-equal-then-else
+  #   - prefer-moving-to-variable
+  #   - prefer-match-file-name

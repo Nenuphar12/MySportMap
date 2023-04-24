@@ -53,7 +53,7 @@ class Activity extends Equatable {
   final int? id;
 
   /// The type of sport of the `activity`.
-  final SportType? sportType;
+  final SportTypes? sportType;
 
   /// The map of the `activity`.
   final PolyLineMap? map;
@@ -87,7 +87,7 @@ class Activity extends Equatable {
   /// {@macro activity_item}
   Activity copyWith({
     int? id,
-    SportType? sportType,
+    SportTypes? sportType,
     PolyLineMap? map,
   }) {
     return Activity(

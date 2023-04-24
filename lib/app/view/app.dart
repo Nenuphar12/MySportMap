@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_sport_map/home/home.dart';
 import 'package:my_sport_map/splash/splash.dart';
-import 'package:my_sport_map/utilities/utilities.dart';
+import 'package:my_sport_map/utilities/my_utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
 /// {@template my_sport_map_app}
@@ -55,7 +55,7 @@ class _MySportMapAppState extends State<MySportMapApp> {
 /// [AppView] is a [StatefulWidget] because it maintains a [GlobalKey] which is
 /// used to access the [NavigatorState]. By default, [AppView] will render the
 /// [SplashPage] (nope : and it uses [BlocListener] to navigate to different
-/// pages based on changes in the [ClientState] (AuthenticationState).)
+/// pages based on changes in the [ClientState] (AuthenticationState)).
 class AppView extends StatefulWidget {
   const AppView({super.key});
 
@@ -70,56 +70,60 @@ class _AppViewState extends State<AppView> {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('[Build] AppView (MaterialApp)');
-    return MaterialApp(
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
-        colorScheme: ColorScheme.fromSwatch(
-          accentColor: const Color(0xFF13B9FF),
-        ),
-      ),
-      navigatorKey: navigatorKey,
-      title: 'My sport map',
-      // home: const HomePage(),
+    MyUtilities.logger.v('[Build] AppView (MaterialApp)');
 
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      onGenerateRoute: (_) {
+        MyUtilities.logger.v('[onGenerateRoute]');
+
+        return SplashPage.route();
+      },
       builder: (context, child) {
-        logger.v('Next build');
+        MyUtilities.logger.v('Next build');
+
         return BlocListener<ClientCubit, ClientState>(
+          listener: (context, state) => handleListenToBloc(state),
           listenWhen: (previous, current) {
             // Only listen once when the app starts
             return previous == const ClientState();
           },
-          listener: (context, state) {
-            logger.v('[state] $state');
-            switch (state.status) {
-              case ClientStatus.ready:
-                logger.v('case ready');
-                navigator.pushAndRemoveUntil<void>(
-                  HomePage.route(),
-                  (route) => false,
-                );
-                break;
-              case ClientStatus.notAuthorized:
-                logger.v('case notAuthorized (or ready)');
-                navigator.pushAndRemoveUntil<void>(
-                  // Could be a login page
-                  // LoginPage.route(),
-                  HomePage.route(),
-                  (route) => false,
-                );
-                break;
-              case ClientStatus.appStarting:
-                logger.v('case appStarting');
-                break;
-            }
-          },
           child: child,
         );
       },
-      onGenerateRoute: (_) {
-        logger.v('[onGenerateRoute]');
-        return SplashPage.route();
-      },
+      title: 'My sport map',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(
+          accentColor: const Color(0xFF13B9FF),
+        ),
+        appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
+      ),
+      // home: const HomePage(),
     );
+  }
+
+  void handleListenToBloc(ClientState state) {
+    MyUtilities.logger.v('[state] $state');
+    switch (state.status) {
+      case ClientStatus.ready:
+        MyUtilities.logger.v('case ready');
+        navigator.pushAndRemoveUntil<void>(
+          HomePage.route(),
+          (route) => false,
+        );
+        break;
+      case ClientStatus.notAuthorized:
+        MyUtilities.logger.v('case notAuthorized (or ready)');
+        navigator.pushAndRemoveUntil<void>(
+          // Could be a login page.
+          // LoginPage.route(),
+          HomePage.route(),
+          (route) => false,
+        );
+        break;
+      case ClientStatus.appStarting:
+        MyUtilities.logger.v('case appStarting');
+        break;
+    }
   }
 }

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_sport_map/home/errors/errors.dart';
 import 'package:my_sport_map/home/helpers/geolocator_helper.dart';
-import 'package:my_sport_map/utilities/utilities.dart';
+import 'package:my_sport_map/utilities/my_utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
 class MyGoogleMap extends StatefulWidget {
@@ -27,12 +27,14 @@ class MyGoogleMapState extends State<MyGoogleMap> {
       Completer<GoogleMapController>();
 
   /// The center of the map.
-  late LatLng centerOfMap;
+  LatLng centerOfMap = const LatLng(44, 5);
 
-  /// The default initial position to center the map
+  /// The default initial position to center the map.
   final LatLng _center = const LatLng(43.5628075, 5);
 
-  late Set<Polyline> _myPolylines = {};
+  Set<Polyline> _myPolylines = {};
+
+  final double initialZoom = 10;
 
   @override
   void initState() {
@@ -56,19 +58,19 @@ class MyGoogleMapState extends State<MyGoogleMap> {
       },
     ).onError<LocationServiceDisabledException>(
       (error, stackTrace) {
-        logger.i('location service is disabled');
+        MyUtilities.logger.i('location service is disabled');
         final snackBar = SnackBar(content: Text(error.toString()));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
     ).onError<PermissionDeniedException>(
       (error, stackTrace) {
-        logger.i('location permission request denied');
+        MyUtilities.logger.i('location permission request denied');
         final snackBar = SnackBar(content: Text(error.toString()));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
     ).onError<PermissionDeniedForeverException>(
       (error, stackTrace) {
-        logger.w('location permission permanently denied');
+        MyUtilities.logger.w('location permission permanently denied');
         final snackBar = SnackBar(content: Text(error.toString()));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
@@ -80,16 +82,16 @@ class MyGoogleMapState extends State<MyGoogleMap> {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('[Build] MyGoogleMap');
+    MyUtilities.logger.v('[Build] MyGoogleMap');
 
     return GoogleMap(
-      polylines: _myPolylines,
-      onMapCreated: controller.complete,
       initialCameraPosition: CameraPosition(
         target: _center,
-        zoom: 10,
+        zoom: initialZoom,
       ),
+      onMapCreated: controller.complete,
       myLocationEnabled: true,
+      polylines: _myPolylines,
       // mapType: MapType.terrain,
       // Keeps centerOfMap updated
       onCameraMove: (position) => centerOfMap = position.target,
@@ -106,7 +108,7 @@ class MyGoogleMapState extends State<MyGoogleMap> {
         .localPolylinesCompleterGM
         .future
         .then((localPolylines) {
-      logger.d('[polylines] Got local polylines');
+      MyUtilities.logger.d('[polylines] Got local polylines');
       setState(() {
         _myPolylines = localPolylines;
       });
@@ -118,9 +120,9 @@ class MyGoogleMapState extends State<MyGoogleMap> {
         .updatedPolylinesCompleterGM
         .future
         .then((updatedPolylines) {
-      logger.d('[polylines] No updated polylines');
+      MyUtilities.logger.d('[polylines] No updated polylines');
       if (updatedPolylines.isNotEmpty) {
-        logger.d('[polylines] Got updated polylines');
+        MyUtilities.logger.d('[polylines] Got updated polylines');
         setState(() {
           _myPolylines = updatedPolylines;
         });

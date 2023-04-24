@@ -1,10 +1,5 @@
 part of 'settings_cubit.dart';
 
-enum MyMapTypes {
-  flutterMap,
-  googleMap,
-}
-
 class SettingsState extends Equatable {
   const SettingsState({
     this.mapType = MyMapTypes.flutterMap,
@@ -28,4 +23,9 @@ class SettingsState extends Equatable {
           : MyMapTypes.flutterMap,
     );
   }
+}
+
+enum MyMapTypes {
+  flutterMap,
+  googleMap,
 }

@@ -17,9 +17,6 @@ import 'package:strava_repository/strava_repository.dart';
 // TODO(nenuphar): wait for auth everywhere ?
 // TODO(nenuphar): divide this file ! Reduce it
 
-/// Error thrown when an [Activity] with a given id is not found.
-class ActivityNotFoundException implements Exception {}
-
 /// A dart repository that handles `activity` by wrapping the `strava_client`.
 ///
 /// Note:
@@ -101,6 +98,14 @@ class StravaRepository {
     }
   }
 
+  /// The key used for storing the activities locally.
+  static const _activitiesCollectionKey =
+      '[com.nenuphar.mySportMap]__activities_collection_key__';
+
+  /// The key used for storing locally the date of the last activity fetched.
+  static const _activitiesLastCollectionKey =
+      '[com.nenuphar.mySportMap]__activities_last_collection_key__';
+
   /// The client used by the repository to fetch data.
   late final StravaClient stravaClient;
 
@@ -111,14 +116,6 @@ class StravaRepository {
   ///
   /// This is to ensure that [initLocalStorage] executes only once.
   bool _localStorageInitialized = false;
-
-  /// The key used for storing the activities locally
-  static const _activitiesCollectionKey =
-      '[com.nenuphar.mySportMap]__activities_collection_key__';
-
-  /// The key used for storing locally the date of the last activity fetched
-  static const _activitiesLastCollectionKey =
-      '[com.nenuphar.mySportMap]__activities_last_collection_key__';
 
   /// [Completer] used to get the [fm.Polyline]s from local storage.
   ///
@@ -197,6 +194,9 @@ class StravaRepository {
   /// Strava's [Activity]s of the authenticated user.
   List<Activity> userActivities = [];
 
+  /// The width of the polylines.
+  double polylineWidth = 2;
+
   /// Whether the client is already authenticated.
   ///
   /// To verify authentication, the stored [TokenResponse] is checked.
@@ -221,15 +221,18 @@ class StravaRepository {
           // authenticate.
           logErrorMessage(e, s);
           isAuthenticatedCompleter.complete(false);
+
           return false;
         }
         Logger().d('Token refreshed');
       }
       isAuthenticatedCompleter.complete(true);
+
       // return true if a token is stored
       return true;
     } else {
       isAuthenticatedCompleter.complete(false);
+
       return false;
     }
   }
@@ -254,7 +257,7 @@ class StravaRepository {
         scopes: [
           AuthenticationScope.activity_read_all,
           AuthenticationScope.read_all,
-          AuthenticationScope.profile_read_all
+          AuthenticationScope.profile_read_all,
         ],
         redirectUrl: 'com.nenuphar.mysportmap://redirect',
         callbackUrlScheme: 'com.nenuphar.mysportmap',
@@ -303,6 +306,7 @@ class StravaRepository {
           ),
         )
         .toList();
+
     return listActivities;
   }
 
@@ -324,6 +328,7 @@ class StravaRepository {
     }
     // if we fetched all the activities, update [userActivities]
     if (after == null) userActivities = allActivities;
+
     return allActivities;
   }
 
@@ -334,13 +339,15 @@ class StravaRepository {
   FutureOr<List<fm.Polyline>> getPolylinesFM() {
     return userActivities
         .map((a) {
-          if (a.map?.id != null && a.map?.summaryPolyline != null) {
+          final mapId = a.map?.id;
+          final mapSummaryPolyline = a.map?.summaryPolyline;
+          if (mapId != null && mapSummaryPolyline != null) {
             return fm.Polyline(
-              key: Key(a.map?.id ?? 'no_id'),
-              points: decodeEncodedPolylineFM(a.map?.summaryPolyline ?? ''),
-              strokeWidth: 2,
+              points: decodeEncodedPolylineFM(mapSummaryPolyline),
+              key: Key(mapId),
+              strokeWidth: polylineWidth,
               color:
-                  SportTypeHelper.getColor(a.sportType ?? SportType.undefined),
+                  SportTypeHelper.getColor(a.sportType ?? SportTypes.undefined),
             );
           }
         })
@@ -355,13 +362,15 @@ class StravaRepository {
   FutureOr<Set<gm.Polyline>> getPolylinesGM() {
     return userActivities
         .map((a) {
-          if (a.map?.id != null && a.map?.summaryPolyline != null) {
+          final mapId = a.map?.id;
+          final mapSummaryPolyline = a.map?.summaryPolyline;
+          if (mapId != null && mapSummaryPolyline != null) {
             return gm.Polyline(
-              polylineId: gm.PolylineId(a.map?.id ?? 'no_id'),
-              points: decodeEncodedPolylineGM(a.map?.summaryPolyline ?? ''),
-              width: 2,
+              polylineId: gm.PolylineId(mapId),
               color:
-                  SportTypeHelper.getColor(a.sportType ?? SportType.undefined),
+                  SportTypeHelper.getColor(a.sportType ?? SportTypes.undefined),
+              points: decodeEncodedPolylineGM(mapSummaryPolyline),
+              width: polylineWidth.toInt(),
             );
           }
         })
@@ -372,6 +381,7 @@ class StravaRepository {
   /// Fetch a specific [Activity] from its [id].
   Future<Activity> getActivity(int id) async {
     final detailedActivity = await stravaClient.activities.getActivity(id);
+
     return Activity(
       id: detailedActivity.id,
       sportType: SportTypeHelper.getType(detailedActivity.type),
@@ -383,8 +393,8 @@ class StravaRepository {
   List<Activity> getLocalActivities() {
     Logger().v('Get local activities');
     final encodedActivities = _prefs.getString(_activitiesCollectionKey);
-    final activitiesJsonList =
-        jsonDecode(encodedActivities ?? '[]') as List<dynamic>;
+    final activitiesJsonList = jsonDecode(encodedActivities ?? '[]') as List;
+
     return userActivities = activitiesJsonList
         .map(
           (jsonActivity) =>
@@ -429,18 +439,19 @@ class StravaRepository {
       // The user is not authenticated
       // TODO(nenuphar): throw error
     }
+
     return userActivities;
   }
 
   /// Logs an error message.
-  FutureOr<void> logErrorMessage(dynamic error, dynamic stackTrace) {
+  FutureOr<void> logErrorMessage(Object error, StackTrace stackTrace) {
     if (error is Fault) {
-      Logger().e('Did Receive Fault', error, stackTrace as StackTrace);
+      Logger().e('Did Receive Fault', error, stackTrace);
     } else {
       Logger().e(
         'Received Error which is not a Fault',
         error,
-        stackTrace as StackTrace,
+        stackTrace,
       );
     }
   }
@@ -449,6 +460,10 @@ class StravaRepository {
   bool isTokenExpired(TokenResponse token) {
     final expiresAt =
         DateTime.fromMillisecondsSinceEpoch(token.expiresAt * 1000);
+
     return DateTime.now().isAfter(expiresAt);
   }
 }
+
+/// Error thrown when an [Activity] with a given id is not found.
+class ActivityNotFoundException implements Exception {}

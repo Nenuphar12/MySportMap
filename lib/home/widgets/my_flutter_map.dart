@@ -6,7 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:my_sport_map/home/helpers/geolocator_helper.dart';
-import 'package:my_sport_map/utilities/utilities.dart';
+import 'package:my_sport_map/utilities/my_utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
 
 // TODO(nenuphar): add Strava heatmap
@@ -28,15 +28,19 @@ class MyFlutterMap extends StatefulWidget {
 
 class MyFlutterMapState extends State<MyFlutterMap> {
   /// The center of the map.
-  late LatLng centerOfMap;
+  LatLng centerOfMap = LatLng(44, 5);
 
-  /// The default initial position to center the map
+  /// The default initial position to center the map.
   final LatLng _center = LatLng(43.5628075, 5);
 
-  late List<Polyline> _myPolylines = [];
+  List<Polyline> _myPolylines = [];
 
   late FollowOnLocationUpdate _followOnLocationUpdate;
   late StreamController<double?> _followCurrentLocationStreamController;
+
+  final double initialZoom = 10;
+  final double centerPositionZoom = 15;
+  final double maxZoom = 19;
 
   @override
   void initState() {
@@ -57,13 +61,17 @@ class MyFlutterMapState extends State<MyFlutterMap> {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('[Build] MyFlutterMap');
+    MyUtilities.logger.v('[Build] MyFlutterMap');
 
     return FlutterMap(
       // mapController: _mapController,
+      // TODO(nenuphar): move this out of here
+      // (eventually use a static function)
       options: MapOptions(
         center: _center,
-        zoom: 10,
+        zoom: initialZoom,
+        // disable rotation
+        interactiveFlags: InteractiveFlag.all & ~InteractiveFlag.rotate,
         // Stop following the location marker on the map if user interacted with
         // the map.
         onPositionChanged: (MapPosition position, bool hasGesture) {
@@ -74,8 +82,6 @@ class MyFlutterMapState extends State<MyFlutterMap> {
             );
           }
         },
-        // disable rotation
-        interactiveFlags: InteractiveFlag.all & ~InteractiveFlag.rotate,
       ),
       nonRotatedChildren: [
         // Credit used tile server
@@ -95,7 +101,7 @@ class MyFlutterMapState extends State<MyFlutterMap> {
               );
               // Follow the location marker on the map and zoom the map to
               // level 15.
-              _followCurrentLocationStreamController.add(15);
+              _followCurrentLocationStreamController.add(centerPositionZoom);
             },
             child: const Icon(
               Icons.my_location,
@@ -108,8 +114,8 @@ class MyFlutterMapState extends State<MyFlutterMap> {
         // OpenStreetMap tile layer
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          maxZoom: maxZoom,
           userAgentPackageName: 'com.nenuphar.mySportMap',
-          maxZoom: 19,
         ),
         // Polylines of the user
         PolylineLayer(
@@ -117,13 +123,13 @@ class MyFlutterMapState extends State<MyFlutterMap> {
         ),
         // Marker showing user's position
         CurrentLocationLayer(
-          followCurrentLocationStream:
-              _followCurrentLocationStreamController.stream,
-          followOnLocationUpdate: _followOnLocationUpdate,
           style: const LocationMarkerStyle(
             markerSize: Size.square(12),
             headingSectorRadius: 40,
           ),
+          followCurrentLocationStream:
+              _followCurrentLocationStreamController.stream,
+          followOnLocationUpdate: _followOnLocationUpdate,
         ),
       ],
     );
@@ -142,7 +148,7 @@ class MyFlutterMapState extends State<MyFlutterMap> {
         .localPolylinesCompleterFM
         .future
         .then((localPolylines) {
-      logger.d('[polylines] Got local polylines');
+      MyUtilities.logger.d('[polylines] Got local polylines');
       setState(() {
         _myPolylines = localPolylines;
       });
@@ -154,9 +160,9 @@ class MyFlutterMapState extends State<MyFlutterMap> {
         .updatedPolylinesCompleterFM
         .future
         .then((updatedPolylines) {
-      logger.d('[polylines] No updated polylines');
+      MyUtilities.logger.d('[polylines] No updated polylines');
       if (updatedPolylines.isNotEmpty) {
-        logger.d('[polylines] Got updated polylines');
+        MyUtilities.logger.d('[polylines] Got updated polylines');
         setState(() {
           _myPolylines = updatedPolylines;
         });

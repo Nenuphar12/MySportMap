@@ -7,7 +7,7 @@ import 'package:my_sport_map/home/errors/errors.dart';
 /// Helper class managing user's position using [Geolocator].
 ///
 /// (One of its purposes is to wrap Geolocator's static functions so they can
-/// be mocked and tested.)
+/// be mocked and tested).
 class GeolocatorHelper {
   const GeolocatorHelper();
 
