@@ -12,6 +12,15 @@
 - [] Secrets and API key removed
 - [] Generate changelog
 
+## Now
+
+- use Cubits to update polylines
+
+### Todo
+
+- work on logs
+- simplify `strava_repository.dart`
+
 ## Features
 
 - new feature: implement splash screen [in process]
