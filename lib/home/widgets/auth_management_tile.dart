@@ -11,7 +11,7 @@ class AuthManagementTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('Build AuthManagementTile');
+    logger.t('Build AuthManagementTile');
     if (isLoggedIn) {
       return ListTile(
         key: const Key('authManagement_loggedIn_ListTile'),
@@ -38,7 +38,7 @@ class AuthManagementTile extends StatelessWidget {
   void _login(BuildContext context) {
     // If authorization is needed login.
     context.read<StravaRepository>().authenticate().then((value) {
-      logger.v('[_login] login successful');
+      logger.t('[_login] login successful');
       context.read<ClientCubit>().setClientStatus(ClientStatus.ready);
     });
   }
@@ -46,7 +46,7 @@ class AuthManagementTile extends StatelessWidget {
   void _deAuth(BuildContext context) {
     // If logged in de-authorize.
     context.read<StravaRepository>().deAuthorize().then((value) {
-      logger.v('[_deAuth] de authorization successful (?)');
+      logger.t('[_deAuth] de authorization successful (?)');
       // Update the [ClientCubit].
       context.read<ClientCubit>().setClientStatus(ClientStatus.notAuthorized);
     });

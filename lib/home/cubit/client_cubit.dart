@@ -17,7 +17,7 @@ class ClientCubit extends Cubit<ClientState> {
       : super(const ClientState()) {
     // Check if user is already logged in.
     stravaRepository.isAuthenticated().then((isAuthenticated) {
-      logger.v('Already Authenticated : $isAuthenticated');
+      logger.t('Already Authenticated : $isAuthenticated');
       setClientStatus(
         isAuthenticated ? ClientStatus.ready : ClientStatus.notAuthorized,
       );

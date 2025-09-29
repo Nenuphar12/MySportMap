@@ -34,7 +34,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ClientCubit, ClientState>(
       builder: (context, state) {
-        logger.v('Building home_page');
+        logger.t('Building home_page');
 
         final isLoggedIn = state.isReady();
 

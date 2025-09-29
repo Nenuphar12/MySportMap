@@ -8,7 +8,7 @@ import 'package:strava_repository/strava_repository.dart';
 /// {@template my_sport_map_app}
 /// A [StatefulWidget] which constructs a [MaterialApp] with a splash screen to
 /// [SplashPage] and a home to [HomePage].
-/// {endtemplate}
+/// {@endtemplate}
 ///
 /// Note: `app.dart` is split into two parts [MySportMapApp] and [AppView].
 /// [MySportMapApp] is responsible for creating/providing the [StravaRepository]
@@ -70,7 +70,7 @@ class _AppViewState extends State<AppView> {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('[build] Build MaterialApp...');
+    logger.t('[build] Build MaterialApp...');
     return MaterialApp(
       theme: ThemeData(
         appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
@@ -83,24 +83,24 @@ class _AppViewState extends State<AppView> {
       // home: const HomePage(),
 
       builder: (context, child) {
-        logger.v('Next build');
+        logger.t('Next build');
         return BlocListener<ClientCubit, ClientState>(
           listenWhen: (previous, current) {
             // Only listen once when the app starts
             return previous == const ClientState();
           },
           listener: (context, state) {
-            logger.v('[state] $state');
+            logger.t('[state] $state');
             switch (state.status) {
               case ClientStatus.ready:
-              // logger.v('case ready');
+              // logger.t('case ready');
               // navigator.pushAndRemoveUntil<void>(
               //   HomePage.route(),
               //   (route) => false,
               // );
               // break;
               case ClientStatus.notAuthorized:
-                logger.v('case notAuthorized (or ready)');
+                logger.t('case notAuthorized (or ready)');
                 navigator.pushAndRemoveUntil<void>(
                   // Could be a login page
                   // LoginPage.route(),
@@ -109,7 +109,7 @@ class _AppViewState extends State<AppView> {
                 );
                 break;
               case ClientStatus.appStarting:
-                logger.v('case appStarting');
+                logger.t('case appStarting');
                 break;
             }
           },
@@ -117,7 +117,7 @@ class _AppViewState extends State<AppView> {
         );
       },
       onGenerateRoute: (_) {
-        logger.v('[onGenerateRoute]');
+        logger.t('[onGenerateRoute]');
         return SplashPage.route();
       },
     );

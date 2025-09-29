@@ -80,9 +80,9 @@ class MyMapState extends State<MyMap> {
     if (!_polylinesLoaded) {
       if (widget.isClientReady) {
         // Get the polylines !
-        logger.v('[polylines] Requesting polylines');
+        logger.t('[polylines] Requesting polylines');
         context.read<StravaRepository>().getAllPolylines().then((polylines) {
-          logger.v('[polylines] Got polylines');
+          logger.t('[polylines] Got polylines');
           setState(() {
             _myPolylines = polylines;
             _polylinesLoaded = true;
@@ -94,7 +94,7 @@ class MyMapState extends State<MyMap> {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('Building map.');
+    logger.t('Building map.');
 
     return GoogleMap(
       polylines: _myPolylines,

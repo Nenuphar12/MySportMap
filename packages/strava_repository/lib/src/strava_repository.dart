@@ -174,12 +174,16 @@ class StravaRepository {
   /// Logs an error message.
   FutureOr<void> logErrorMessage(dynamic error, dynamic stackTrace) {
     if (error is Fault) {
-      Logger().e('Did Receive Fault', error, stackTrace as StackTrace);
+      Logger().e(
+        'Did Receive Fault',
+        error: error,
+        stackTrace: stackTrace as StackTrace,
+      );
     } else {
       Logger().e(
         'Received Error which is not a Fault',
-        error,
-        stackTrace as StackTrace,
+        error: error,
+        stackTrace: stackTrace as StackTrace,
       );
     }
   }
