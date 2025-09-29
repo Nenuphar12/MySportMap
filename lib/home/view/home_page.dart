@@ -55,7 +55,7 @@ class HomeView extends StatelessWidget {
                 ),
               const SizedBox(
                 width: 8,
-              )
+              ),
             ],
           ),
           drawer: HomePageDrawer(isLoggedIn: isLoggedIn),

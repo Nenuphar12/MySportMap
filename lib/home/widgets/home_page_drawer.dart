@@ -34,7 +34,7 @@ class HomePageDrawer extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.info_outline),
                   title: Text('About'),
-                )
+                ),
               ],
             ),
           ),

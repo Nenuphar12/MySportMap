@@ -148,7 +148,7 @@ class StravaRepository {
         scopes: [
           AuthenticationScope.activity_read_all,
           AuthenticationScope.read_all,
-          AuthenticationScope.profile_read_all
+          AuthenticationScope.profile_read_all,
         ],
         redirectUrl: 'com.nenuphar.mysportmap://redirect',
         callbackUrlScheme: 'com.nenuphar.mysportmap',

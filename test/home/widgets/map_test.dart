@@ -17,7 +17,7 @@ class MockGeolocatorHelper extends Mock implements GeolocatorHelper {}
 
 // TODO(nenuphar): add points
 final Set<Polyline> testPolylines = {
-  const Polyline(polylineId: PolylineId('test_polyline_1'))
+  const Polyline(polylineId: PolylineId('test_polyline_1')),
 };
 
 void main() {
