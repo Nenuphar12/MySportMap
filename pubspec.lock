@@ -1038,7 +1038,7 @@ packages:
     source: hosted
     version: "1.12.1"
   strava_client:
-    dependency: "direct dev"
+    dependency: transitive
     description:
       name: strava_client
       sha256: "46ed04c224d0845b8479db5320a08eddd6f23eaf4a51f91e903986a71899d4dd"
