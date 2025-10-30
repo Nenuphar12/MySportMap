@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:logger/logger.dart';
 // TODO(nenuphar): improve strava_client to not have this problem
 // ignore: implementation_imports
@@ -35,13 +35,13 @@ class StravaRepository {
     int? page,
     int? perPage,
   }) async {
-    final listSummaryActivities =
-        await stravaClient.activities.listLoggedInAthleteActivities(
-      before ?? DateTime.now(),
-      after ?? DateTime(1999),
-      page ?? 1,
-      perPage ?? 30,
-    );
+    final listSummaryActivities = await stravaClient.activities
+        .listLoggedInAthleteActivities(
+          before ?? DateTime.now(),
+          after ?? DateTime(1999),
+          page ?? 1,
+          perPage ?? 30,
+        );
     final listActivities = listSummaryActivities
         .map(
           (a) => Activity(
@@ -69,23 +69,24 @@ class StravaRepository {
   }
 
   /// Returns a set of [Polyline]s from the encoded summaryPolylines.
-  Future<Set<Polyline>> getAllPolylines() async {
+  Future<List<Polyline>> getAllPolylines() async {
     final allActivities = await listAllActivities();
     // final allMaps = allActivities.map((a) => a.map).toList();
     final allPolylines = allActivities
         .map((a) {
-          if (a.map?.id != null && a.map?.summaryPolyline != null) {
+          if (a.map?.id != null &&
+              a.map?.summaryPolyline != null &&
+              a.map?.summaryPolyline != '') {
             return Polyline(
-              polylineId: PolylineId(a.map?.id ?? 'no_id'),
               points: decodeEncodedPolyline(a.map?.summaryPolyline ?? ''),
-              width: 2,
-              color:
-                  SportTypeHelper.getColor(a.sportType ?? SportType.undefined),
+              color: SportTypeHelper.getColor(
+                a.sportType ?? SportType.undefined,
+              ),
             );
           }
         })
         .whereType<Polyline>()
-        .toSet();
+        .toList();
     return allPolylines;
   }
 
@@ -103,8 +104,9 @@ class StravaRepository {
   ///
   /// If the client is authenticated, the token is refreshed.
   Future<bool> isAuthenticated() async {
-    final token =
-        await LocalStorageManager.getToken(applicationName: 'mySportMap');
+    final token = await LocalStorageManager.getToken(
+      applicationName: 'mySportMap',
+    );
     if (token != null) {
       // Refresh the token if needed.
       if (isTokenExpired(token)) {
@@ -190,8 +192,9 @@ class StravaRepository {
 
   /// Whether the token is expired.
   bool isTokenExpired(TokenResponse token) {
-    final expiresAt =
-        DateTime.fromMillisecondsSinceEpoch(token.expiresAt * 1000);
+    final expiresAt = DateTime.fromMillisecondsSinceEpoch(
+      token.expiresAt * 1000,
+    );
     return DateTime.now().isAfter(expiresAt);
   }
 }

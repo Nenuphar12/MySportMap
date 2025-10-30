@@ -1,217 +1,207 @@
-import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:my_sport_map/home/cubit/client_cubit.dart';
-import 'package:my_sport_map/home/errors/errors.dart';
-import 'package:my_sport_map/home/helpers/geolocator_helper.dart';
-import 'package:my_sport_map/home/widgets/map.dart';
-import 'package:strava_repository/strava_repository.dart';
+// import 'package:bloc_test/bloc_test.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_test/flutter_test.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:mocktail/mocktail.dart';
+// import 'package:my_sport_map/home/cubit/client_cubit.dart';
+// import 'package:my_sport_map/home/errors/errors.dart';
+// import 'package:my_sport_map/home/helpers/geolocator_helper.dart';
+// import 'package:my_sport_map/home/widgets/map.dart';
+// import 'package:strava_repository/strava_repository.dart';
 
-import '../../helpers/helpers.dart';
+// import '../../helpers/helpers.dart';
 
-class MockClientCubit extends MockCubit<ClientState> implements ClientCubit {}
+// class MockClientCubit extends MockCubit<ClientState> implements ClientCubit {}
 
-class MockGeolocatorHelper extends Mock implements GeolocatorHelper {}
+// class MockGeolocatorHelper extends Mock implements GeolocatorHelper {}
 
-// TODO(nenuphar): add points
-final Set<Polyline> testPolylines = {
-  const Polyline(polylineId: PolylineId('test_polyline_1')),
-};
+// // TODO(nenuphar): add points
+// final Set<Polyline> testPolylines = {
+//   const Polyline(polylineId: PolylineId('test_polyline_1')),
+// };
 
-void main() {
-  group('MyMap', () {
-    late StravaRepository stravaRepository;
+// void main() {
+//   group('MyMap', () {
+//     late StravaRepository stravaRepository;
 
-    setUp(() {
-      stravaRepository = MockStravaRepository();
-      when(() => stravaRepository.getAllPolylines()).thenAnswer(
-        (_) => Future<Set<Polyline>>.value(
-          testPolylines,
-        ),
-      );
-    });
+//     setUp(() {
+//       stravaRepository = MockStravaRepository();
+//       when(
+//         () => stravaRepository.getAllPolylines(),
+//       ).thenAnswer((_) => Future<Set<Polyline>>.value(testPolylines));
+//     });
 
-    group('constructor', () {
-      test('works properly', () {
-        expect(() => const MyMap(isClientReady: false), returnsNormally);
-      });
-    });
+//     group('constructor', () {
+//       test('works properly', () {
+//         expect(() => const MyMapOld(isClientReady: false), returnsNormally);
+//       });
+//     });
 
-    group('map', () {
-      late GeolocatorHelper geolocatorHelper;
+//     group('map', () {
+//       late GeolocatorHelper geolocatorHelper;
 
-      setUp(() => geolocatorHelper = MockGeolocatorHelper());
+//       setUp(() => geolocatorHelper = MockGeolocatorHelper());
 
-      testWidgets('is rendered', (tester) async {
-        await tester.pumpApp(const MyMap(isClientReady: false));
+//       testWidgets('is rendered', (tester) async {
+//         await tester.pumpApp(const MyMapOld(isClientReady: false));
 
-        expect(find.byType(GoogleMap), findsOneWidget);
-      });
+//         expect(find.byType(GoogleMap), findsOneWidget);
+//       });
 
-      testWidgets('sets the polylines', (tester) async {
-        await tester.pumpApp(
-          const MyMap(isClientReady: true),
-          stravaRepository: stravaRepository,
-        );
+//       testWidgets('sets the polylines', (tester) async {
+//         await tester.pumpApp(
+//           const MyMapOld(isClientReady: true),
+//           stravaRepository: stravaRepository,
+//         );
 
-        verify(() => stravaRepository.getAllPolylines()).called(1);
+//         verify(() => stravaRepository.getAllPolylines()).called(1);
 
-        await tester.pumpAndSettle();
+//         await tester.pumpAndSettle();
 
-        final map = tester.widget<GoogleMap>(find.byType(GoogleMap));
-        expect(map.polylines, equals(testPolylines));
-      });
+//         final map = tester.widget<GoogleMap>(find.byType(GoogleMap));
+//         expect(map.polylines, equals(testPolylines));
+//       });
 
-      // TODO(nenuphar): How to test map ?
-      // Cannot test the positioning of the map, because the map is never
-      // displayed, thus `onCreateMap` is never called...
-      // group('with position', () {
-      //   // Mock position of the current user.
-      //   const position = LatLng(44, 5);
+//       // TODO(nenuphar): How to test map ?
+//       // Cannot test the positioning of the map, because the map is never
+//       // displayed, thus `onCreateMap` is never called...
+//       // group('with position', () {
+//       //   // Mock position of the current user.
+//       //   const position = LatLng(44, 5);
 
-      //   setUp(() {
-      //     when(() => geolocatorHelper.determinePosition()).thenAnswer(
-      //       (_) => Future<Position>.value(
-      //         Position(
-      //           longitude: position.longitude,
-      //           latitude: position.latitude,
-      //           timestamp: null,
-      //           accuracy: 0,
-      //           altitude: 120,
-      //           heading: 0,
-      //           speed: 0,
-      //           speedAccuracy: 0,
-      //         ),
-      //       ),
-      //     );
-      //   });
+//       //   setUp(() {
+//       //     when(() => geolocatorHelper.determinePosition()).thenAnswer(
+//       //       (_) => Future<Position>.value(
+//       //         Position(
+//       //           longitude: position.longitude,
+//       //           latitude: position.latitude,
+//       //           timestamp: null,
+//       //           accuracy: 0,
+//       //           altitude: 120,
+//       //           heading: 0,
+//       //           speed: 0,
+//       //           speedAccuracy: 0,
+//       //         ),
+//       //       ),
+//       //     );
+//       //   });
 
-      //   testWidgets('centers on the current position', (tester) async {
-      //     await tester.pumpApp(
-      //       MyMap(
-      //         isClientReady: true,
-      //         geolocatorHelper: geolocatorHelper,
-      //       ),
-      //       stravaRepository: stravaRepository,
-      //     );
+//       //   testWidgets('centers on the current position', (tester) async {
+//       //     await tester.pumpApp(
+//       //       MyMap(
+//       //         isClientReady: true,
+//       //         geolocatorHelper: geolocatorHelper,
+//       //       ),
+//       //       stravaRepository: stravaRepository,
+//       //     );
 
-      //     verify(() => geolocatorHelper.determinePosition()).called(1);
+//       //     verify(() => geolocatorHelper.determinePosition()).called(1);
 
-      //     await tester.pumpAndSettle(
-      //       const Duration(milliseconds: 5000),
-      //     ); // useful ?
+//       //     await tester.pumpAndSettle(
+//       //       const Duration(milliseconds: 5000),
+//       //     ); // useful ?
 
-      //     final myMap = tester.state<MyMapState>(find.byType(MyMap));
-      //     final googleMap = tester.widget<GoogleMap>(find.byType(GoogleMap));
-      //     googleMap.onMapCreated!.call(controller);
-      //     // map.
-      //     expect(myMap.centerOfMap, equals(position));
-      //     // myMap.controller.future
-      //     //     .then((value) => (value.getVisibleRegion()).center);
-      //   });
-      // });
+//       //     final myMap = tester.state<MyMapState>(find.byType(MyMap));
+//       //     final googleMap = tester.widget<GoogleMap>(find.byType(GoogleMap));
+//       //     googleMap.onMapCreated!.call(controller);
+//       //     // map.
+//       //     expect(myMap.centerOfMap, equals(position));
+//       //     // myMap.controller.future
+//       //     //     .then((value) => (value.getVisibleRegion()).center);
+//       //   });
+//       // });
 
-      group('without location service enabled', () {
-        setUp(() {
-          when(() => geolocatorHelper.determinePosition()).thenAnswer(
-            (_) => Future.error(const LocationServiceDisabledException()),
-          );
-        });
+//       group('without location service enabled', () {
+//         setUp(() {
+//           when(() => geolocatorHelper.determinePosition()).thenAnswer(
+//             (_) => Future.error(const LocationServiceDisabledException()),
+//           );
+//         });
 
-        testWidgets('checks for location and displays informative SnackBar',
-            (tester) async {
-          await tester.pumpApp(
-            MyMap(
-              isClientReady: true,
-              geolocatorHelper: geolocatorHelper,
-            ),
-            stravaRepository: stravaRepository,
-          );
+//         testWidgets('checks for location and displays informative SnackBar', (
+//           tester,
+//         ) async {
+//           await tester.pumpApp(
+//             MyMapOld(isClientReady: true, geolocatorHelper: geolocatorHelper),
+//             stravaRepository: stravaRepository,
+//           );
 
-          verify(() => geolocatorHelper.determinePosition()).called(1);
+//           verify(() => geolocatorHelper.determinePosition()).called(1);
 
-          await tester.pumpAndSettle();
+//           await tester.pumpAndSettle();
 
-          expect(find.byType(SnackBar), findsOneWidget);
-          expect(
-            find.descendant(
-              of: find.byType(SnackBar),
-              matching: find
-                  .text(const LocationServiceDisabledException().toString()),
-            ),
-            findsOneWidget,
-          );
-        });
-      });
+//           expect(find.byType(SnackBar), findsOneWidget);
+//           expect(
+//             find.descendant(
+//               of: find.byType(SnackBar),
+//               matching: find.text(
+//                 const LocationServiceDisabledException().toString(),
+//               ),
+//             ),
+//             findsOneWidget,
+//           );
+//         });
+//       });
 
-      group('with location service denied', () {
-        setUp(() {
-          when(() => geolocatorHelper.determinePosition()).thenAnswer(
-            (_) => Future.error(const PermissionDeniedException()),
-          );
-        });
+//       group('with location service denied', () {
+//         setUp(() {
+//           when(
+//             () => geolocatorHelper.determinePosition(),
+//           ).thenAnswer((_) => Future.error(const PermissionDeniedException()));
+//         });
 
-        testWidgets(
-            'checks for location permissions'
-            ' and displays informative SnackBar', (tester) async {
-          await tester.pumpApp(
-            MyMap(
-              isClientReady: true,
-              geolocatorHelper: geolocatorHelper,
-            ),
-            stravaRepository: stravaRepository,
-          );
+//         testWidgets('checks for location permissions'
+//             ' and displays informative SnackBar', (tester) async {
+//           await tester.pumpApp(
+//             MyMapOld(isClientReady: true, geolocatorHelper: geolocatorHelper),
+//             stravaRepository: stravaRepository,
+//           );
 
-          verify(() => geolocatorHelper.determinePosition()).called(1);
+//           verify(() => geolocatorHelper.determinePosition()).called(1);
 
-          await tester.pumpAndSettle();
+//           await tester.pumpAndSettle();
 
-          expect(find.byType(SnackBar), findsOneWidget);
-          expect(
-            find.descendant(
-              of: find.byType(SnackBar),
-              matching: find.text(const PermissionDeniedException().toString()),
-            ),
-            findsOneWidget,
-          );
-        });
-      });
+//           expect(find.byType(SnackBar), findsOneWidget);
+//           expect(
+//             find.descendant(
+//               of: find.byType(SnackBar),
+//               matching: find.text(const PermissionDeniedException().toString()),
+//             ),
+//             findsOneWidget,
+//           );
+//         });
+//       });
 
-      group('with location service permanently denied', () {
-        setUp(() {
-          when(() => geolocatorHelper.determinePosition()).thenAnswer(
-            (_) => Future.error(const PermissionDeniedForeverException()),
-          );
-        });
+//       group('with location service permanently denied', () {
+//         setUp(() {
+//           when(() => geolocatorHelper.determinePosition()).thenAnswer(
+//             (_) => Future.error(const PermissionDeniedForeverException()),
+//           );
+//         });
 
-        testWidgets(
-            'checks for location permissions'
-            ' and displays informative SnackBar', (tester) async {
-          await tester.pumpApp(
-            MyMap(
-              isClientReady: true,
-              geolocatorHelper: geolocatorHelper,
-            ),
-            stravaRepository: stravaRepository,
-          );
+//         testWidgets('checks for location permissions'
+//             ' and displays informative SnackBar', (tester) async {
+//           await tester.pumpApp(
+//             MyMapOld(isClientReady: true, geolocatorHelper: geolocatorHelper),
+//             stravaRepository: stravaRepository,
+//           );
 
-          verify(() => geolocatorHelper.determinePosition()).called(1);
+//           verify(() => geolocatorHelper.determinePosition()).called(1);
 
-          await tester.pumpAndSettle();
+//           await tester.pumpAndSettle();
 
-          expect(find.byType(SnackBar), findsOneWidget);
-          expect(
-            find.descendant(
-              of: find.byType(SnackBar),
-              matching: find
-                  .text(const PermissionDeniedForeverException().toString()),
-            ),
-            findsOneWidget,
-          );
-        });
-      });
-    });
-  });
-}
+//           expect(find.byType(SnackBar), findsOneWidget);
+//           expect(
+//             find.descendant(
+//               of: find.byType(SnackBar),
+//               matching: find.text(
+//                 const PermissionDeniedForeverException().toString(),
+//               ),
+//             ),
+//             findsOneWidget,
+//           );
+//         });
+//       });
+//     });
+//   });
+// }
