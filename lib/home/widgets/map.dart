@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:my_sport_map/home/helpers/geolocator_helper.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
@@ -66,6 +67,7 @@ class MyMapState extends State<MyMap> {
           retinaMode: RetinaMode.isHighDensity(context),
         ),
         PolylineLayer(polylines: _myPolylines, simplificationTolerance: 0.6),
+        const CurrentLocationLayer(alignPositionOnUpdate: AlignOnUpdate.once),
         const Scalebar(
           alignment: Alignment.bottomLeft,
           textStyle: TextStyle(

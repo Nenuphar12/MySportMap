@@ -14,9 +14,10 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^9.1.1
   flutter_map: ^8.3.2
+  flutter_map_location_marker: ^10.2.0
   geolocator: ^14.1.1
   google_maps_flutter: ^2.18.1
-  latlong2: ^0.10.1
+  latlong2: ">=0.9.1 <0.11.0"
   logger: ^2.8.0
   strava_repository:
     path: packages/strava_repository

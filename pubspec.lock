@@ -406,6 +406,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.3.2"
+  flutter_map_location_marker:
+    dependency: "direct main"
+    description:
+      name: flutter_map_location_marker
+      sha256: "8566017d49b45d4b21313bcd3fcea87e47314347dac2b902c412e00f7abb074f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.2.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -414,6 +422,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.35"
+  flutter_rotation_sensor:
+    dependency: transitive
+    description:
+      name: flutter_rotation_sensor
+      sha256: "6a6af0ba340fd392c5fd37d1db04c0a153286170495c58f1bee4cc2103395d68"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -700,10 +716,10 @@ packages:
     dependency: "direct main"
     description:
       name: latlong2
-      sha256: "84b776b100a84a684a0aaa3fa4dc2c9b1931c658de533701ee4e09bfa991f8dc"
+      sha256: "98227922caf49e6056f91b6c56945ea1c7b166f28ffcd5fb8e72fc0b453cc8fe"
       url: "https://pub.dev"
     source: hosted
-    version: "0.10.1"
+    version: "0.9.1"
   leak_tracker:
     dependency: transitive
     description:
@@ -792,6 +808,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  native_device_orientation:
+    dependency: transitive
+    description:
+      name: native_device_orientation
+      sha256: ddb8addd36e7d06ea0049d052ec471e1514dd8f665e0184aea7cdd882fd6ccd7
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.3"
   nested:
     dependency: transitive
     description:
