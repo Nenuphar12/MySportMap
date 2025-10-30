@@ -49,17 +49,13 @@ class HomeView extends StatelessWidget {
                   color: Colors.white,
                 )
               else
-                const Icon(
-                  Icons.radio_button_off,
-                  color: Colors.red,
-                ),
-              const SizedBox(
-                width: 8,
-              ),
+                const Icon(Icons.radio_button_off, color: Colors.red),
+              const SizedBox(width: 8),
             ],
           ),
           drawer: HomePageDrawer(isLoggedIn: isLoggedIn),
           body: MyMap(isClientReady: isLoggedIn),
+          // body: MyMapOld(isClientReady: isLoggedIn),
         );
       },
     );
