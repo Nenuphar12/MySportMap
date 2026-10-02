@@ -20,12 +20,14 @@ class HomePageDrawer extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.blue,
                   ),
-                  child: Text('My Sport Map is an application allowing you'
-                      ' to display all your sport activities on a single map.'
-                      '\nTo get your activities, this application connects to'
-                      ' Strava.'
-                      '\n\nThis application is open source (source'
-                      ' code : https://github.com/Nenuphar12/MySportMap)'),
+                  child: Text(
+                    'My Sport Map is an application allowing you'
+                    ' to display all your sport activities on a single map.'
+                    '\nTo get your activities, this application connects to'
+                    ' Strava.'
+                    '\n\nThis application is open source (source'
+                    ' code : https://github.com/Nenuphar12/MySportMap)',
+                  ),
                 ),
                 ListTile(
                   leading: Icon(Icons.settings),
@@ -34,7 +36,7 @@ class HomePageDrawer extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.info_outline),
                   title: Text('About'),
-                )
+                ),
               ],
             ),
           ),

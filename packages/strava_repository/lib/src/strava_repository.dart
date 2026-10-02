@@ -35,13 +35,13 @@ class StravaRepository {
     int? page,
     int? perPage,
   }) async {
-    final listSummaryActivities =
-        await stravaClient.activities.listLoggedInAthleteActivities(
-      before ?? DateTime.now(),
-      after ?? DateTime(1999),
-      page ?? 1,
-      perPage ?? 30,
-    );
+    final listSummaryActivities = await stravaClient.activities
+        .listLoggedInAthleteActivities(
+          before ?? DateTime.now(),
+          after ?? DateTime(1999),
+          page ?? 1,
+          perPage ?? 30,
+        );
     final listActivities = listSummaryActivities
         .map(
           (a) => Activity(
@@ -79,8 +79,9 @@ class StravaRepository {
               polylineId: PolylineId(a.map?.id ?? 'no_id'),
               points: decodeEncodedPolyline(a.map?.summaryPolyline ?? ''),
               width: 2,
-              color:
-                  SportTypeHelper.getColor(a.sportType ?? SportType.undefined),
+              color: SportTypeHelper.getColor(
+                a.sportType ?? SportType.undefined,
+              ),
             );
           }
         })
@@ -103,8 +104,9 @@ class StravaRepository {
   ///
   /// If the client is authenticated, the token is refreshed.
   Future<bool> isAuthenticated() async {
-    final token =
-        await LocalStorageManager.getToken(applicationName: 'mySportMap');
+    final token = await LocalStorageManager.getToken(
+      applicationName: 'mySportMap',
+    );
     if (token != null) {
       // Refresh the token if needed.
       if (isTokenExpired(token)) {
@@ -112,7 +114,7 @@ class StravaRepository {
         Logger().d('Refreshing token.');
         try {
           await authenticate();
-        } catch (e, s) {
+        } on Object catch (e, s) {
           logErrorMessage(e, s);
           await deAuthorize();
           return false;
@@ -148,12 +150,12 @@ class StravaRepository {
         scopes: [
           AuthenticationScope.activity_read_all,
           AuthenticationScope.read_all,
-          AuthenticationScope.profile_read_all
+          AuthenticationScope.profile_read_all,
         ],
         redirectUrl: 'com.nenuphar.mysportmap://redirect',
         callbackUrlScheme: 'com.nenuphar.mysportmap',
       );
-    } catch (e, s) {
+    } on Object catch (e, s) {
       logErrorMessage(e, s);
       // TODO(nenuphar): remove token from memory
       // and authenticate from zero again
@@ -174,20 +176,25 @@ class StravaRepository {
   /// Logs an error message.
   FutureOr<void> logErrorMessage(dynamic error, dynamic stackTrace) {
     if (error is Fault) {
-      Logger().e('Did Receive Fault', error, stackTrace as StackTrace);
+      Logger().e(
+        'Did Receive Fault',
+        error: error,
+        stackTrace: stackTrace as StackTrace,
+      );
     } else {
       Logger().e(
         'Received Error which is not a Fault',
-        error,
-        stackTrace as StackTrace,
+        error: error,
+        stackTrace: stackTrace as StackTrace,
       );
     }
   }
 
   /// Whether the token is expired.
   bool isTokenExpired(TokenResponse token) {
-    final expiresAt =
-        DateTime.fromMillisecondsSinceEpoch(token.expiresAt * 1000);
+    final expiresAt = DateTime.fromMillisecondsSinceEpoch(
+      token.expiresAt * 1000,
+    );
     return DateTime.now().isAfter(expiresAt);
   }
 }

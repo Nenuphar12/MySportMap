@@ -41,60 +41,77 @@ class MyMapState extends State<MyMap> {
     super.initState();
     // Tries to determine current position and ask permission if needed.
     // The map initial position is then updated.
-    widget.geolocatorHelper.determinePosition().then(
-      (position) {
-        final currentPosition = CameraPosition(
-          target: LatLng(position.latitude, position.longitude),
-          zoom: 13,
-        );
-        // Animate the map to the current position
-        controller.future.then(
-          (controller) => controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              currentPosition,
-            ),
+    unawaited(
+      widget.geolocatorHelper
+          .determinePosition()
+          .then(
+            (position) {
+              final currentPosition = CameraPosition(
+                target: LatLng(position.latitude, position.longitude),
+                zoom: 13,
+              );
+              // Animate the map to the current position
+              unawaited(
+                controller.future.then(
+                  (controller) => controller.animateCamera(
+                    CameraUpdate.newCameraPosition(
+                      currentPosition,
+                    ),
+                  ),
+                ),
+              );
+            },
+          )
+          .onError<LocationServiceDisabledException>(
+            (error, stackTrace) {
+              logger.i('location service is disabled');
+              _showSnackBar(error.toString());
+            },
+          )
+          .onError<PermissionDeniedException>(
+            (error, stackTrace) {
+              logger.i('location permission request denied');
+              _showSnackBar(error.toString());
+            },
+          )
+          .onError<PermissionDeniedForeverException>(
+            (error, stackTrace) {
+              logger.w('location permission permanently denied');
+              _showSnackBar(error.toString());
+            },
           ),
-        );
-      },
-    ).onError<LocationServiceDisabledException>(
-      (error, stackTrace) {
-        logger.i('location service is disabled');
-        final snackBar = SnackBar(content: Text(error.toString()));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      },
-    ).onError<PermissionDeniedException>(
-      (error, stackTrace) {
-        logger.i('location permission request denied');
-        final snackBar = SnackBar(content: Text(error.toString()));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      },
-    ).onError<PermissionDeniedForeverException>(
-      (error, stackTrace) {
-        logger.w('location permission permanently denied');
-        final snackBar = SnackBar(content: Text(error.toString()));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      },
     );
 
     // Load polylines of activities to be displayed
     if (!_polylinesLoaded) {
       if (widget.isClientReady) {
         // Get the polylines !
-        logger.v('[polylines] Requesting polylines');
-        context.read<StravaRepository>().getAllPolylines().then((polylines) {
-          logger.v('[polylines] Got polylines');
-          setState(() {
-            _myPolylines = polylines;
-            _polylinesLoaded = true;
-          });
-        });
+        logger.t('[polylines] Requesting polylines');
+        unawaited(
+          context.read<StravaRepository>().getAllPolylines().then((polylines) {
+            logger.t('[polylines] Got polylines');
+            if (!mounted) return;
+            setState(() {
+              _myPolylines = polylines;
+              _polylinesLoaded = true;
+            });
+          }),
+        );
       }
     }
   }
 
+  /// Shows [message] in a [SnackBar], unless the map has been disposed.
+  void _showSnackBar(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    logger.v('Building map.');
+    logger.t('Building map.');
 
     return GoogleMap(
       polylines: _myPolylines,

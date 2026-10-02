@@ -18,10 +18,12 @@ void main() {
 
     setUp(() {
       stravaRepository = MockStravaRepository();
-      when(() => stravaRepository.authenticate())
-          .thenAnswer((_) => Future.value());
-      when(() => stravaRepository.deAuthorize())
-          .thenAnswer((_) => Future.value());
+      when(
+        () => stravaRepository.authenticate(),
+      ).thenAnswer((_) => Future.value());
+      when(
+        () => stravaRepository.deAuthorize(),
+      ).thenAnswer((_) => Future.value());
 
       clientCubit = MockClientCubit();
     });
@@ -68,16 +70,18 @@ void main() {
 
           expect(find.byKey(loggedInListTileKey), findsOneWidget);
 
-          final loggedInListTile =
-              tester.widget<ListTile>(find.byKey(loggedInListTileKey));
+          final loggedInListTile = tester.widget<ListTile>(
+            find.byKey(loggedInListTileKey),
+          );
 
           expect((loggedInListTile.leading! as Icon).icon, Icons.toggle_on);
           expect((loggedInListTile.leading! as Icon).color, Colors.green);
           expect((loggedInListTile.title! as Text).data, 'Logout of Strava');
         });
 
-        testWidgets('De authorize (logout) when tile is tapped',
-            (tester) async {
+        testWidgets('De authorize (logout) when tile is tapped', (
+          tester,
+        ) async {
           await tester.pumpApp(
             buildSubject(isLoggedIn: true),
             stravaRepository: stravaRepository,
@@ -86,22 +90,25 @@ void main() {
           await tester.pumpAndSettle();
 
           verify(() => stravaRepository.deAuthorize()).called(1);
-          verify(() => clientCubit.setClientStatus(ClientStatus.notAuthorized))
-              .called(1);
+          verify(
+            () => clientCubit.setClientStatus(ClientStatus.notAuthorized),
+          ).called(1);
         });
       });
 
       group('when not logged in', () {
-        const notLoggedInListTileKey =
-            Key('authManagement_notLoggedIn_ListTile');
+        const notLoggedInListTileKey = Key(
+          'authManagement_notLoggedIn_ListTile',
+        );
 
         testWidgets('tile is correctly rendered', (tester) async {
           await tester.pumpApp(buildSubject(isLoggedIn: false));
 
           expect(find.byKey(notLoggedInListTileKey), findsOneWidget);
 
-          final notLoggedInListTile =
-              tester.widget<ListTile>(find.byKey(notLoggedInListTileKey));
+          final notLoggedInListTile = tester.widget<ListTile>(
+            find.byKey(notLoggedInListTileKey),
+          );
 
           expect((notLoggedInListTile.leading! as Icon).icon, Icons.toggle_off);
           expect((notLoggedInListTile.leading! as Icon).color, Colors.red);
@@ -120,8 +127,9 @@ void main() {
           await tester.pumpAndSettle();
 
           verify(() => stravaRepository.authenticate()).called(1);
-          verify(() => clientCubit.setClientStatus(ClientStatus.ready))
-              .called(1);
+          verify(
+            () => clientCubit.setClientStatus(ClientStatus.ready),
+          ).called(1);
         });
       });
     });

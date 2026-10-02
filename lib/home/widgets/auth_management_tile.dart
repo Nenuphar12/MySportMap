@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_sport_map/home/cubit/client_cubit.dart';
@@ -11,7 +13,7 @@ class AuthManagementTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('Build AuthManagementTile');
+    logger.t('Build AuthManagementTile');
     if (isLoggedIn) {
       return ListTile(
         key: const Key('authManagement_loggedIn_ListTile'),
@@ -36,19 +38,27 @@ class AuthManagementTile extends StatelessWidget {
   }
 
   void _login(BuildContext context) {
+    // Read before the async gap: the tile may be gone when it completes.
+    final clientCubit = context.read<ClientCubit>();
     // If authorization is needed login.
-    context.read<StravaRepository>().authenticate().then((value) {
-      logger.v('[_login] login successful');
-      context.read<ClientCubit>().setClientStatus(ClientStatus.ready);
-    });
+    unawaited(
+      context.read<StravaRepository>().authenticate().then((value) {
+        logger.t('[_login] login successful');
+        clientCubit.setClientStatus(ClientStatus.ready);
+      }),
+    );
   }
 
   void _deAuth(BuildContext context) {
+    // Read before the async gap: the tile may be gone when it completes.
+    final clientCubit = context.read<ClientCubit>();
     // If logged in de-authorize.
-    context.read<StravaRepository>().deAuthorize().then((value) {
-      logger.v('[_deAuth] de authorization successful (?)');
-      // Update the [ClientCubit].
-      context.read<ClientCubit>().setClientStatus(ClientStatus.notAuthorized);
-    });
+    unawaited(
+      context.read<StravaRepository>().deAuthorize().then((value) {
+        logger.t('[_deAuth] de authorization successful (?)');
+        // Update the [ClientCubit].
+        clientCubit.setClientStatus(ClientStatus.notAuthorized);
+      }),
+    );
   }
 }

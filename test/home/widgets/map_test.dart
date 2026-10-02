@@ -1,9 +1,7 @@
-import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:my_sport_map/home/cubit/client_cubit.dart';
 import 'package:my_sport_map/home/errors/errors.dart';
 import 'package:my_sport_map/home/helpers/geolocator_helper.dart';
 import 'package:my_sport_map/home/widgets/map.dart';
@@ -11,13 +9,11 @@ import 'package:strava_repository/strava_repository.dart';
 
 import '../../helpers/helpers.dart';
 
-class MockClientCubit extends MockCubit<ClientState> implements ClientCubit {}
-
 class MockGeolocatorHelper extends Mock implements GeolocatorHelper {}
 
 // TODO(nenuphar): add points
 final Set<Polyline> testPolylines = {
-  const Polyline(polylineId: PolylineId('test_polyline_1'))
+  const Polyline(polylineId: PolylineId('test_polyline_1')),
 };
 
 void main() {
@@ -120,8 +116,9 @@ void main() {
           );
         });
 
-        testWidgets('checks for location and displays informative SnackBar',
-            (tester) async {
+        testWidgets('checks for location and displays informative SnackBar', (
+          tester,
+        ) async {
           await tester.pumpApp(
             MyMap(
               isClientReady: true,
@@ -138,8 +135,9 @@ void main() {
           expect(
             find.descendant(
               of: find.byType(SnackBar),
-              matching: find
-                  .text(const LocationServiceDisabledException().toString()),
+              matching: find.text(
+                const LocationServiceDisabledException().toString(),
+              ),
             ),
             findsOneWidget,
           );
@@ -153,8 +151,7 @@ void main() {
           );
         });
 
-        testWidgets(
-            'checks for location permissions'
+        testWidgets('checks for location permissions'
             ' and displays informative SnackBar', (tester) async {
           await tester.pumpApp(
             MyMap(
@@ -186,8 +183,7 @@ void main() {
           );
         });
 
-        testWidgets(
-            'checks for location permissions'
+        testWidgets('checks for location permissions'
             ' and displays informative SnackBar', (tester) async {
           await tester.pumpApp(
             MyMap(
@@ -205,8 +201,9 @@ void main() {
           expect(
             find.descendant(
               of: find.byType(SnackBar),
-              matching: find
-                  .text(const PermissionDeniedForeverException().toString()),
+              matching: find.text(
+                const PermissionDeniedForeverException().toString(),
+              ),
             ),
             findsOneWidget,
           );

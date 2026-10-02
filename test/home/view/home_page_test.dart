@@ -14,8 +14,9 @@ void main() {
   group('HomePage', () {
     setUp(() {
       stravaRepository = MockStravaRepository();
-      when(stravaRepository.isAuthenticated)
-          .thenAnswer((_) => Future.value(false));
+      when(
+        stravaRepository.isAuthenticated,
+      ).thenAnswer((_) => Future.value(false));
 
       clientCubit = MockClientCubit();
       whenListen(
