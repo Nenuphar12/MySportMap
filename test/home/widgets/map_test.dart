@@ -17,6 +17,8 @@ void main() {
   group('MyMap', () {
     late ActivitiesCubit activitiesCubit;
 
+    const followButtonKey = Key('myMap_followUser_floatingActionButton');
+
     setUp(() {
       activitiesCubit = MockActivitiesCubit();
       when(() => activitiesCubit.state).thenReturn(
@@ -26,6 +28,10 @@ void main() {
         ),
       );
     });
+
+    AlignOnUpdate alignPositionOnUpdate(WidgetTester tester) => tester
+        .widget<CurrentLocationLayer>(find.byType(CurrentLocationLayer))
+        .alignPositionOnUpdate;
 
     test('can be instantiated', () {
       expect(() => const MyMap(), returnsNormally);
@@ -37,6 +43,7 @@ void main() {
       expect(find.byType(FlutterMap), findsOneWidget);
       expect(find.byType(TileLayer), findsOneWidget);
       expect(find.byType(CurrentLocationLayer), findsOneWidget);
+      expect(find.byKey(followButtonKey), findsOneWidget);
     });
 
     testWidgets('displays the polylines of the activities', (tester) async {
@@ -60,6 +67,38 @@ void main() {
       await tester.pumpApp(const MyMap(), activitiesCubit: activitiesCubit);
 
       expect(find.byType(LinearProgressIndicator), findsNothing);
+    });
+
+    group('follow button', () {
+      testWidgets('centers the map on the first position only by default', (
+        tester,
+      ) async {
+        await tester.pumpApp(const MyMap(), activitiesCubit: activitiesCubit);
+
+        expect(alignPositionOnUpdate(tester), AlignOnUpdate.once);
+      });
+
+      testWidgets('follows the user when tapped', (tester) async {
+        await tester.pumpApp(const MyMap(), activitiesCubit: activitiesCubit);
+
+        await tester.tap(find.byKey(followButtonKey));
+        await tester.pump();
+
+        expect(alignPositionOnUpdate(tester), AlignOnUpdate.always);
+      });
+
+      testWidgets('stops following when the user moves the map', (
+        tester,
+      ) async {
+        await tester.pumpApp(const MyMap(), activitiesCubit: activitiesCubit);
+        await tester.tap(find.byKey(followButtonKey));
+        await tester.pump();
+
+        await tester.drag(find.byType(FlutterMap), const Offset(-200, 0));
+        await tester.pump();
+
+        expect(alignPositionOnUpdate(tester), AlignOnUpdate.never);
+      });
     });
   });
 }

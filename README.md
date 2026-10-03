@@ -35,6 +35,7 @@ These features are implemented by the application :
   - *Refresh all activities* (in the menu) fetches everything again, to pick
     up activities edited or deleted on Strava
 - shows your location on the map
+  - the follow button keeps the map centered on you until you move it
 
 ### Roadmap
 
