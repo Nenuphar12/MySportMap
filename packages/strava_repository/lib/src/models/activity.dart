@@ -9,7 +9,7 @@ part 'activity.g.dart';
 /// {@template activity_item}
 /// A single `activity` item.
 ///
-/// Contains an [id], [sportType] and [map].
+/// Contains an [id], [sportType], [map] and [startDate].
 ///
 /// [Activity] are immutable and can be copied using [copyWith], in
 /// addition to being serialized and deserialized using [toJson] and
@@ -23,6 +23,7 @@ class Activity extends Equatable {
     this.id,
     this.sportType,
     this.map,
+    this.startDate,
     // this.athlete,
     // this.name,
     // this.distance,
@@ -31,7 +32,6 @@ class Activity extends Equatable {
     // this.totalElevationGain,
     // this.elevHigh,
     // this.elevLow,
-    // this.startDate,
     // this.startDateLocal,
     // this.timezone,
     // this.startLatLng,
@@ -57,6 +57,9 @@ class Activity extends Equatable {
 
   /// The map of the `activity`.
   final PolyLineMap? map;
+
+  /// When the `activity` started.
+  final DateTime? startDate;
   // final MetaAthlete? athlete;
   // final String? name;
   // final double? distance;
@@ -65,7 +68,6 @@ class Activity extends Equatable {
   // final double? totalElevationGain;
   // final double? elevHigh;
   // final double? elevLow;
-  // final DateTime? startDate;
   // final DateTime? startDateLocal;
   // final String? timezone;
   // // explicitly specify which methods of LatLng should be used for
@@ -89,11 +91,13 @@ class Activity extends Equatable {
     int? id,
     SportType? sportType,
     PolyLineMap? map,
+    DateTime? startDate,
   }) {
     return Activity(
       id: id ?? this.id,
       sportType: sportType ?? this.sportType,
       map: map ?? this.map,
+      startDate: startDate ?? this.startDate,
     );
   }
 
@@ -105,5 +109,5 @@ class Activity extends Equatable {
   Map<String, dynamic> toJson() => _$ActivityToJson(this);
 
   @override
-  List<Object?> get props => [id, sportType];
+  List<Object?> get props => [id, sportType, startDate];
 }
