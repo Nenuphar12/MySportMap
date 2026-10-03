@@ -26,6 +26,15 @@ jobs:
       min_coverage: 80
       flutter_channel: stable
 
+  build-strava-repository:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
+    with:
+      working_directory: packages/strava_repository
+      coverage_excludes: "**/*.g.dart"
+      # The authentication flow and the sport colors are not tested yet.
+      min_coverage: 55
+      flutter_channel: stable
+
   spell-check:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
     with:
