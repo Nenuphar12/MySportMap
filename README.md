@@ -45,33 +45,7 @@ Here are a few steps to setup the project.
 
 *You can skip these and go directly to
 [Getting Started 🚀](#getting-started-🚀) but you might not get access to Strava
-if too many people are using the API key provided. And the map might not be
-detailed (it should be ok if you stay in debug mode, ie. if you do not build the
-app but just run it).*
-
-### Add Google Maps API key
-
-You will need to add your Google maps API key.
-
-*Note:
-You can find the full documentation to use Google Maps with Flutter
-[HERE](https://codelabs.developers.google.com/codelabs/google-maps-in-flutter/).*
-
-#### For Android
-
-Add your Google Maps API key in `android\app\src\main\AndroidManifest.xml`.
-
-```xml
-<!-- TODO: Add your Google Maps API key here -->
-<meta-data android:name="com.google.android.geo.API_KEY"
-          android:value="YOUR-KEY-HERE" />
-```
-
-To get your API key, follow [these instructions](https://developers.google.com/maps/documentation/android-sdk/get-api-key).
-
-*Note:
-It will probably work without an API key but the map precision might not be
-optimal.*
+if too many people are using the API key provided.*
 
 ### 🔐 Setup Strava API
 
