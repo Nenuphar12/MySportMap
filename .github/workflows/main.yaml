@@ -20,6 +20,9 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
     with:
       coverage_excludes: "lib/l10n/**"
+      # `.env` and `lib/env/env.g.dart` are gitignored: generate them from the
+      # example file so the app can be analyzed and tested.
+      setup: cp .env.example .env && dart run build_runner build -d
       min_coverage: 80
       flutter_channel: stable
 
