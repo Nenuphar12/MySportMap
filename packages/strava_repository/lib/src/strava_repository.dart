@@ -161,10 +161,6 @@ class StravaRepository {
     await _activityCache.clear();
   }
 
-  /// Fetches all the activities and returns their [Polyline]s.
-  Future<List<Polyline>> getAllPolylines() async =>
-      polylinesOf(await listAllActivities());
-
   /// Returns the [Polyline]s of the [activities] that have a route.
   static List<Polyline> polylinesOf(Iterable<Activity> activities) {
     final allPolylines = activities
