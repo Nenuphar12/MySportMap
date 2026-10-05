@@ -8,19 +8,24 @@ environment:
 
 dependencies:
   bloc: ^9.2.1
+  envied: ^1.3.10
   equatable: ^3.0.0
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
+  flutter_map: ^8.3.2
+  flutter_map_location_marker: ^10.2.0
   geolocator: ^14.1.1
-  google_maps_flutter: ^2.18.1
+  latlong2: ">=0.9.1 <0.11.0"
   logger: ^2.8.0
   strava_repository:
     path: packages/strava_repository
 
 dev_dependencies:
   bloc_test: ^10.0.0
+  build_runner: ^2.15.1
   dependency_validator: ^5.1.0
+  envied_generator: ^1.3.10
   flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter

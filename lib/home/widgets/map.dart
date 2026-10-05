@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:my_sport_map/home/errors/errors.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:my_sport_map/home/helpers/geolocator_helper.dart';
 import 'package:my_sport_map/utilities/utilities.dart';
 import 'package:strava_repository/strava_repository.dart';
@@ -23,64 +24,16 @@ class MyMap extends StatefulWidget {
 }
 
 class MyMapState extends State<MyMap> {
-  final Completer<GoogleMapController> controller =
-      Completer<GoogleMapController>();
-
-  /// The center of the map.
-  late LatLng centerOfMap;
-
   bool _polylinesLoaded = false;
 
   /// The default initial position to center the map
   final LatLng _center = const LatLng(43.5628075, 5);
 
-  late Set<Polyline> _myPolylines = {};
+  late List<Polyline> _myPolylines = [];
 
   @override
   void initState() {
     super.initState();
-    // Tries to determine current position and ask permission if needed.
-    // The map initial position is then updated.
-    unawaited(
-      widget.geolocatorHelper
-          .determinePosition()
-          .then(
-            (position) {
-              final currentPosition = CameraPosition(
-                target: LatLng(position.latitude, position.longitude),
-                zoom: 13,
-              );
-              // Animate the map to the current position
-              unawaited(
-                controller.future.then(
-                  (controller) => controller.animateCamera(
-                    CameraUpdate.newCameraPosition(
-                      currentPosition,
-                    ),
-                  ),
-                ),
-              );
-            },
-          )
-          .onError<LocationServiceDisabledException>(
-            (error, stackTrace) {
-              logger.i('location service is disabled');
-              _showSnackBar(error.toString());
-            },
-          )
-          .onError<PermissionDeniedException>(
-            (error, stackTrace) {
-              logger.i('location permission request denied');
-              _showSnackBar(error.toString());
-            },
-          )
-          .onError<PermissionDeniedForeverException>(
-            (error, stackTrace) {
-              logger.w('location permission permanently denied');
-              _showSnackBar(error.toString());
-            },
-          ),
-    );
 
     // Load polylines of activities to be displayed
     if (!_polylinesLoaded) {
@@ -101,29 +54,38 @@ class MyMapState extends State<MyMap> {
     }
   }
 
-  /// Shows [message] in a [SnackBar], unless the map has been disposed.
-  void _showSnackBar(String message) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     logger.t('Building map.');
 
-    return GoogleMap(
-      polylines: _myPolylines,
-      onMapCreated: controller.complete,
-      initialCameraPosition: CameraPosition(
-        target: _center,
-        zoom: 10,
-      ),
-      myLocationEnabled: true,
-      // mapType: MapType.terrain,
-      // Keeps centerOfMap updated
-      onCameraMove: (position) => centerOfMap = position.target,
+    return FlutterMap(
+      options: MapOptions(initialCenter: _center, initialZoom: 10),
+      children: [
+        TileLayer(
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.nenuphar.mysportmap',
+          retinaMode: RetinaMode.isHighDensity(context),
+        ),
+        PolylineLayer(polylines: _myPolylines, simplificationTolerance: 0.6),
+        const CurrentLocationLayer(alignPositionOnUpdate: AlignOnUpdate.once),
+        const Scalebar(
+          alignment: Alignment.bottomLeft,
+          textStyle: TextStyle(
+            color: Color.fromARGB(160, 0, 0, 0),
+            fontSize: 12,
+          ),
+          lineColor: Color.fromARGB(160, 0, 0, 0),
+        ),
+        const RichAttributionWidget(
+          // Include prebuilt attribution widget that meets all requirements
+          attributions: [
+            TextSourceAttribution(
+              'OpenStreetMap contributors',
+              // onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // (external)
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

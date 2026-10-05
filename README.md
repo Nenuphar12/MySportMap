@@ -12,6 +12,7 @@ This application connects to [Strava](https://www.strava.com/) to fetch all
 your sport activities. These activities are then displayed on a single map.
 
 This map can then be used in different ways :
+
 - you can get an overview of your activities over the world
 - really useful if like my you like to explore new areas
 - can make you remember about nice memories
@@ -23,16 +24,18 @@ Map.*
 
 ![Main screenshot](assets/screenshots/screenshot_main.jpg)
 
-### Features
+## Features
 
 These features are implemented by the application :
+
 - displays all your strava's activities on one map
   - each type of activity has its own color
 - shows your location on the map
 
-#### Roadmap
+### Roadmap
 
 Future features :
+
 - filtering activities
 - display more information about activities
 
@@ -40,60 +43,50 @@ Future features :
 
 Here are a few steps to setup the project.
 
-*You can skip these and go directly to [Getting Started
-🚀](#getting-started-🚀) but you might not get access to Strava if too many
-people are using the API key provided. And the map might not be detailed (it
-should be ok if you stay in debug mode, ie. if you do not build the app but
-just run it).*
+*You can skip these and go directly to
+[Getting Started 🚀](#getting-started-🚀) but you might not get access to Strava
+if too many people are using the API key provided.*
 
-### Add Google Maps API key
+### 🔐 Setup Strava API
 
-You will need to add your Google maps API key.
+#### 1. Create a Strava API application
 
-*Note:
-You can find the full documentation to use Google Maps with Flutter
-[HERE](https://codelabs.developers.google.com/codelabs/google-maps-in-flutter/).*
+According to [Strava's official documentation](https://developers.strava.com/docs/getting-started/):
 
-#### For Android
+1. If you haven’t already, [sign up for a Strava account](https://www.strava.com/register).
+2. Go to [https://www.strava.com/settings/api](https://www.strava.com/settings/api) and create a new app.
+3. Fill in the following fields:
+  - **Category:** `MobileApp`
+  - **Authorization Callback Domain:** `redirect`
+  - *(Optional but recommended)*
+    - **Application name:** `my_sport_map`
+    - **Application description:** `Flutter app to display all my Strava activities on one map.`
+  - You can use [this logo](assets/map_logo.png).
 
-Add your Google Maps API key in `android\app\src\main\AndroidManifest.xml`.
+> ℹ️ Note: The callback domain is not used directly by the app — it only needs to match the redirect URL configured in the code.
 
-```xml
-<!-- TODO: Add your Google Maps API key here -->
-<meta-data android:name="com.google.android.geo.API_KEY"
-          android:value="YOUR-KEY-HERE" />
+#### 2. Add Strava API credentials to the app
+
+1. Copy your `Client ID` and `Client Secret` from the Strava API settings.
+2. Duplicate `.env.example` and rename it to `.env`
+3. Fill in your values:
+
+```env
+STRAVA_CLIENT_ID=12345
+STRAVA_CLIENT_SECRET=abcd1234...
 ```
 
-To get your API key, follow [these instructions](https://developers.google.com/maps/documentation/android-sdk/get-api-key).
+4. Generate the environment configuration:
 
-*Note:
-It will probably work without an API key but the map precision might not be
-optimal.*
-
-### Setup Strava API
-
-You will need to make an Application. According to [Strava
-documentation](https://developers.strava.com/docs/getting-started/), follow
-these steps :
-
-1. If you have not already, go to https://www.strava.com/register and sign up for a Strava account.
-2. After you are logged in, go to https://www.strava.com/settings/api and create an app.
-3. You should see the “My API Application” page now. Set the following information :
-  - Category: MobileApp
-  - Authorization Callback Domain: redirect
-  - Optional setup
-    - Application name: my_sport_map
-    - Application description: Flutter app to see all my activities on one map.
-
-*Note: You can use [this logo](assets/map_logo.png).*
-
-You will now copy your `Client ID` and `Client Secret` into a `lib/secret.dart`
-file :
-
-```dart
-const String clientId = 'your-client-id';
-const String clientSecret = 'your-client-secret';
+```shell
+dart run build_runner build -d
 ```
+
+#### 3. ⚠️ Important notes
+
+- **Never commit your `.env` file** or the generated `lib/env/env.g.dart`. These files are already listed in `.gitignore`.
+- The `.env.example` file is safe to commit and serves as a template for users.
+- All values are loaded securely and obfuscated using the [envied](https://pub.dev/packages/envied) package.
 
 ## Getting Started 🚀
 

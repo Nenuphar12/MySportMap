@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Enable the INTERNET permission in release builds -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Request location permission -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>    
  
@@ -7,10 +9,6 @@
         android:label="My Sport Map"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
-   
-        <!-- TODO: Add your Google Maps API key here -->
-        <meta-data android:name="com.google.android.geo.API_KEY"
-                  android:value="YOUR-KEY-HERE" />
 
         <activity
             android:name=".MainActivity"
@@ -33,16 +31,20 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        
+
         <!-- Activity to get back to the app after giving authorization to Strava.
              It is used by flutter_web_auth_2. -->
-        <activity android:name="com.linusu.flutter_web_auth_2.CallbackActivity" android:exported="true">
+        <activity
+            android:name="com.linusu.flutter_web_auth_2.CallbackActivity"
+            android:exported="true">
             <!-- To get redirect url when using url_launcher   -->
-            <intent-filter android:label="flutter_web_auth">
-              <action android:name="android.intent.action.VIEW" />  
-              <category android:name="android.intent.category.DEFAULT" /> 
-              <category android:name="android.intent.category.BROWSABLE" /> 
-              <data android:scheme="com.nenuphar.mysportmap" android:host="redirect" />
+            <intent-filter android:label="flutter_web_auth_2">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="redirect"
+                    android:scheme="com.nenuphar.mysportmap" />
             </intent-filter>
         </activity>
 

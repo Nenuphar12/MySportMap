@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:logger/logger.dart';
 // TODO(nenuphar): improve strava_client to not have this problem
 // ignore: implementation_imports
@@ -69,16 +69,16 @@ class StravaRepository {
   }
 
   /// Returns a set of [Polyline]s from the encoded summaryPolylines.
-  Future<Set<Polyline>> getAllPolylines() async {
+  Future<List<Polyline>> getAllPolylines() async {
     final allActivities = await listAllActivities();
     // final allMaps = allActivities.map((a) => a.map).toList();
     final allPolylines = allActivities
         .map((a) {
-          if (a.map?.id != null && a.map?.summaryPolyline != null) {
+          if (a.map?.id != null &&
+              a.map?.summaryPolyline != null &&
+              a.map?.summaryPolyline != '') {
             return Polyline(
-              polylineId: PolylineId(a.map?.id ?? 'no_id'),
               points: decodeEncodedPolyline(a.map?.summaryPolyline ?? ''),
-              width: 2,
               color: SportTypeHelper.getColor(
                 a.sportType ?? SportType.undefined,
               ),
@@ -86,7 +86,7 @@ class StravaRepository {
           }
         })
         .whereType<Polyline>()
-        .toSet();
+        .toList();
     return allPolylines;
   }
 
