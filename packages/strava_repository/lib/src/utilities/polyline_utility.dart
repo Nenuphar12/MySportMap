@@ -29,7 +29,6 @@ List<LatLng> decodeEncodedPolyline(String encodedPolyline) {
       result |= (b & 0x1f) << shift;
       shift += 5;
     } while (b >= 0x20);
-    // ignore: unnecessary_parenthesis
     final dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
     lat += dlat;
 
@@ -41,7 +40,6 @@ List<LatLng> decodeEncodedPolyline(String encodedPolyline) {
       result |= (b & 0x1f) << shift;
       shift += 5;
     } while (b >= 0x20);
-    // ignore: unnecessary_parenthesis
     final dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
     lng += dlng;
 

@@ -1,5 +1,5 @@
 /// A library to wrap [strava_flutter](https://pub.dev/packages/strava_client).
-library strava_repository;
+library;
 
 export 'src/models/models.dart';
 export 'src/strava_repository.dart';

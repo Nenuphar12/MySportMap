@@ -7,16 +7,16 @@ part of 'activity.dart';
 // **************************************************************************
 
 Activity _$ActivityFromJson(Map<String, dynamic> json) => Activity(
-      id: json['id'] as int?,
-      sportType: $enumDecodeNullable(_$SportTypeEnumMap, json['sport_type']),
-      map: json['map'] == null ? null : PolyLineMap.fromJson(json['map']),
-    );
+  id: (json['id'] as num?)?.toInt(),
+  sportType: $enumDecodeNullable(_$SportTypeEnumMap, json['sport_type']),
+  map: json['map'] == null ? null : PolyLineMap.fromJson(json['map']),
+);
 
 Map<String, dynamic> _$ActivityToJson(Activity instance) => <String, dynamic>{
-      'id': instance.id,
-      'sport_type': _$SportTypeEnumMap[instance.sportType],
-      'map': instance.map?.toJson(),
-    };
+  'id': instance.id,
+  'sport_type': _$SportTypeEnumMap[instance.sportType],
+  'map': instance.map?.toJson(),
+};
 
 const _$SportTypeEnumMap = {
   SportType.undefined: 'undefined',

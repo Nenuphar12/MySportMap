@@ -8,7 +8,7 @@ import 'package:strava_repository/strava_repository.dart';
 /// {@template my_sport_map_app}
 /// A [StatefulWidget] which constructs a [MaterialApp] with a splash screen to
 /// [SplashPage] and a home to [HomePage].
-/// {endtemplate}
+/// {@endtemplate}
 ///
 /// Note: `app.dart` is split into two parts [MySportMapApp] and [AppView].
 /// [MySportMapApp] is responsible for creating/providing the [StravaRepository]
@@ -34,8 +34,10 @@ class _MySportMapAppState extends State<MySportMapApp> {
   @override
   void initState() {
     super.initState();
-    stravaRepository =
-        StravaRepository(secret: widget.secret, clientId: widget.clientId);
+    stravaRepository = StravaRepository(
+      secret: widget.secret,
+      clientId: widget.clientId,
+    );
   }
 
   @override
@@ -70,54 +72,52 @@ class _AppViewState extends State<AppView> {
 
   @override
   Widget build(BuildContext context) {
-    logger.v('[build] Build MaterialApp...');
+    logger.t('[build] Build MaterialApp...');
     return MaterialApp(
       theme: ThemeData(
-        appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
+        appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF13B9FF)),
         colorScheme: ColorScheme.fromSwatch(
           accentColor: const Color(0xFF13B9FF),
         ),
       ),
       navigatorKey: navigatorKey,
       title: 'My sport map',
-      // home: const HomePage(),
 
+      // home: const HomePage(),
       builder: (context, child) {
-        logger.v('Next build');
+        logger.t('Next build');
         return BlocListener<ClientCubit, ClientState>(
           listenWhen: (previous, current) {
             // Only listen once when the app starts
             return previous == const ClientState();
           },
-          listener: (context, state) {
-            logger.v('[state] $state');
+          listener: (context, state) async {
+            logger.t('[state] $state');
             switch (state.status) {
               case ClientStatus.ready:
-              // logger.v('case ready');
+              // logger.t('case ready');
               // navigator.pushAndRemoveUntil<void>(
               //   HomePage.route(),
               //   (route) => false,
               // );
               // break;
               case ClientStatus.notAuthorized:
-                logger.v('case notAuthorized (or ready)');
-                navigator.pushAndRemoveUntil<void>(
+                logger.t('case notAuthorized (or ready)');
+                await navigator.pushAndRemoveUntil<void>(
                   // Could be a login page
                   // LoginPage.route(),
                   HomePage.route(),
                   (route) => false,
                 );
-                break;
               case ClientStatus.appStarting:
-                logger.v('case appStarting');
-                break;
+                logger.t('case appStarting');
             }
           },
           child: child,
         );
       },
       onGenerateRoute: (_) {
-        logger.v('[onGenerateRoute]');
+        logger.t('[onGenerateRoute]');
         return SplashPage.route();
       },
     );

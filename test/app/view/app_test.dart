@@ -20,8 +20,9 @@ void main() {
   setUp(() {
     stravaRepository = MockStravaRepository();
     // Needs to wait a little bit ? To be sure to get to the Splash Screen ?
-    when(stravaRepository.isAuthenticated)
-        .thenAnswer((_) => Future.value(false));
+    when(
+      stravaRepository.isAuthenticated,
+    ).thenAnswer((_) => Future.value(false));
 
     clientCubit = MockClientCubit();
     whenListen(
@@ -76,8 +77,9 @@ void main() {
 
       // Wait indefinitely to stay on the SplashPage and generate only one
       // MaterialApp. (Not necessary - not used here)
-      when(stravaRepository.isAuthenticated)
-          .thenAnswer((_) => Future<bool>.value(false));
+      when(
+        stravaRepository.isAuthenticated,
+      ).thenAnswer((_) => Future<bool>.value(false));
       // .thenAnswer((_) => Completer<bool>().future);
 
       await tester.pumpWidget(
@@ -94,13 +96,14 @@ void main() {
       // (after authentication status acquired).
       expect(find.byType(MaterialApp), findsOneWidget);
 
-      final materialApp =
-          tester.widget<MaterialApp>(find.byType(MaterialApp).first);
+      final materialApp = tester.widget<MaterialApp>(
+        find.byType(MaterialApp).first,
+      );
       expect(
         materialApp.theme,
         equals(
           ThemeData(
-            appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
+            appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF13B9FF)),
             colorScheme: ColorScheme.fromSwatch(
               accentColor: const Color(0xFF13B9FF),
             ),

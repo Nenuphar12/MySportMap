@@ -1,3 +1,4 @@
+// The enum values are self-explanatory Strava sport types.
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart' show Color, Colors;
@@ -54,7 +55,7 @@ enum SportType {
   wheelchair,
   windsurf,
   workout,
-  yoga
+  yoga,
 }
 
 /// Helper adding functions to manipulate [SportType]s.
@@ -66,10 +67,9 @@ extension SportTypeHelper on SportType {
   /// The function is case insensitive.
   static SportType getType(String? sportTypeValue) {
     return SportType.values.firstWhere(
-      (element) => element
-          .toString()
-          .toLowerCase()
-          .endsWith((sportTypeValue ?? 'undefined').toLowerCase()),
+      (element) => element.toString().toLowerCase().endsWith(
+        (sportTypeValue ?? 'undefined').toLowerCase(),
+      ),
       orElse: () => SportType.undefined,
     );
   }
@@ -87,8 +87,9 @@ extension SportTypeHelper on SportType {
       getType(json['sport_type'] as String);
 
   /// Converts this [SportType] into json data.
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'sport_type': toString().split('.').last};
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'sport_type': toString().split('.').last,
+  };
 
   /// Returns a color for each [SportType].
   static Color getColor(SportType sportType) {

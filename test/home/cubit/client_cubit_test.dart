@@ -13,9 +13,9 @@ void main() {
   setUp(() {
     stravaRepository = MockStravaRepository();
     when(stravaRepository.isAuthenticated)
-        // Never returns so the bloc initialization
-        // .thenAnswer((_) => Completer<bool>().future);
-        .thenAnswer((_) => Future<bool>.value(true));
+    // Never returns so the bloc initialization
+    // .thenAnswer((_) => Completer<bool>().future);
+    .thenAnswer((_) => Future<bool>.value(true));
   });
 
   group('ClientCubit', () {

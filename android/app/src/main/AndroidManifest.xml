@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nenuphar.mySportMap">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Request location permission -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>    
@@ -36,8 +35,8 @@
         </activity>
         
         <!-- Activity to get back to the app after giving authorization to Strava.
-             It is used by flutter_web_auth. -->
-        <activity android:name="com.linusu.flutter_web_auth.CallbackActivity" android:exported="true">
+             It is used by flutter_web_auth_2. -->
+        <activity android:name="com.linusu.flutter_web_auth_2.CallbackActivity" android:exported="true">
             <!-- To get redirect url when using url_launcher   -->
             <intent-filter android:label="flutter_web_auth">
               <action android:name="android.intent.action.VIEW" />  
