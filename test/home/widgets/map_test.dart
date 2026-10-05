@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:my_sport_map/home/home.dart';
 import 'package:my_sport_map/home/widgets/map.dart';
-import 'package:strava_repository/strava_repository.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -14,53 +15,89 @@ final List<Polyline> testPolylines = [
 
 void main() {
   group('MyMap', () {
-    late StravaRepository stravaRepository;
+    late ActivitiesCubit activitiesCubit;
+
+    const followButtonKey = Key('myMap_followUser_floatingActionButton');
 
     setUp(() {
-      stravaRepository = MockStravaRepository();
-      when(
-        () => stravaRepository.getAllPolylines(),
-      ).thenAnswer((_) => Future.value(testPolylines));
+      activitiesCubit = MockActivitiesCubit();
+      when(() => activitiesCubit.state).thenReturn(
+        ActivitiesState(
+          status: ActivitiesStatus.synced,
+          polylines: testPolylines,
+        ),
+      );
     });
 
-    group('constructor', () {
-      test('works properly', () {
-        expect(() => const MyMap(isClientReady: false), returnsNormally);
-      });
+    AlignOnUpdate alignPositionOnUpdate(WidgetTester tester) => tester
+        .widget<CurrentLocationLayer>(find.byType(CurrentLocationLayer))
+        .alignPositionOnUpdate;
+
+    test('can be instantiated', () {
+      expect(() => const MyMap(), returnsNormally);
     });
 
-    group('map', () {
-      testWidgets('is rendered', (tester) async {
-        await tester.pumpApp(const MyMap(isClientReady: false));
+    testWidgets('renders the map layers', (tester) async {
+      await tester.pumpApp(const MyMap(), activitiesCubit: activitiesCubit);
 
-        expect(find.byType(FlutterMap), findsOneWidget);
-        expect(find.byType(TileLayer), findsOneWidget);
-        expect(find.byType(CurrentLocationLayer), findsOneWidget);
-      });
+      expect(find.byType(FlutterMap), findsOneWidget);
+      expect(find.byType(TileLayer), findsOneWidget);
+      expect(find.byType(CurrentLocationLayer), findsOneWidget);
+      expect(find.byKey(followButtonKey), findsOneWidget);
+    });
 
-      testWidgets('does not request polylines when client is not ready', (
+    testWidgets('displays the polylines of the activities', (tester) async {
+      await tester.pumpApp(const MyMap(), activitiesCubit: activitiesCubit);
+
+      final layer = tester.widget<PolylineLayer>(find.byType(PolylineLayer));
+      expect(layer.polylines, equals(testPolylines));
+    });
+
+    testWidgets('shows a progress bar while syncing', (tester) async {
+      when(() => activitiesCubit.state).thenReturn(
+        const ActivitiesState(status: ActivitiesStatus.syncing),
+      );
+
+      await tester.pumpApp(const MyMap(), activitiesCubit: activitiesCubit);
+
+      expect(find.byType(LinearProgressIndicator), findsOneWidget);
+    });
+
+    testWidgets('shows no progress bar once synced', (tester) async {
+      await tester.pumpApp(const MyMap(), activitiesCubit: activitiesCubit);
+
+      expect(find.byType(LinearProgressIndicator), findsNothing);
+    });
+
+    group('follow button', () {
+      testWidgets('centers the map on the first position only by default', (
         tester,
       ) async {
-        await tester.pumpApp(
-          const MyMap(isClientReady: false),
-          stravaRepository: stravaRepository,
-        );
+        await tester.pumpApp(const MyMap(), activitiesCubit: activitiesCubit);
 
-        verifyNever(() => stravaRepository.getAllPolylines());
+        expect(alignPositionOnUpdate(tester), AlignOnUpdate.once);
       });
 
-      testWidgets('sets the polylines', (tester) async {
-        await tester.pumpApp(
-          const MyMap(isClientReady: true),
-          stravaRepository: stravaRepository,
-        );
+      testWidgets('follows the user when tapped', (tester) async {
+        await tester.pumpApp(const MyMap(), activitiesCubit: activitiesCubit);
 
-        verify(() => stravaRepository.getAllPolylines()).called(1);
-
+        await tester.tap(find.byKey(followButtonKey));
         await tester.pump();
 
-        final layer = tester.widget<PolylineLayer>(find.byType(PolylineLayer));
-        expect(layer.polylines, equals(testPolylines));
+        expect(alignPositionOnUpdate(tester), AlignOnUpdate.always);
+      });
+
+      testWidgets('stops following when the user moves the map', (
+        tester,
+      ) async {
+        await tester.pumpApp(const MyMap(), activitiesCubit: activitiesCubit);
+        await tester.tap(find.byKey(followButtonKey));
+        await tester.pump();
+
+        await tester.drag(find.byType(FlutterMap), const Offset(-200, 0));
+        await tester.pump();
+
+        expect(alignPositionOnUpdate(tester), AlignOnUpdate.never);
       });
     });
   });

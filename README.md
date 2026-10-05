@@ -30,7 +30,12 @@ These features are implemented by the application :
 
 - displays all your strava's activities on one map
   - each type of activity has its own color
+  - activities are cached on the phone: the map shows them right away, then
+    only new activities are fetched from Strava
+  - *Refresh all activities* (in the menu) fetches everything again, to pick
+    up activities edited or deleted on Strava
 - shows your location on the map
+  - the follow button keeps the map centered on you until you move it
 
 ### Roadmap
 

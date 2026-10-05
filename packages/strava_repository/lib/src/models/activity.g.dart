@@ -10,12 +10,16 @@ Activity _$ActivityFromJson(Map<String, dynamic> json) => Activity(
   id: (json['id'] as num?)?.toInt(),
   sportType: $enumDecodeNullable(_$SportTypeEnumMap, json['sport_type']),
   map: json['map'] == null ? null : PolyLineMap.fromJson(json['map']),
+  startDate: json['start_date'] == null
+      ? null
+      : DateTime.parse(json['start_date'] as String),
 );
 
 Map<String, dynamic> _$ActivityToJson(Activity instance) => <String, dynamic>{
   'id': instance.id,
   'sport_type': _$SportTypeEnumMap[instance.sportType],
   'map': instance.map?.toJson(),
+  'start_date': instance.startDate?.toIso8601String(),
 };
 
 const _$SportTypeEnumMap = {

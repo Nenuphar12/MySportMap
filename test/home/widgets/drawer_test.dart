@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:my_sport_map/home/cubit/client_cubit.dart';
+import 'package:my_sport_map/home/home.dart';
 import 'package:my_sport_map/home/widgets/widgets.dart';
 import 'package:strava_repository/strava_repository.dart';
 
@@ -28,7 +28,19 @@ void main() {
       clientCubit = MockClientCubit();
     });
 
-    Widget buildSubject({required bool isLoggedIn}) {
+    Widget buildSubject({
+      required bool isLoggedIn,
+      ActivitiesCubit? activitiesCubit,
+    }) {
+      if (activitiesCubit != null) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: clientCubit),
+            BlocProvider.value(value: activitiesCubit),
+          ],
+          child: HomePageDrawer(isLoggedIn: isLoggedIn),
+        );
+      }
       return BlocProvider.value(
         value: clientCubit,
         child: HomePageDrawer(isLoggedIn: isLoggedIn),
@@ -49,6 +61,41 @@ void main() {
           find.byType(ListView),
           findsOneWidget,
         );
+      });
+    });
+
+    group('refresh tile', () {
+      const refreshListTileKey = Key('homePageDrawer_refresh_ListTile');
+
+      testWidgets('is disabled when logged out', (tester) async {
+        await tester.pumpApp(buildSubject(isLoggedIn: false));
+
+        final tile = tester.widget<ListTile>(find.byKey(refreshListTileKey));
+        expect(tile.enabled, isFalse);
+      });
+
+      testWidgets('refreshes all the activities when tapped', (tester) async {
+        final activitiesCubit = MockActivitiesCubit();
+        when(() => activitiesCubit.state).thenReturn(const ActivitiesState());
+        when(activitiesCubit.refresh).thenAnswer((_) async {});
+
+        await tester.pumpApp(
+          Scaffold(
+            drawer: buildSubject(
+              isLoggedIn: true,
+              activitiesCubit: activitiesCubit,
+            ),
+            body: const SizedBox(),
+          ),
+        );
+        tester.state<ScaffoldState>(find.byType(Scaffold).last).openDrawer();
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(refreshListTileKey));
+        await tester.pumpAndSettle();
+
+        verify(activitiesCubit.refresh).called(1);
+        expect(find.byType(HomePageDrawer), findsNothing, reason: 'closed');
       });
     });
 

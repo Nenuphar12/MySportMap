@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_sport_map/home/cubit/activities_cubit.dart';
 import 'package:my_sport_map/home/widgets/auth_management_tile.dart';
 
 class HomePageDrawer extends StatelessWidget {
@@ -15,8 +19,8 @@ class HomePageDrawer extends StatelessWidget {
             child: ListView(
               // Remove any padding from the ListView
               padding: EdgeInsets.zero,
-              children: const [
-                DrawerHeader(
+              children: [
+                const DrawerHeader(
                   decoration: BoxDecoration(
                     color: Colors.blue,
                   ),
@@ -30,10 +34,21 @@ class HomePageDrawer extends StatelessWidget {
                   ),
                 ),
                 ListTile(
+                  key: const Key('homePageDrawer_refresh_ListTile'),
+                  leading: const Icon(Icons.refresh),
+                  title: const Text('Refresh all activities'),
+                  enabled: isLoggedIn,
+                  onTap: () {
+                    unawaited(context.read<ActivitiesCubit>().refresh());
+                    // Close the drawer
+                    Navigator.pop(context);
+                  },
+                ),
+                const ListTile(
                   leading: Icon(Icons.settings),
                   title: Text('Settings (disabled)'),
                 ),
-                ListTile(
+                const ListTile(
                   leading: Icon(Icons.info_outline),
                   title: Text('About'),
                 ),
